@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Office 365 / Microsoft 365 PowerShell — detaylı yönetim komut referansı."""
+"""
+Microsoft 365 (Office 365) Online — şirket kiracı yönetimi
+PowerShell öğrenme rehberi (detaylı / derinlemesine).
+"""
 
 from docx import Document
 from docx.shared import Pt, RGBColor, Cm
@@ -11,37 +14,38 @@ from docx.oxml import OxmlElement
 OUTPUT = "/workspace/Office365_PowerShell_Yonetim_Komutlari.docx"
 
 
-def set_run_font(run, name="Calibri", size=11, bold=False, color=None):
+def font(run, name="Calibri", size=11, bold=False, italic=False, color=None):
     run.font.name = name
     run._element.rPr.rFonts.set(qn("w:eastAsia"), name)
     run.font.size = Pt(size)
     run.bold = bold
+    run.italic = italic
     if color:
         run.font.color.rgb = color
 
 
-def add_heading_styled(doc, text, level=1):
+def H(doc, text, level=1):
     h = doc.add_heading(text, level=level)
-    for run in h.runs:
-        if level == 1:
-            run.font.color.rgb = RGBColor(0x0B, 0x5C, 0x8C)
-        elif level == 2:
-            run.font.color.rgb = RGBColor(0x16, 0x74, 0xA8)
-        elif level == 3:
-            run.font.color.rgb = RGBColor(0x2E, 0x86, 0xAB)
+    colors = {
+        1: RGBColor(0x0B, 0x5C, 0x8C),
+        2: RGBColor(0x16, 0x74, 0xA8),
+        3: RGBColor(0x2E, 0x86, 0xAB),
+    }
+    for r in h.runs:
+        r.font.color.rgb = colors.get(level, RGBColor(0x33, 0x33, 0x33))
     return h
 
 
-def add_para(doc, text, bold=False, italic=False, size=11):
+def P(doc, text, size=10.5, bold=False, italic=False, color=None):
     p = doc.add_paragraph()
-    run = p.add_run(text)
-    set_run_font(run, size=size, bold=bold)
-    run.italic = italic
+    r = p.add_run(text)
+    font(r, size=size, bold=bold, italic=italic, color=color)
     p.paragraph_format.space_after = Pt(6)
+    p.paragraph_format.space_before = Pt(0)
     return p
 
 
-def shade_paragraph(paragraph, fill="EEF2F7"):
+def shade(paragraph, fill="EEF2F7"):
     pPr = paragraph._p.get_or_add_pPr()
     shd = OxmlElement("w:shd")
     shd.set(qn("w:fill"), fill)
@@ -49,513 +53,509 @@ def shade_paragraph(paragraph, fill="EEF2F7"):
     pPr.append(shd)
 
 
-def add_code(doc, code):
+def CODE(doc, code):
     for line in code.strip("\n").split("\n"):
         p = doc.add_paragraph()
-        run = p.add_run(line if line else " ")
-        set_run_font(run, name="Consolas", size=8.5)
-        run.font.color.rgb = RGBColor(0x1A, 0x1A, 0x2E)
+        r = p.add_run(line if line else " ")
+        font(r, name="Consolas", size=8.5, color=RGBColor(0x1A, 0x1A, 0x2E))
         p.paragraph_format.space_before = Pt(0)
         p.paragraph_format.space_after = Pt(0)
-        p.paragraph_format.left_indent = Cm(0.25)
-        shade_paragraph(p)
-    spacer = doc.add_paragraph()
-    spacer.paragraph_format.space_before = Pt(2)
-    spacer.paragraph_format.space_after = Pt(6)
+        p.paragraph_format.left_indent = Cm(0.2)
+        shade(p)
+    sp = doc.add_paragraph()
+    sp.paragraph_format.space_after = Pt(6)
 
 
-def add_note(doc, text):
+def NOTE(doc, text):
     p = doc.add_paragraph()
-    run = p.add_run("Not: ")
-    set_run_font(run, size=9.5, bold=True, color=RGBColor(0xB8, 0x5C, 0x00))
-    run2 = p.add_run(text)
-    set_run_font(run2, size=9.5, color=RGBColor(0x5C, 0x4A, 0x32))
+    a = p.add_run("Not: ")
+    font(a, size=9.5, bold=True, color=RGBColor(0xB8, 0x5C, 0x00))
+    b = p.add_run(text)
+    font(b, size=9.5, color=RGBColor(0x5C, 0x4A, 0x32))
     p.paragraph_format.space_after = Pt(8)
 
 
-def add_warn(doc, text):
+def WARN(doc, text):
     p = doc.add_paragraph()
-    run = p.add_run("Uyarı: ")
-    set_run_font(run, size=9.5, bold=True, color=RGBColor(0x8B, 0x00, 0x00))
-    run2 = p.add_run(text)
-    set_run_font(run2, size=9.5, color=RGBColor(0x6B, 0x20, 0x20))
+    a = p.add_run("Uyarı: ")
+    font(a, size=9.5, bold=True, color=RGBColor(0x8B, 0x00, 0x00))
+    b = p.add_run(text)
+    font(b, size=9.5, color=RGBColor(0x6B, 0x20, 0x20))
     p.paragraph_format.space_after = Pt(8)
 
 
-def add_cmd(doc, title, description, code, level=2):
-    add_heading_styled(doc, title, level=level)
-    if description:
-        add_para(doc, description, size=10)
-    add_code(doc, code)
-
-
-def add_toc_item(doc, text):
+def WHY(doc, text):
     p = doc.add_paragraph()
-    run = p.add_run(text)
-    set_run_font(run, size=10)
-    p.paragraph_format.space_after = Pt(2)
-    p.paragraph_format.left_indent = Cm(0.4)
+    a = p.add_run("Neden önemli: ")
+    font(a, size=9.5, bold=True, color=RGBColor(0x0B, 0x5C, 0x8C))
+    b = p.add_run(text)
+    font(b, size=9.5)
+    p.paragraph_format.space_after = Pt(8)
+
+
+def TOPIC(doc, title, ne, neden, once, adimlar_aciklama, code, dogrula=None, derin=None):
+    """Learn tarzı konu: ne / neden / önce / komut / doğrula / derin bilgi."""
+    H(doc, title, 2)
+    if ne:
+        P(doc, ne, size=10.5)
+    if neden:
+        WHY(doc, neden)
+    if once:
+        P(doc, "Başlamadan önce", size=10, bold=True)
+        P(doc, once, size=9.5)
+    if adimlar_aciklama:
+        P(doc, adimlar_aciklama, size=10)
+    if code:
+        CODE(doc, code)
+    if dogrula:
+        P(doc, "Doğrulama", size=10, bold=True)
+        CODE(doc, dogrula)
+    if derin:
+        P(doc, "Derinlemesine", size=10, bold=True)
+        P(doc, derin, size=9.5)
+
+
+def bullet(doc, items):
+    for t in items:
+        p = doc.add_paragraph(style="List Bullet")
+        r = p.add_run(t)
+        font(r, size=10)
+        p.paragraph_format.space_after = Pt(2)
 
 
 def build():
     doc = Document()
-    for section in doc.sections:
-        section.top_margin = Cm(1.8)
-        section.bottom_margin = Cm(1.8)
-        section.left_margin = Cm(2.0)
-        section.right_margin = Cm(2.0)
+    for s in doc.sections:
+        s.top_margin = Cm(1.7)
+        s.bottom_margin = Cm(1.7)
+        s.left_margin = Cm(1.9)
+        s.right_margin = Cm(1.9)
 
-    # ---- Kapak ----
-    title = doc.add_paragraph()
-    title.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r = title.add_run("Microsoft 365 / Office 365")
-    set_run_font(r, size=26, bold=True, color=RGBColor(0x0B, 0x5C, 0x8C))
+    # ========== KAPAK ==========
+    t = doc.add_paragraph()
+    t.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = t.add_run("Microsoft 365 (Office 365) Online")
+    font(r, size=24, bold=True, color=RGBColor(0x0B, 0x5C, 0x8C))
 
-    subtitle = doc.add_paragraph()
-    subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r = subtitle.add_run("PowerShell Yönetim Komutları — Detaylı Referans")
-    set_run_font(r, size=15, bold=True, color=RGBColor(0x16, 0x74, 0xA8))
+    t2 = doc.add_paragraph()
+    t2.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = t2.add_run("Şirket Kiracı Yönetimi — PowerShell Öğrenme Rehberi")
+    font(r, size=14, bold=True, color=RGBColor(0x16, 0x74, 0xA8))
 
-    meta = doc.add_paragraph()
-    meta.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r = meta.add_run(
-        "Microsoft Graph • Entra ID • Exchange Online • SharePoint / OneDrive\n"
-        "Microsoft Teams • Lisans • Güvenlik • Raporlama • Toplu İşlemler"
+    t3 = doc.add_paragraph()
+    t3.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = t3.add_run(
+        "Bir şirketin bulut ofisini (kullanıcı, lisans, e-posta, dosya, ekipler, güvenlik)\n"
+        "PowerShell ile nasıl yöneteceğinizi adım adım ve derinlemesine anlatır."
     )
-    set_run_font(r, size=10, color=RGBColor(0x55, 0x55, 0x55))
+    font(r, size=10, color=RGBColor(0x55, 0x55, 0x55))
 
-    warn = doc.add_paragraph()
-    warn.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r = warn.add_run(
-        "Üretim öncesi test kiracısında deneyin. MSOnline / AzureAD yerine Microsoft Graph kullanın. "
-        "Örnek domain: contoso.com — kendi kiracınızla değiştirin."
+    WARN(
+        doc,
+        "Örneklerde contoso.com kullanılır. Kendi kiracı domain’iniz, UPN’leriniz ve "
+        "yollarınızla değiştirin. Mümkünse önce test kullanıcısı / pilot grupla deneyin. "
+        "Eski MSOnline ve AzureAD modülleri emekliye ayrılmıştır; bu rehber Microsoft Graph kullanır.",
     )
-    set_run_font(r, size=9, color=RGBColor(0x8B, 0x00, 0x00))
 
-    add_heading_styled(doc, "İçindekiler", level=1)
-    for item in [
-        "1. Ortam ve modül kurulumu",
-        "2. Bağlantı yöntemleri (etkileşimli, app-only, sertifika)",
-        "3. Kullanıcı yaşam döngüsü (oluşturma → güncelleme → silme → geri yükleme)",
-        "4. Kimlik doğrulama yöntemleri ve MFA",
-        "5. Lisans ve servis planı yönetimi",
-        "6. Gruplar (güvenlik, M365, dinamik, dağıtım)",
-        "7. Exchange Online — posta kutusu, izin, kural, izleme",
-        "8. SharePoint Online ve OneDrive",
-        "9. Microsoft Teams",
-        "10. Entra ID rolleri ve yönetim birimleri",
-        "11. Güvenlik, denetim ve uyumluluk",
-        "12. Raporlama ve dışa aktarma",
-        "13. Toplu / CSV otomasyon senaryoları",
-        "14. Sorun giderme ve sık hatalar",
-        "15. Hızlı cmdlet sözlüğü",
-    ]:
-        add_toc_item(doc, item)
+    H(doc, "Bu rehberi nasıl okumalısınız?", 1)
+    P(
+        doc,
+        "Bu belge bir komut listesi değil; şirket M365 yöneticisinin günlük ve dönemsel işlerini "
+        "anlayarak yapması için yazılmıştır. Her konuda sırayla: ne işe yarar, neden önemli, "
+        "hangi yetki gerekir, komut nasıl çalışır, nasıl doğrulanır ve arka planda ne olur "
+        "anlatılır. İlk okumada bölüm 0–3’ü mutlaka bitirin; sonra işinize göre Exchange, "
+        "SharePoint/Teams veya güvenlik bölümlerine geçin.",
+    )
+    bullet(
+        doc,
+        [
+            "0 — Kavram haritası: şirket M365’te neyi yönetirsiniz?",
+            "1 — Ortam kurulumu ve bağlanma (temel beceri)",
+            "2 — Kullanıcı yaşam döngüsü (işe alım → değişiklik → işten ayrılma)",
+            "3 — Lisanslar (paranın ve erişimin kalbi)",
+            "4 — Gruplar ve yetki modeli",
+            "5 — Exchange Online (kurumsal e-posta)",
+            "6 — SharePoint / OneDrive (dosya ve siteler)",
+            "7 — Microsoft Teams",
+            "8 — Güvenlik, denetim, raporlama",
+            "9 — Operasyon runbook’ları (hazır senaryolar)",
+            "10 — Sorun giderme zihniyeti",
+        ],
+    )
 
-    # =====================================================================
-    # 1. KURULUM
-    # =====================================================================
-    add_heading_styled(doc, "1. Ortam ve Modül Kurulumu", level=1)
+    # ========== 0 ==========
+    H(doc, "0. Kavram haritası — Şirkette neyi yönetiyorsunuz?", 1)
+    P(
+        doc,
+        "Office 365 / Microsoft 365, şirketinizin buluttaki kimlik + üretkenlik platformudur. "
+        "PowerShell ile yönetim demek: portalda tek tek tıkladığınız işleri tekrarlanabilir, "
+        "raporlanabilir ve toplu hale getirmektir. Şirket ölçeğinde portal yetmez; 50+ kullanıcıda "
+        "CSV/otomasyon ve standart prosedür şarttır.",
+    )
 
-    add_cmd(
+    H(doc, "0.1 Katmanlar", 2)
+    CODE(
+        doc,
+        """Katman              Ne yönetir?                         Ana PowerShell yüzeyi
+-----------------  ----------------------------------  --------------------------------
+Kimlik (Entra ID)  Kullanıcı, grup, rol, MFA, misafir  Microsoft.Graph
+Lisans             Hangi uygulamaya kim erişir         Microsoft.Graph (SKU / Set-MgUserLicense)
+E-posta            Posta kutusu, kural, dağıtım        ExchangeOnlineManagement
+Dosya              Site, OneDrive, paylaşım            PnP.PowerShell / SPO
+İşbirliği          Ekip, kanal, politika               MicrosoftTeams
+Güvenlik/Uyumluluk Denetim, CA, arama, hold            Graph + EXO + IPPSSession""",
+    )
+    NOTE(
+        doc,
+        "Aynı ‘kullanıcı’ hem Entra’da bir kimlik nesnesidir, hem (lisanslıysa) Exchange’de "
+        "posta kutusu, hem OneDrive sahibi, hem Teams üyesidir. Bu yüzden işten ayrılmada "
+        "tek Disable yetmez; katman katman kapatırsınız.",
+    )
+
+    H(doc, "0.2 Portal mı, PowerShell mi?", 2)
+    bullet(
+        doc,
+        [
+            "Portal: tek kullanıcı, görsel kontrol, acil küçük değişiklik.",
+            "PowerShell: toplu işlem, rapor, standart offboarding, transport kuralı, arşiv/hold, "
+            "tekrarlanabilir runbook.",
+            "İdeal model: politika ve tasarım portal/Mimari ile; icra ve denetim PowerShell ile.",
+        ],
+    )
+
+    H(doc, "0.3 En az yetki (RBAC) bilinci", 2)
+    P(
+        doc,
+        "Global Administrator her şeyi yapar ama günlük iş için yanlıştır. Yardım masası için "
+        "User Administrator / Helpdesk Administrator; lisans için License Administrator; "
+        "posta için Exchange Admin; site için SharePoint Admin yeterlidir. PowerShell oturumunuz "
+        "hangi rolle açıldıysa o rolün görebileceği cmdlet’leri görürsünüz — ‘komut yok’ çoğu zaman "
+        "yetki eksikliğidir.",
+    )
+
+    # ========== 1 ==========
+    H(doc, "1. Ortam kurulumu ve kiracıya bağlanma", 1)
+    P(
+        doc,
+        "Her yönetim oturumu aynı üç adımdan geçer: (1) doğru modül yüklü mü, (2) doğru kimlikle "
+        "bağlandınız mı, (3) gereken izin/scope var mı. Bu bölümü ezbere bilmeden ileri konulara "
+        "geçmeyin.",
+    )
+
+    TOPIC(
         doc,
         "1.1 PowerShell sürümü ve Execution Policy",
-        "Windows PowerShell 5.1 veya PowerShell 7+ önerilir. Graph için PS7 tercih edilir.",
-        """$PSVersionTable
+        "Komutları çalıştıracak kabuğu hazırlarsınız.",
+        "Yanlış Execution Policy script’leri bloklar; eski Windows PowerShell 5.1 bazı Graph "
+        "senaryolarında sorun çıkarır. Mümkünse PowerShell 7+ kullanın.",
+        "Yerel makinede yönetici veya CurrentUser kurulum yetkisi.",
+        "Önce sürümü ve politikayı kontrol edin, sonra güvenli bir politika seçin:",
+        """$PSVersionTable                    # PSVersion 7.x ideal
 Get-ExecutionPolicy -List
-# Geçici (oturum)
-Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
-# Kullanıcı kapsamı
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force""",
+# Sadece bu oturum (en güvenli geçici çözüm)
+Set-ExecutionPolicy Bypass -Scope Process -Force
+# Kullanıcı kapsamı (kalıcı, makine genelini bozmaz)
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force""",
+        derin="RemoteSigned: yerel script’ler çalışır, internetten inenler imza ister. "
+        "Unrestricted şirkette önerilmez. Scope Process sadece açık pencereyi etkiler; "
+        "eğitim / tek seferlik iş için idealdir.",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "1.2 Modül kurulumu (tam set)",
+        "1.2 Hangi modül ne işe yarar? (kurulum)",
+        "Her bulut hizmetinin kendi PowerShell modülü vardır; hepsi tek ‘Office365’ modülü değildir.",
+        "Yanlış/eski modül (MSOnline, AzureAD) artık güvenilir değildir. Şirket standardınızı Graph + EXO + Teams + PnP yapın.",
+        "İnternet erişimi ve PSGallery.",
         None,
         """Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 
-# Temel yönetim seti
 Install-Module Microsoft.Graph -Scope CurrentUser -Force -AllowClobber
-Install-Module Microsoft.Graph.Beta -Scope CurrentUser -Force -AllowClobber  # beta cmdlet'ler
 Install-Module ExchangeOnlineManagement -Scope CurrentUser -Force
 Install-Module MicrosoftTeams -Scope CurrentUser -Force
 Install-Module PnP.PowerShell -Scope CurrentUser -Force
 
-# İsteğe bağlı
-Install-Module Microsoft.Online.SharePoint.PowerShell -Scope CurrentUser -Force  # klasik SPO
-# Install-Module MSOnline   # ESKİ — kullanmayın
-# Install-Module AzureAD    # ESKİ — kullanmayın
-
-# Kurulu sürümler
 Get-Module Microsoft.Graph*, ExchangeOnlineManagement, MicrosoftTeams, PnP.PowerShell -ListAvailable |
-  Select-Object Name, Version | Sort-Object Name, Version -Descending |
-  Format-Table -AutoSize
+  Select-Object Name, Version | Sort-Object Name, Version -Descending
 
-# Güncelleme
 Update-Module Microsoft.Graph, ExchangeOnlineManagement, MicrosoftTeams, PnP.PowerShell -Force""",
+        derin="Microsoft.Graph aslında onlarca alt pakettir (Users, Groups, Reports…). "
+        "Install-Module Microsoft.Graph hepsini çeker; disk ve süre pahalıdır. Sadece kullanıcı "
+        "yönetecekseniz Microsoft.Graph.Authentication + Microsoft.Graph.Users yeterli olabilir. "
+        "ExchangeOnlineManagement V3, Get-EXOMailbox gibi REST tabanlı hızlı cmdlet’ler getirir. "
+        "PnP.PowerShell topluluk desteklidir ama şirketlerde fiili standarttır; resmi klasik modül "
+        "Microsoft.Online.SharePoint.PowerShell’dir.",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "1.3 Graph alt modüllerini seçici yükleme (daha hafif)",
-        "Tüm Graph yerine sadece ihtiyaç duyulan alt paketler:",
-        """Install-Module Microsoft.Graph.Authentication -Scope CurrentUser
-Install-Module Microsoft.Graph.Users -Scope CurrentUser
-Install-Module Microsoft.Graph.Users.Actions -Scope CurrentUser
-Install-Module Microsoft.Graph.Groups -Scope CurrentUser
-Install-Module Microsoft.Graph.Identity.DirectoryManagement -Scope CurrentUser
-Install-Module Microsoft.Graph.Identity.SignIns -Scope CurrentUser
-Install-Module Microsoft.Graph.Reports -Scope CurrentUser""",
-    )
-
-    # =====================================================================
-    # 2. BAĞLANTI
-    # =====================================================================
-    add_heading_styled(doc, "2. Bağlantı Yöntemleri", level=1)
-
-    add_cmd(
-        doc,
-        "2.1 Microsoft Graph — etkileşimli (delegated)",
-        "Günlük admin işleri için. Tarayıcıda MFA ile oturum açılır.",
+        "1.3 Microsoft Graph’a bağlanma — scope (izin) kavramı",
+        "Graph, Entra ID / kullanıcı / grup / lisans / rapor için ana kapıdır. Connect-MgGraph "
+        "sırasında istediğiniz permission scope’lar MFA sonrası onaylanır (veya uygulama izniyle gelir).",
+        "Scope bilmeden bağlanırsanız Get-MgUser ‘Insufficient privileges’ verir. Bu bir hata değil, "
+        "güvenlik modelidir: her oturum sadece istediği kapıları açar.",
+        "En az User Administrator veya Global Reader (okuma) / ilgili yazma rolleri.",
+        "İlk öğrenme oturumu için geniş ama bilinçli bir scope seti:",
         """$scopes = @(
-  "User.Read.All","User.ReadWrite.All","User.Invite.All",
-  "Group.ReadWrite.All","GroupMember.ReadWrite.All",
-  "Directory.Read.All","Directory.ReadWrite.All",
-  "Organization.Read.All","RoleManagement.ReadWrite.Directory",
-  "AuditLog.Read.All","Reports.Read.All",
-  "Policy.Read.All","Application.Read.All"
+  "User.Read.All",              # kullanıcı oku
+  "User.ReadWrite.All",         # kullanıcı yaz
+  "Group.ReadWrite.All",        # grup yaz
+  "Directory.Read.All",         # dizin oku
+  "Organization.Read.All",      # lisans SKU oku
+  "AuditLog.Read.All",          # oturum / dizin audit
+  "Reports.Read.All"            # kullanım raporları
 )
 Connect-MgGraph -Scopes $scopes -NoWelcome
-Get-MgContext | Format-List
-Get-MgOrganization | Select-Object DisplayName, Id, VerifiedDomains
-# Oturumu kapat
-Disconnect-MgGraph""",
+Get-MgContext | Format-List          # kim, hangi tenant, hangi scope
+Get-MgOrganization | Select-Object DisplayName, Id
+# İş bitince
+# Disconnect-MgGraph""",
+        dogrula="""(Get-MgContext).Scopes
+Get-MgUser -Top 3 | Select-Object DisplayName, UserPrincipalName""",
+        derin="Delegated (sizin kullanıcı token’ınız) vs Application (app-only): "
+        "Günlük admin işi delegated’dır. Gece çalışan runbook app-only + sertifika ister; "
+        "Entra’da App Registration, Application permission ve Admin consent gerekir. "
+        "Secret’ı scripte gömmeyin — Key Vault veya sertifika thumbprint kullanın. "
+        "Find-MgGraphCommand -Command Get-MgUser ile bir cmdlet’in hangi izni istediğini bulursunuz.",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "2.2 Graph — uygulama (client secret) ile app-only",
-        "Otomasyon / runbook için. Entra’da App Registration + Application permission + Admin consent gerekir.",
-        """$tenantId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-$clientId = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
-$secret   = "YOUR_CLIENT_SECRET"   # Secret'ı koda gömmeyin; Key Vault kullanın
-
-$secure = ConvertTo-SecureString $secret -AsPlainText -Force
-$cred   = New-Object System.Management.Automation.PSCredential($clientId, $secure)
-Connect-MgGraph -TenantId $tenantId -ClientSecretCredential $cred -NoWelcome""",
-    )
-
-    add_cmd(
-        doc,
-        "2.3 Graph — sertifika ile app-only (önerilen otomasyon)",
+        "1.4 Exchange, Teams, SharePoint oturumları",
+        "E-posta, ekip ve site işleri ayrı bağlantı ister; Graph her şeyi kapsamaz.",
+        "Örn. paylaşılan posta kutusu izni veya transport kuralı yalnızca Exchange Online PowerShell’dedir.",
+        "İlgili admin rolleri (Exchange Admin, Teams Admin, SharePoint Admin).",
         None,
-        """$tenantId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-$clientId = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
-$thumb    = "ABCDEF1234567890ABCDEF1234567890ABCDEF12"
-
-Connect-MgGraph -TenantId $tenantId -ClientId $clientId `
-  -CertificateThumbprint $thumb -NoWelcome""",
-    )
-
-    add_cmd(
-        doc,
-        "2.4 Exchange Online bağlantı çeşitleri",
-        None,
-        """# Etkileşimli
+        """# Exchange Online
 Connect-ExchangeOnline -ShowBanner:$false
-
-# Belirli UPN
-Connect-ExchangeOnline -UserPrincipalName "admin@contoso.com" -ShowBanner:$false
-
-# Sertifika (unattended)
-Connect-ExchangeOnline -AppId $clientId -CertificateThumbprint $thumb `
-  -Organization "contoso.onmicrosoft.com" -ShowBanner:$false
-
-# Bağlantı durumu / kapat
 Get-ConnectionInformation | Format-List
-Disconnect-ExchangeOnline -Confirm:$false""",
-    )
+# Disconnect-ExchangeOnline -Confirm:$false
 
-    add_cmd(
-        doc,
-        "2.5 Teams ve SharePoint bağlantısı",
-        None,
-        """# Teams
+# Teams
 Connect-MicrosoftTeams
-# App-only Teams (sertifika)
-# Connect-MicrosoftTeams -TenantId $tenantId -CertificateThumbprint $thumb -ApplicationId $clientId
 Get-CsTenant | Select-Object DisplayName, TenantId
-Disconnect-MicrosoftTeams
+# Disconnect-MicrosoftTeams
 
-# PnP SharePoint — admin merkezi
+# SharePoint yönetim merkezi (PnP)
 Connect-PnPOnline -Url "https://contoso-admin.sharepoint.com" -Interactive
-# veya ClientId + sertifika
-# Connect-PnPOnline -Url "https://contoso-admin.sharepoint.com" -ClientId $clientId `
-#   -Thumbprint $thumb -Tenant "contoso.onmicrosoft.com"
-Disconnect-PnPOnline
-
-# Klasik SPO modülü
-# Connect-SPOService -Url "https://contoso-admin.sharepoint.com"
-# Disconnect-SPOService""",
+# Disconnect-PnPOnline""",
+        derin="Aynı pencerede üç bağlantıyı birden açabilirsiniz. Offboarding gibi çapraz "
+        "senaryolarda Graph + Exchange birlikte şarttır. Unattended EXO için "
+        "Connect-ExchangeOnline -AppId -CertificateThumbprint -Organization kullanılır.",
     )
 
-    add_note(
+    # ========== 2 ==========
+    H(doc, "2. Kullanıcı yaşam döngüsü (şirketin omurgası)", 1)
+    P(
         doc,
-        "Aynı oturumda Graph + Exchange + Teams açabilirsiniz. Bitince her servisi Disconnect ile kapatın. "
-        "App-only izinlerde bazı cmdlet’ler (özellikle kullanıcı etkileşimli olanlar) çalışmaz.",
+        "Şirket yönetiminin yüzde yetmişi kullanıcıdır: işe alım, unvan/departman değişimi, "
+        "parola/MFA yardımı, işten ayrılma. Bu bölümü master edin.",
     )
 
-    # =====================================================================
-    # 3. KULLANICI
-    # =====================================================================
-    add_heading_styled(doc, "3. Kullanıcı Yaşam Döngüsü", level=1)
-
-    add_cmd(
+    TOPIC(
         doc,
-        "3.1 Kullanıcı listeleme — filtre, arama, sayfalama",
-        None,
-        """# Tüm kullanıcılar (özellik seçerek — daha hızlı)
-Get-MgUser -All -Property "id,displayName,userPrincipalName,accountEnabled,mail,department,jobTitle,createdDateTime" |
-  Select-Object DisplayName, UserPrincipalName, AccountEnabled, Department, JobTitle, CreatedDateTime
+        "2.1 Kullanıcıyı anlamak — UPN, mail, Id",
+        "Get-MgUser ile kiracıdaki kimlikleri okursunuz.",
+        "Yanlış kullanıcıya işlem yapmak (benzer isimler) felakettir. Her zaman UserPrincipalName "
+        "veya Object Id ile hedefleyin; sadece DisplayName ile yazma işlemi yapmayın.",
+        "User.Read.All",
+        "Önce envanter ve güvenli filtrelemeyi öğrenin:",
+        """# Özet envanter (özellik seçerek daha hızlı)
+Get-MgUser -All -Property "id,displayName,userPrincipalName,accountEnabled,department,jobTitle,userType,createdDateTime" |
+  Select-Object DisplayName, UserPrincipalName, AccountEnabled, Department, JobTitle, UserType |
+  Out-GridView   # veya Export-Csv
 
-# UPN ile tek kullanıcı
+# Tek kullanıcı — tüm profil
 Get-MgUser -UserId "ayse.yilmaz@contoso.com" | Format-List *
 
-# DisplayName içeren arama (ConsistencyLevel: eventual gerekir)
-Get-MgUser -ConsistencyLevel eventual -CountVariable c -Search '"displayName:Yılmaz"' -All |
-  Select-Object DisplayName, UserPrincipalName
-
-# OData filtre
-Get-MgUser -All -Filter "startswith(userPrincipalName,'ayse')" `
-  -Property "displayName,userPrincipalName,accountEnabled"
-
+# Aktif + belirli departman
 Get-MgUser -All -Filter "accountEnabled eq true and department eq 'Operasyon'" `
-  -Property "displayName,userPrincipalName,department,jobTitle"
+  -Property "displayName,userPrincipalName,jobTitle"
 
-# Misafir (Guest) kullanıcılar
+# Misafirler (B2B)
 Get-MgUser -All -Filter "userType eq 'Guest'" |
-  Select-Object DisplayName, Mail, UserPrincipalName, ExternalUserState, CreatedDateTime
-
-# Son 7 günde oluşturulanlar
-$since = (Get-Date).AddDays(-7).ToString("yyyy-MM-ddTHH:mm:ssZ")
-Get-MgUser -All -Filter "createdDateTime ge $since" `
-  -Property "displayName,userPrincipalName,createdDateTime" |
-  Sort-Object CreatedDateTime -Descending""",
+  Select-Object DisplayName, Mail, UserPrincipalName, ExternalUserState""",
+        derin="UPN: oturum açma adıdır (çoğu şirkette birincil e-posta ile aynı). "
+        "Mail: proxy adresi senkron/Exchange’ten gelebilir. Id: GUID; silme/geri yüklemede "
+        "en güvenilir anahtardır. Filter OData dilidir: eq, and, startswith. "
+        "Türkçe karakter / karmaşık arama için -Search ve -ConsistencyLevel eventual gerekir. "
+        "UserType Member = şirket hesabı, Guest = dış davetli.",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "3.2 Yeni bulut kullanıcısı — tam özellikli",
+        "2.2 Yeni çalışan oluşturma (cloud user)",
+        "New-MgUser ile Entra’da hesap açarsınız. Bu, posta kutusu demek değildir — lisans "
+        "(Exchange planı) gelince posta kutusu provision olur.",
+        "UsageLocation (ülke) vermezseniz lisans atayamazsınız. ForceChangePasswordNextSignIn "
+        "olmadan geçici şifre ile kullanıcı sonsuza dek aynı şifrede kalabilir.",
+        "User.ReadWrite.All + User Administrator",
         None,
         """$PasswordProfile = @{
   Password                      = "GeciciSifre!ChangeMe1"
   ForceChangePasswordNextSignIn = $true
-  # ForceChangePasswordNextSignInWithMfa = $true   # MFA zorunlu ilk giriş
 }
 
-$params = @{
-  DisplayName       = "Ayşe Yılmaz"
-  UserPrincipalName = "ayse.yilmaz@contoso.com"
-  MailNickname      = "ayseyilmaz"
-  AccountEnabled    = $true
-  PasswordProfile   = $PasswordProfile
-  UsageLocation     = "TR"          # Lisans için zorunlu
-  GivenName         = "Ayşe"
-  Surname           = "Yılmaz"
-  JobTitle          = "Operasyon Uzmanı"
-  Department        = "Operasyon"
-  OfficeLocation    = "İstanbul"
-  CompanyName       = "Contoso A.Ş."
-  MobilePhone       = "+905551112233"
-  BusinessPhones    = @("+902121112233")
-  PreferredLanguage = "tr-TR"
-  OtherMails        = @("ayse.yilmaz.kisisel@ornek.com")
-}
-
-$user = New-MgUser @params
-$user | Select-Object Id, UserPrincipalName, DisplayName""",
+New-MgUser `
+  -DisplayName "Ayşe Yılmaz" `
+  -GivenName "Ayşe" -Surname "Yılmaz" `
+  -UserPrincipalName "ayse.yilmaz@contoso.com" `
+  -MailNickname "ayseyilmaz" `
+  -AccountEnabled `
+  -PasswordProfile $PasswordProfile `
+  -UsageLocation "TR" `
+  -Department "Operasyon" `
+  -JobTitle "Uzman" `
+  -OfficeLocation "İstanbul" `
+  -CompanyName "Contoso A.Ş." `
+  -PreferredLanguage "tr-TR" `
+  -MobilePhone "+905551112233" """,
+        dogrula="""Get-MgUser -UserId "ayse.yilmaz@contoso.com" |
+  Select-Object DisplayName, UserPrincipalName, UsageLocation, AccountEnabled""",
+        derin="Hibrit şirkette (AD + Entra Connect) bulut-sadece New-MgUser yerine on-prem AD’de "
+        "kullanıcı açıp sync edersiniz; aksi halde ‘mastering’ çakışır. Saf bulut kiracıda "
+        "New-MgUser doğrudur. MailNickname SMTP/takma ad üretiminde kullanılır; UPN local-part "
+        "ile uyumlu tutun. OtherMails kişisel yedek e-postadır, birincil SMTP değildir.",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "3.3 Kullanıcı güncelleme (tekil ve toplu alan)",
+        "2.3 Güncelleme, hesap kilidi, parola, oturum düşürme",
+        "HR değişiklikleri ve güvenlik olaylarında ilk müdahale araçlarınız.",
+        "İşten ayrılma veya şüpheli hesapta sıra: Revoke-MgUserSignInSession → AccountEnabled "
+        "$false → (sonra lisans/posta). Sadece şifre değiştirmek çalınmış refresh token’ı düşürmez.",
+        "User.ReadWrite.All",
         None,
-        """# Tek alan
-Update-MgUser -UserId "ayse.yilmaz@contoso.com" -JobTitle "Operasyon Kıdemli Uzmanı"
-
-# Birden fazla alan
+        """# HR alanları
 Update-MgUser -UserId "ayse.yilmaz@contoso.com" `
-  -Department "Operasyon" `
-  -OfficeLocation "Ankara" `
-  -JobTitle "Operasyon Müdürü" `
-  -MobilePhone "+905559998877"
+  -JobTitle "Kıdemli Uzman" -Department "Operasyon" -OfficeLocation "Ankara"
 
-# Hesabı kilitle / aç
+# Hesap kilidi / aç
 Update-MgUser -UserId "ayse.yilmaz@contoso.com" -AccountEnabled:$false
 Update-MgUser -UserId "ayse.yilmaz@contoso.com" -AccountEnabled:$true
 
-# UPN değiştirme (domain değişimi dikkat)
-Update-MgUser -UserId "ayse.yilmaz@contoso.com" `
-  -UserPrincipalName "ayse.yilmaz@contoso.com.tr"
-
-# Proxy / ek e-posta (Exchange tarafında da yapılabilir)
-# Set-Mailbox -Identity "ayse.yilmaz@contoso.com" -EmailAddresses @{add="ayse@contoso.com"}""",
-    )
-
-    add_cmd(
-        doc,
-        "3.4 Parola sıfırlama ve oturum iptali",
-        None,
-        """# Parola sıfırla
+# Parola sıfırla
 Update-MgUser -UserId "ayse.yilmaz@contoso.com" -PasswordProfile @{
-  Password                      = "YeniGecici!789"
+  Password = "YeniGecici!789"
   ForceChangePasswordNextSignIn = $true
 }
 
-# Tüm refresh token / oturumları iptal et (çalınma / işten ayrılma)
-Revoke-MgUserSignInSession -UserId "ayse.yilmaz@contoso.com"
-
-# Kullanıcının authentication method özeti (Graph)
-Get-MgUserAuthenticationMethod -UserId "ayse.yilmaz@contoso.com" |
-  Select-Object Id, AdditionalProperties""",
+# Tüm oturumları düşür (kritik)
+Revoke-MgUserSignInSession -UserId "ayse.yilmaz@contoso.com" """,
+        derin="Revoke-MgUserSignInSession refresh token’ları geçersiz kılar; açık tarayıcı oturumları "
+        "kısa sürede düşer. Conditional Access / compliant device politikaları varsa kullanıcı "
+        "yeniden MFA ve cihaz kontrolünden geçer. Yönetici (manager) atamak için "
+        "Set-MgUserManagerByRef kullanılır; onay akışları ve OO otomatik yanıt yönlendirmesi "
+        "için önemlidir.",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "3.5 Kullanıcı silme, soft-delete ve geri yükleme",
-        "Silinen nesneler varsayılan ~30 gün geri dönüşümde kalır.",
-        """# Soft-delete
-Remove-MgUser -UserId "ayse.yilmaz@contoso.com" -Confirm:$false
+        "2.4 Silme, geri dönüşüm, kalıcı silme",
+        "Remove-MgUser soft-delete yapar (~30 gün).",
+        "Yanlış silinen hesabı Restore-MgDirectoryDeletedItem ile kurtarırsınız. Kalıcı silme "
+        "sonrası Object Id değişir; Exchange verisi retention/hold yoksa risk altındadır.",
+        "User.ReadWrite.All",
+        None,
+        """Remove-MgUser -UserId "ayse.yilmaz@contoso.com" -Confirm:$false
 
-# Silinen kullanıcıları listele
 Get-MgDirectoryDeletedItemAsUser -All |
   Select-Object Id, DisplayName, UserPrincipalName, DeletedDateTime
 
-# Geri yükle
-$deleted = Get-MgDirectoryDeletedItemAsUser -All |
-  Where-Object { $_.UserPrincipalName -eq "ayse.yilmaz@contoso.com" }
-Restore-MgDirectoryDeletedItem -DirectoryObjectId $deleted.Id
-
-# Kalıcı sil (dikkat!)
-# Remove-MgDirectoryDeletedItem -DirectoryObjectId $deleted.Id""",
+$d = Get-MgDirectoryDeletedItemAsUser -All |
+  Where-Object UserPrincipalName -eq "ayse.yilmaz@contoso.com"
+Restore-MgDirectoryDeletedItem -DirectoryObjectId $d.Id
+# Kalıcı: Remove-MgDirectoryDeletedItem -DirectoryObjectId $d.Id""",
     )
-    add_warn(doc, "Kalıcı silme geri alınamaz. Lisans ve Exchange verisi etkilenir.")
+    WARN(doc, "Üretimde kalıcı silmeden önce litigation hold / legal gereksinimi sorun.")
 
-    add_cmd(
+    TOPIC(
         doc,
-        "3.6 Misafir (B2B) kullanıcı daveti",
+        "2.5 Dış kullanıcı (B2B Guest) daveti",
+        "Partner / tedarikçiye şirket kaynaklarını açmak için New-MgInvitation.",
+        "Misafirler şirketin Member kullanıcılarından farklıdır; grup ve Conditional Access ile "
+        "sıkı sınırlandırılmalıdır. ‘Herkese Guest verip unutmak’ veri sızıntısı yoludur.",
+        "User.Invite.All",
         None,
-        """$invitation = @{
-  InvitedUserEmailAddress = "disari.kisi@partner.com"
-  InvitedUserDisplayName  = "Dışarı Kişi"
-  InviteRedirectUrl       = "https://myapps.microsoft.com"
-  SendInvitationMessage   = $true
-  InvitedUserMessageInfo  = @{
-    CustomizedMessageBody = "Contoso kiracısına davet edildiniz."
-  }
+        """New-MgInvitation `
+  -InvitedUserEmailAddress "kisi@partner.com" `
+  -InvitedUserDisplayName "Partner Kişi" `
+  -InviteRedirectUrl "https://myapps.microsoft.com" `
+  -SendInvitationMessage `
+  -InvitedUserMessageInfo @{ CustomizedMessageBody = "Contoso kiracısına davet." }
+
+Get-MgUser -Filter "mail eq 'kisi@partner.com'" |
+  Select-Object DisplayName, UserType, ExternalUserState, UserPrincipalName""",
+    )
+
+    TOPIC(
+        doc,
+        "2.6 MFA yöntemleri ve yardım masası (TAP)",
+        "Kullanıcı telefonunu kaybettiğinde authentication method silme / Temporary Access Pass.",
+        "MFA kaydı olmayan hesaplar phishing’e açıktır. Şirket politikası: tüm Member’larda MFA. "
+        "TAP, kontrollü süreli giriştir; ‘MFA’yı kapat’tan daha güvenlidir.",
+        "Authentication Administrator veya User Authentication Administrator",
+        None,
+        """$u = "ayse.yilmaz@contoso.com"
+Get-MgUserAuthenticationMethod -UserId $u
+Get-MgUserAuthenticationPhoneMethod -UserId $u
+Get-MgUserAuthenticationMicrosoftAuthenticatorMethod -UserId $u
+
+# Geçici Access Pass (ör. 1 saat, tek kullanım)
+New-MgUserAuthenticationTemporaryAccessPassMethod -UserId $u -BodyParameter @{
+  LifetimeInMinutes = 60
+  IsUsableOnce      = $true
 }
-New-MgInvitation @invitation |
-  Select-Object InviteRedeemUrl, Status, InvitedUserDisplayName
 
-# Misafiri gruba ekle
-$guest = Get-MgUser -Filter "mail eq 'disari.kisi@partner.com'"
-New-MgGroupMember -GroupId "<GroupId>" -DirectoryObjectId $guest.Id""",
-    )
-
-    add_cmd(
-        doc,
-        "3.7 Yönetici / yönetici olmayan fotoğraf ve yönetici ilişkisi",
-        None,
-        """# Yönetici (manager) ata
-$mgr = Get-MgUser -UserId "mudur@contoso.com"
-Set-MgUserManagerByRef -UserId "ayse.yilmaz@contoso.com" `
-  -OdataId "https://graph.microsoft.com/v1.0/users/$($mgr.Id)"
-
-Get-MgUserManager -UserId "ayse.yilmaz@contoso.com" |
-  Select-Object Id, AdditionalProperties
-
-# Direkt raporlar
-Get-MgUserDirectReport -UserId "mudur@contoso.com" -All
-
-# Profil fotoğrafı yükle
-Set-MgUserPhotoContent -UserId "ayse.yilmaz@contoso.com" `
-  -InFile "C:\\Temp\\ayse.jpg" """,
-    )
-
-    # =====================================================================
-    # 4. MFA / AUTH
-    # =====================================================================
-    add_heading_styled(doc, "4. Kimlik Doğrulama Yöntemleri ve MFA", level=1)
-
-    add_cmd(
-        doc,
-        "4.1 Kayıtlı yöntemleri görme ve telefon/e-posta silme",
-        None,
-        """$uid = "ayse.yilmaz@contoso.com"
-Get-MgUserAuthenticationMethod -UserId $uid
-
-# Telefon yöntemleri
-Get-MgUserAuthenticationPhoneMethod -UserId $uid
-# Remove-MgUserAuthenticationPhoneMethod -UserId $uid -PhoneAuthenticationMethodId "<Id>"
-
-# E-posta yöntemleri
-Get-MgUserAuthenticationEmailMethod -UserId $uid
-
-# Microsoft Authenticator
-Get-MgUserAuthenticationMicrosoftAuthenticatorMethod -UserId $uid
-# Remove-MgUserAuthenticationMicrosoftAuthenticatorMethod -UserId $uid -MicrosoftAuthenticatorAuthenticationMethodId "<Id>"
-
-# Geçici Access Pass (TAP) oluştur — yardım masası senaryosu
-$tap = @{
-  LifetimeInMinutes     = 60
-  IsUsableOnce          = $true
-  StartDateTime         = (Get-Date).ToUniversalTime().ToString("o")
-}
-New-MgUserAuthenticationTemporaryAccessPassMethod -UserId $uid -BodyParameter $tap""",
-    )
-
-    add_cmd(
-        doc,
-        "4.2 MFA kayıt raporu",
-        None,
-        """# Kullanıcı kayıt durumu raporu
+# MFA kayıt raporu
 Get-MgReportAuthenticationMethodUserRegistrationDetail -All |
-  Select-Object UserPrincipalName, IsMfaRegistered, IsMfaCapable,
-                MethodsRegistered, DefaultMfaMethod |
-  Export-Csv "C:\\Temp\\mfa_kayit.csv" -NoTypeInformation -Encoding UTF8""",
+  Select-Object UserPrincipalName, IsMfaRegistered, IsMfaCapable, MethodsRegistered |
+  Export-Csv "$env:TEMP\\mfa_kayit.csv" -NoTypeInformation -Encoding UTF8""",
     )
 
-    # =====================================================================
-    # 5. LİSANS
-    # =====================================================================
-    add_heading_styled(doc, "5. Lisans ve Servis Planı Yönetimi", level=1)
-
-    add_cmd(
+    # ========== 3 ==========
+    H(doc, "3. Lisans yönetimi — erişim ve maliyet", 1)
+    P(
         doc,
-        "5.1 SKU envanteri ve boş kota",
+        "Lisans (SKU), kullanıcıya hangi hizmetlerin (Exchange, Teams, SharePoint, Office uygulamaları…) "
+        "açılacağını belirler. Şirkette en pahalı operasyon hatalarından biri: lisanssız aktif hesap "
+        "veya ayrılan kişiye lisans bırakmak.",
+    )
+
+    TOPIC(
+        doc,
+        "3.1 SKU envanteri ve boş kota",
+        "Get-MgSubscribedSku kiracınızda satın alınmış planları ve tüketimi gösterir.",
+        "Available = Enabled - Consumed. Sıfırken yeni kullanıcıya atama hata verir; satın alma "
+        "veya geri toplama gerekir.",
+        "Organization.Read.All",
         None,
         """Get-MgSubscribedSku | ForEach-Object {
   [PSCustomObject]@{
     SkuPartNumber = $_.SkuPartNumber
     SkuId         = $_.SkuId
     Enabled       = $_.PrepaidUnits.Enabled
-    Suspended     = $_.PrepaidUnits.Suspended
-    Warning       = $_.PrepaidUnits.Warning
     Consumed      = $_.ConsumedUnits
-    Available     = ($_.PrepaidUnits.Enabled - $_.ConsumedUnits)
+    Available     = $_.PrepaidUnits.Enabled - $_.ConsumedUnits
   }
 } | Sort-Object SkuPartNumber | Format-Table -AutoSize
 
-# Belirli SKU servis planları
+# Bir SKU içindeki servis planları (Exchange, Teams, Yammer…)
 $sku = Get-MgSubscribedSku | Where-Object SkuPartNumber -eq "SPE_E3"
 $sku.ServicePlans | Select-Object ServicePlanName, ServicePlanId, ProvisioningStatus |
   Sort-Object ServicePlanName""",
+        derin="SkuPartNumber örnekleri: SPE_E3 / SPE_E5 (M365 E3/E5), ENTERPRISEPACK (O365 E3), "
+        "O365_BUSINESS_PREMIUM, SPB (Business Premium), POWER_BI_PRO, VISIOCLIENT, "
+        "EXCHANGEENTERPRISE. Aynı ‘E3’ hissi veren birden fazla SKU olabilir — SkuId ile çalışın. "
+        "Service plan disable ederek ‘E3 ama Yammer kapalı’ gibi ince ayar yapılır.",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "5.2 Lisans atama, kaldırma, taşıma",
+        "3.2 Lisans atama, kaldırma, yükseltme",
+        "Set-MgUserLicense tek cmdlet ile ekler ve çıkarır.",
+        "Önce UsageLocation. Add ve Remove aynı çağrıda yapılabilir (E3→E5 upgrade).",
+        "License Administrator veya User Administrator",
         None,
         """$user = "ayse.yilmaz@contoso.com"
 Update-MgUser -UserId $user -UsageLocation "TR"
@@ -563,877 +563,550 @@ Update-MgUser -UserId $user -UsageLocation "TR"
 $e3 = (Get-MgSubscribedSku | Where-Object SkuPartNumber -eq "SPE_E3").SkuId
 $e5 = (Get-MgSubscribedSku | Where-Object SkuPartNumber -eq "SPE_E5").SkuId
 
-# E3 ata
-Set-MgUserLicense -UserId $user `
-  -AddLicenses @{ SkuId = $e3 } `
-  -RemoveLicenses @()
+# Ata
+Set-MgUserLicense -UserId $user -AddLicenses @{ SkuId = $e3 } -RemoveLicenses @()
 
-# E3 kaldır, E5 ekle (upgrade)
-Set-MgUserLicense -UserId $user `
-  -AddLicenses @{ SkuId = $e5 } `
-  -RemoveLicenses @($e3)
+# E3 kaldır + E5 ekle
+Set-MgUserLicense -UserId $user -AddLicenses @{ SkuId = $e5 } -RemoveLicenses @($e3)
 
-# Tüm lisansları kaldır
-$current = (Get-MgUserLicenseDetail -UserId $user).SkuId
-if ($current) {
-  Set-MgUserLicense -UserId $user -AddLicenses @() -RemoveLicenses $current
-}
+# Tümünü kaldır
+$all = (Get-MgUserLicenseDetail -UserId $user).SkuId
+if ($all) { Set-MgUserLicense -UserId $user -AddLicenses @() -RemoveLicenses $all }
 
-Get-MgUserLicenseDetail -UserId $user |
-  Select-Object SkuPartNumber, SkuId, ServicePlans""",
+Get-MgUserLicenseDetail -UserId $user | Select-Object SkuPartNumber, SkuId""",
+        derin="Lisans sonrası Exchange/Teams provision birkaç dakika sürebilir. "
+        "Group-based licensing varsa kullanıcıda atama ‘inherited’ görünür; doğrudan "
+        "Set-MgUserLicense ile çakışma yaşamamak için grubu yönetin. DisabledPlans ile "
+        "belirli ServicePlanId’leri kapatarak maliyet/uyumluluk ince ayarı yapılır.",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "5.3 Belirli servis planını kapatarak atama",
-        "Örnek: Yammer veya Bookings kapalı E3.",
-        """$sku = Get-MgSubscribedSku | Where-Object SkuPartNumber -eq "SPE_E3"
-# Kapatılacak plan adlarını kendi tenant çıktınızdan doğrulayın
-$disableNames = @("YAMMER_ENTERPRISE", "MICROSOFTBOOKINGS")
-$disabledIds = $sku.ServicePlans |
-  Where-Object { $_.ServicePlanName -in $disableNames } |
-  Select-Object -ExpandProperty ServicePlanId
-
-Set-MgUserLicense -UserId $user -AddLicenses @{
-  SkuId         = $sku.SkuId
-  DisabledPlans = $disabledIds
-} -RemoveLicenses @()""",
-    )
-
-    add_cmd(
-        doc,
-        "5.4 Grup tabanlı lisanslama (Group-based licensing) kontrol",
-        "Atama genelde portal/Graph üzerinden gruba yapılır; kullanıcıda Inherited işaretli görünür.",
-        """# Kullanıcıdaki lisansların kaynağını görmek için portal veya:
-Get-MgUser -UserId $user -Property "assignedLicenses,licenseAssignmentStates" |
-  Select-Object -ExpandProperty LicenseAssignmentStates |
-  Format-List
-
-# Lisansı olan / olmayan aktif kullanıcı özeti
-Get-MgUser -All -Property "displayName,userPrincipalName,accountEnabled,assignedLicenses" |
-  Where-Object AccountEnabled |
-  Group-Object { if ($_.AssignedLicenses.Count -gt 0) { "Licensed" } else { "Unlicensed" } } |
-  Select-Object Name, Count""",
-    )
-
-    # =====================================================================
-    # 6. GRUPLAR
-    # =====================================================================
-    add_heading_styled(doc, "6. Grup Yönetimi", level=1)
-
-    add_cmd(
-        doc,
-        "6.1 Grup listeleme ve tür ayırma",
+        "3.3 Lisanssız aktif kullanıcı raporu (maliyet kontrolü)",
+        "Aktif Member olup lisansı olmayanlar; ya unutulmuş hesap ya da henüz provision edilmemiş.",
+        "Aylık operasyon rutini yapın; CFO ve güvenlik bunu sever.",
+        "User.Read.All, Organization.Read.All",
         None,
-        """Get-MgGroup -All -Property "id,displayName,mail,groupTypes,mailEnabled,securityEnabled,membershipRule" |
-  Select-Object DisplayName, Mail,
-    @{N="Type";E={
-      if ($_.GroupTypes -contains "Unified") { "M365" }
-      elseif ($_.GroupTypes -contains "DynamicMembership") { "Dynamic" }
-      elseif ($_.SecurityEnabled -and -not $_.MailEnabled) { "Security" }
-      elseif ($_.MailEnabled -and -not $_.SecurityEnabled) { "Distribution*" }
-      else { "Other" }
-    }},
-    MembershipRule
-
-# Ada göre ara
-Get-MgGroup -ConsistencyLevel eventual -Search '"displayName:Operasyon"' -All""",
+        """Get-MgUser -All -Property "displayName,userPrincipalName,accountEnabled,assignedLicenses,userType" |
+  Where-Object { $_.AccountEnabled -and $_.UserType -eq "Member" -and $_.AssignedLicenses.Count -eq 0 } |
+  Select-Object DisplayName, UserPrincipalName |
+  Export-Csv "$env:TEMP\\lisanssiz_aktif.csv" -NoTypeInformation -Encoding UTF8""",
     )
 
-    add_cmd(
+    # ========== 4 ==========
+    H(doc, "4. Gruplar — yetki ve dağıtım modeli", 1)
+    P(
         doc,
-        "6.2 Güvenlik ve Microsoft 365 grubu oluşturma",
+        "Şirkette kullanıcılara tek tek izin vermek ölçeklenmez. Güvenlik grubu, Microsoft 365 grubu, "
+        "dağıtım listesi ve dinamik grup doğru seçilmezse hem güvenlik hem mail kaosu doğar.",
+    )
+
+    H(doc, "4.1 Grup türleri (karar tablosu)", 2)
+    CODE(
+        doc,
+        """Tür                 Mail?    Takım/Site?   Tipik kullanım
+------------------  -------  -----------  ----------------------------------
+Security Group      Hayır    Hayır        RBAC, SharePoint izin, CA hedefi
+Microsoft 365 Group Evet     Evet         Ekip + SharePoint + Planner
+Distribution (EXO)  Evet     Hayır        Sadece toplu e-posta
+Dynamic (Entra)     Opsiyon  Opsiyon      Departman/ülke kuralı ile otomatik üyelik""",
+    )
+
+    TOPIC(
+        doc,
+        "4.2 Graph ile güvenlik / M365 / dinamik grup",
         None,
-        """# Güvenlik grubu
-$sg = New-MgGroup -DisplayName "SG-Operasyon" `
-  -MailEnabled:$false -MailNickname "sg-operasyon" -SecurityEnabled `
-  -Description "Operasyon güvenlik grubu"
+        "Dinamik grupta MembershipRule yanlışsa ya kimse girmez ya herkes girer — kuralı test edin.",
+        "Group.ReadWrite.All",
+        None,
+        """# Güvenlik
+New-MgGroup -DisplayName "SG-Operasyon" -MailEnabled:$false `
+  -MailNickname "sg-operasyon" -SecurityEnabled -Description "Operasyon SG"
 
-# M365 grubu (Unified)
-$m365 = New-MgGroup -DisplayName "Operasyon Ekibi" `
-  -Description "Operasyon Microsoft 365 grubu" `
-  -MailEnabled -MailNickname "operasyon-ekibi" -SecurityEnabled `
-  -GroupTypes @("Unified") `
-  -Visibility "Private"
+# Microsoft 365 (Unified)
+New-MgGroup -DisplayName "Operasyon Ekibi" -MailEnabled -SecurityEnabled `
+  -MailNickname "operasyon-ekibi" -GroupTypes @("Unified") -Visibility "Private"
 
-# Dinamik güvenlik grubu (departman = Operasyon)
-$rule = '(user.department -eq "Operasyon")'
-New-MgGroup -DisplayName "DG-Operasyon-Dyn" `
-  -MailEnabled:$false -MailNickname "dg-operasyon-dyn" -SecurityEnabled `
+# Dinamik: departman = Operasyon
+New-MgGroup -DisplayName "DG-Operasyon" -MailEnabled:$false `
+  -MailNickname "dg-operasyon" -SecurityEnabled `
   -GroupTypes @("DynamicMembership") `
-  -MembershipRule $rule `
-  -MembershipRuleProcessingState "On" """,
+  -MembershipRule '(user.department -eq "Operasyon")' `
+  -MembershipRuleProcessingState "On"
+
+# Üye ekle / çıkar
+$g = (Get-MgGroup -Filter "displayName eq 'SG-Operasyon'").Id
+$u = (Get-MgUser -UserId "ayse.yilmaz@contoso.com").Id
+New-MgGroupMember -GroupId $g -DirectoryObjectId $u
+Remove-MgGroupMemberByRef -GroupId $g -DirectoryObjectId $u
+
+# Üye CSV
+Get-MgGroupMember -GroupId $g -All | ForEach-Object {
+  Get-MgUser -UserId $_.Id -ErrorAction SilentlyContinue
+} | Select-Object DisplayName, UserPrincipalName |
+  Export-Csv "$env:TEMP\\sg-operasyon.csv" -NoTypeInformation -Encoding UTF8""",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "6.3 Üye / sahip ekleme, çıkarma, dışa aktarma",
+        "4.3 Exchange dağıtım grupları",
+        "Klasik ‘satis@contoso.com’ listeleri New-DistributionGroup ile yönetilir.",
+        "RequireSenderAuthenticationEnabled $false dışarıdan mail kabul ettirir — spam riski; "
+        "bilinçli açın.",
+        "Exchange Admin + Connect-ExchangeOnline",
         None,
-        """$gid = (Get-MgGroup -Filter "displayName eq 'SG-Operasyon'").Id
-$uid = (Get-MgUser -UserId "ayse.yilmaz@contoso.com").Id
+        """New-DistributionGroup -Name "Satis-DG" -PrimarySmtpAddress "satis@contoso.com" `
+  -Type Distribution -ManagedBy "admin@contoso.com"
 
-# Üye
-New-MgGroupMember -GroupId $gid -DirectoryObjectId $uid
-Remove-MgGroupMemberByRef -GroupId $gid -DirectoryObjectId $uid
+Add-DistributionGroupMember -Identity "Satis-DG" -Member "ayse.yilmaz@contoso.com"
+Get-DistributionGroupMember -Identity "Satis-DG"
 
-# Sahip
-New-MgGroupOwner -GroupId $gid -DirectoryObjectId $uid
-Get-MgGroupOwner -GroupId $gid -All
-Remove-MgGroupOwnerByRef -GroupId $gid -DirectoryObjectId $uid
-
-# Tüm üyeleri CSV
-Get-MgGroupMember -GroupId $gid -All | ForEach-Object {
-  try {
-    $u = Get-MgUser -UserId $_.Id -Property "displayName,userPrincipalName,mail,department"
-    [PSCustomObject]@{
-      DisplayName = $u.DisplayName
-      UPN         = $u.UserPrincipalName
-      Mail        = $u.Mail
-      Department  = $u.Department
-    }
-  } catch {}
-} | Export-Csv "C:\\Temp\\sg-operasyon-uyeler.csv" -NoTypeInformation -Encoding UTF8
-
-# Kullanıcının tüm grup üyelikleri
-Get-MgUserMemberOf -UserId "ayse.yilmaz@contoso.com" -All |
-  Where-Object { $_.AdditionalProperties["@odata.type"] -eq "#microsoft.graph.group" } |
-  ForEach-Object { Get-MgGroup -GroupId $_.Id } |
-  Select-Object DisplayName, Mail, Id""",
-    )
-
-    add_cmd(
-        doc,
-        "6.4 Exchange dağıtım ve dinamik dağıtım grupları",
-        "Klasik mail-enabled DG’ler için Exchange Online PowerShell kullanın.",
-        """Connect-ExchangeOnline -ShowBanner:$false
-
-New-DistributionGroup -Name "Satis-DG" -DisplayName "Satış Dağıtım" `
-  -PrimarySmtpAddress "satis@contoso.com" -Type Distribution `
-  -ManagedBy "admin@contoso.com" -Members "ayse.yilmaz@contoso.com"
-
-Set-DistributionGroup -Identity "Satis-DG" -RequireSenderAuthenticationEnabled $false  # dışarıdan mail
-Add-DistributionGroupMember -Identity "Satis-DG" -Member "ali.veli@contoso.com"
-Remove-DistributionGroupMember -Identity "Satis-DG" -Member "ali.veli@contoso.com" -Confirm:$false
-Get-DistributionGroupMember -Identity "Satis-DG" | Select-Object Name, PrimarySmtpAddress
-
-# Dinamik DG
 New-DynamicDistributionGroup -Name "Operasyon-DynDG" `
-  -DisplayName "Operasyon Dinamik" `
   -PrimarySmtpAddress "operasyon-dyn@contoso.com" `
-  -RecipientFilter "((RecipientTypeDetails -eq 'UserMailbox') -and (Department -eq 'Operasyon'))"
-
-# Üye önizleme
-$ddg = Get-DynamicDistributionGroup "Operasyon-DynDG"
-Get-Recipient -RecipientPreviewFilter $ddg.RecipientFilter | Select-Object Name, PrimarySmtpAddress""",
+  -RecipientFilter "((RecipientTypeDetails -eq 'UserMailbox') -and (Department -eq 'Operasyon'))" """,
     )
 
-    # =====================================================================
-    # 7. EXCHANGE
-    # =====================================================================
-    add_heading_styled(doc, "7. Exchange Online", level=1)
-
-    add_cmd(
+    # ========== 5 ==========
+    H(doc, "5. Exchange Online — kurumsal e-posta yönetimi", 1)
+    P(
         doc,
-        "7.1 Posta kutusu envanteri",
+        "Şirket e-postası hâlâ en kritik sistemdir. Paylaşılan kutular, yönlendirme, kurallar, "
+        "arşiv ve hold bilmeden ‘e-posta adminliği’ yapılamaz.",
+    )
+
+    TOPIC(
+        doc,
+        "5.1 Posta kutusu envanteri ve kota",
+        "Get-EXOMailbox / Get-EXOMailboxStatistics",
+        "Kota dolunca kullanıcı mail gönderemez; proaktif izleyin.",
+        "Exchange Admin",
         None,
         """Connect-ExchangeOnline -ShowBanner:$false
 
-Get-EXOMailbox -ResultSize Unlimited -Properties DisplayName,PrimarySmtpAddress,RecipientTypeDetails,WhenCreatedUTC |
+Get-EXOMailbox -ResultSize Unlimited |
   Group-Object RecipientTypeDetails | Select-Object Name, Count
 
-Get-EXOMailbox -Identity "ayse.yilmaz@contoso.com" -Properties * |
-  Select-Object DisplayName, PrimarySmtpAddress, RecipientTypeDetails,
-                ArchiveStatus, LitigationHoldEnabled, RetainDeletedItemsFor
+Get-EXOMailbox -Identity "ayse.yilmaz@contoso.com" -Properties ArchiveStatus,LitigationHoldEnabled |
+  Format-List DisplayName, PrimarySmtpAddress, RecipientTypeDetails, ArchiveStatus, LitigationHoldEnabled
 
-# İstatistik
 Get-EXOMailboxStatistics -Identity "ayse.yilmaz@contoso.com" |
   Select-Object DisplayName, ItemCount, TotalItemSize, LastLogonTime
 
-# Kota ayarı
-Set-Mailbox -Identity "ayse.yilmaz@contoso.com" `
-  -IssueWarningQuota 45GB -ProhibitSendQuota 49GB -ProhibitSendReceiveQuota 50GB `
-  -UseDatabaseQuotaDefaults $false""",
+Set-Mailbox -Identity "ayse.yilmaz@contoso.com" -UseDatabaseQuotaDefaults:$false `
+  -IssueWarningQuota 45GB -ProhibitSendQuota 49GB -ProhibitSendReceiveQuota 50GB""",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "7.2 Paylaşılan posta kutusu — oluşturma, izin, dönüştürme",
+        "5.2 Paylaşılan posta kutusu (shared) ve izinler",
+        "destek@, info@, ik@ gibi ortak adresler. Shared kutuya genelde lisans gerekmez "
+        "(boyut limitleri sürümle değişebilir; büyük kutularda lisansı kontrol edin).",
+        "Full Access ≠ Send As. İkisini de bilerek verin. AutoMapping Outlook’a otomatik ekler.",
         None,
-        """New-Mailbox -Shared -Name "Destek" -DisplayName "Destek Ortak PK" `
+        None,
+        """New-Mailbox -Shared -Name "Destek" -DisplayName "Destek Ortak" `
   -PrimarySmtpAddress "destek@contoso.com"
 
-# Full Access (+ AutoMapping kapalı örnek)
 Add-MailboxPermission -Identity "destek@contoso.com" `
-  -User "ayse.yilmaz@contoso.com" -AccessRights FullAccess `
-  -InheritanceType All -AutoMapping:$false
+  -User "ayse.yilmaz@contoso.com" -AccessRights FullAccess -InheritanceType All -AutoMapping:$true
 
-# Send As
 Add-RecipientPermission -Identity "destek@contoso.com" `
   -Trustee "ayse.yilmaz@contoso.com" -AccessRights SendAs -Confirm:$false
 
-# Send on Behalf
-Set-Mailbox -Identity "destek@contoso.com" `
-  -GrantSendOnBehalfTo @{Add="ayse.yilmaz@contoso.com"}
+Set-Mailbox -Identity "destek@contoso.com" -GrantSendOnBehalfTo @{Add="mudur@contoso.com"}
 
-# İzinleri listele
 Get-MailboxPermission -Identity "destek@contoso.com" |
-  Where-Object { -not $_.IsInherited -and $_.User -notlike "NT AUTHORITY*" -and $_.User -notlike "S-1-*" } |
-  Format-Table User, AccessRights, IsInherited
-
-Get-RecipientPermission -Identity "destek@contoso.com" |
-  Where-Object Trustee -notlike "NT AUTHORITY*"
-
-# Kullanıcı PK → Shared dönüştür (işten ayrılma)
-# Set-Mailbox -Identity "eski.calisan@contoso.com" -Type Shared
-# Set-MgUserLicense ... lisansları kaldır""",
+  Where-Object { -not $_.IsInherited -and $_.User -notlike "NT AUTHORITY*" }""",
+        derin="İşten ayrılan kişinin kutusunu Set-Mailbox -Type Shared yapıp yöneticisine Full Access "
+        "vermek yaygın bir runbook adımıdır; ardından kullanıcı lisansını kaldırırsınız. "
+        "Dönüştürme öncesi yasal hold var mı bakın.",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "7.3 Oda / ekipman posta kutusu",
+        "5.3 Yönlendirme, alias, otomatik yanıt",
         None,
-        """New-Mailbox -Room -Name "Toplanti-A101" -DisplayName "Toplantı Odası A101" `
-  -PrimarySmtpAddress "a101@contoso.com"
-
-Set-CalendarProcessing -Identity "a101@contoso.com" `
-  -AutomateProcessing AutoAccept `
-  -AddOrganizerToSubject $false `
-  -DeleteComments $false `
-  -DeleteSubject $false `
-  -RemovePrivateProperty $false `
-  -MaximumDurationInMinutes 480 `
-  -BookingWindowInDays 180
-
-New-Mailbox -Equipment -Name "Projektor-1" -PrimarySmtpAddress "projektor1@contoso.com" """,
-    )
-
-    add_cmd(
-        doc,
-        "7.4 Yönlendirme, otomatik yanıt, takma ad (alias)",
+        "Dış SMTP yönlendirme veri sızıntısı vektörüdür; şirket politikası çoğu zaman kısıtlar. "
+        "Remote domain / transport kurallarıyla kontrol edin.",
         None,
-        """# SMTP yönlendirme
+        None,
+        """# Yönlendir + kutuda kopya bırak
 Set-Mailbox -Identity "ayse.yilmaz@contoso.com" `
-  -ForwardingSmtpAddress "arsiv@contoso.com" `
-  -DeliverToMailboxAndForward $true
+  -ForwardingSmtpAddress "arsiv@contoso.com" -DeliverToMailboxAndForward:$true
 
-# Yönlendirmeyi kaldır
+# Kaldır
 Set-Mailbox -Identity "ayse.yilmaz@contoso.com" `
-  -ForwardingSmtpAddress $null -ForwardingAddress $null `
-  -DeliverToMailboxAndForward $false
+  -ForwardingSmtpAddress $null -ForwardingAddress $null -DeliverToMailboxAndForward:$false
+
+# Alias
+Set-Mailbox -Identity "ayse.yilmaz@contoso.com" -EmailAddresses @{Add="smtp:ayse@contoso.com.tr"}
 
 # OOF
 Set-MailboxAutoReplyConfiguration -Identity "ayse.yilmaz@contoso.com" `
-  -AutoReplyState Scheduled `
-  -StartTime "2026-10-27 09:00:00" `
-  -EndTime   "2026-11-03 18:00:00" `
+  -AutoReplyState Enabled `
   -InternalMessage "İzinliyim; acil için mudur@contoso.com." `
-  -ExternalMessage "I am out of office until Nov 3." `
-  -ExternalAudience All
-
-Get-MailboxAutoReplyConfiguration -Identity "ayse.yilmaz@contoso.com"
-
-# Alias ekle / kaldır
-Set-Mailbox -Identity "ayse.yilmaz@contoso.com" `
-  -EmailAddresses @{
-    Add="smtp:ayse@contoso.com.tr"
-    # Remove="smtp:eski@contoso.com"
-  }
-Get-Mailbox -Identity "ayse.yilmaz@contoso.com" | Select-Object -ExpandProperty EmailAddresses""",
+  -ExternalMessage "I am out of office." -ExternalAudience All""",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "7.5 Arşiv, litigation hold, retention",
+        "5.4 Arşiv ve Litigation Hold",
+        "Enable-Mailbox -Archive online arşivi açar. Litigation Hold silinen/değişen içeriği "
+        "yasal süre boyunca korur.",
+        "Hold olmadan ‘silinen mail’ kurtarma penceresi sınırlıdır. Hukuk/uyumluluk taleplerinde hold şarttır.",
         None,
-        """# In-Place Archive aç
-Enable-Mailbox -Identity "ayse.yilmaz@contoso.com" -Archive
+        None,
+        """Enable-Mailbox -Identity "ayse.yilmaz@contoso.com" -Archive
 Get-EXOMailbox -Identity "ayse.yilmaz@contoso.com" -Properties ArchiveStatus,ArchiveGuid
 
-# Litigation Hold
-Set-Mailbox -Identity "ayse.yilmaz@contoso.com" -LitigationHoldEnabled $true `
-  -LitigationHoldDuration 2555   # gün (~7 yıl); sınırsız için Unlimited
-# Set-Mailbox ... -LitigationHoldEnabled $false
-
-# Soft-deleted item tutma
-Set-Mailbox -Identity "ayse.yilmaz@contoso.com" -RetainDeletedItemsFor 30
-
-# Tek öğe kurtarma
-Get-Mailbox -Identity "ayse.yilmaz@contoso.com" | Select-Object SingleItemRecoveryEnabled
-Set-Mailbox -Identity "ayse.yilmaz@contoso.com" -SingleItemRecoveryEnabled $true""",
+Set-Mailbox -Identity "ayse.yilmaz@contoso.com" -LitigationHoldEnabled:$true
+# Süre (gün); Unlimited da verilebilir
+# Set-Mailbox ... -LitigationHoldDuration 2555
+Set-Mailbox -Identity "ayse.yilmaz@contoso.com" -SingleItemRecoveryEnabled:$true
+Set-Mailbox -Identity "ayse.yilmaz@contoso.com" -RetainDeletedItemsFor 30""",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "7.6 Transport / mail flow kuralları",
+        "5.5 Transport kuralları (mail flow) ve message trace",
+        "Kurumsal politika: dış mail uyarısı, ek engeli, BCC denetim.",
+        "Yanlış kural tüm şirketin mailini kesebilir. Önce Mode: Audit, sonra Enforce.",
         None,
-        """# Dışarıdan gelenlere uyarı bandı
-New-TransportRule -Name "Dis-Kaynak-Uyari" `
-  -FromScope NotInOrganization `
+        None,
+        """New-TransportRule -Name "Dis-Kaynak-Uyari" -FromScope NotInOrganization `
   -ApplyHtmlDisclaimerLocation Prepend `
-  -ApplyHtmlDisclaimerText "<div style='background:#fff3cd;padding:8px'><b>DİKKAT:</b> Kurum dışı e-posta.</div>" `
+  -ApplyHtmlDisclaimerText "<b>DİKKAT:</b> Kurum dışından geldi." `
   -ApplyHtmlDisclaimerFallbackAction Wrap
 
-# Belirli domain'e ek BCC (denetim)
-New-TransportRule -Name "Finance-BCC-Audit" `
-  -SentToScope InOrganization `
-  -RecipientAddressContainsWords "muhasebe" `
-  -BlindCopyTo "audit-muhasebe@contoso.com"
-
-# Ek boyutu / uzantı engeli örneği
-New-TransportRule -Name "Block-Exe-Attachment" `
+New-TransportRule -Name "Block-Exe" `
   -AttachmentExtensionMatchesWords "exe","bat","cmd","js","vbs" `
-  -RejectMessageReasonText "Bu ek türüne izin verilmiyor." `
-  -RejectMessageEnhancedStatusCode "5.7.1"
+  -RejectMessageReasonText "Bu ek türüne izin yok." -RejectMessageEnhancedStatusCode "5.7.1"
 
-Get-TransportRule | Select-Object Name, State, Priority, Mode | Sort-Object Priority
-Enable-TransportRule  -Identity "Dis-Kaynak-Uyari"
-Disable-TransportRule -Identity "Dis-Kaynak-Uyari"
-# Remove-TransportRule -Identity "Dis-Kaynak-Uyari" -Confirm:$false""",
-    )
+Get-TransportRule | Select-Object Name, State, Priority | Sort-Object Priority
 
-    add_cmd(
-        doc,
-        "7.7 Message Trace ve kuyruk",
-        None,
-        """# Son 48 saat — alıcıya göre
+# İleti izleme (son ~10 gün)
 Get-MessageTrace -RecipientAddress "ayse.yilmaz@contoso.com" `
-  -StartDate (Get-Date).AddHours(-48) -EndDate (Get-Date) |
-  Select-Object Received, SenderAddress, Subject, Status, ToIP |
-  Sort-Object Received -Descending
-
-# Başarısız iletiler
-Get-MessageTrace -StartDate (Get-Date).AddDays(-1) -EndDate (Get-Date) `
-  -Status Failed |
-  Select-Object Received, SenderAddress, RecipientAddress, Subject, Status
-
-# Detay (MessageTraceId ile)
-# Get-MessageTraceDetail -MessageTraceId "<guid>" -RecipientAddress "..." -MessageId "..." -StartDate ... -EndDate ...
-
-# Tarihsel arama (10 güne kadar Get-MessageTrace; daha eski için Historical Search / portal)""",
+  -StartDate (Get-Date).AddDays(-2) -EndDate (Get-Date) |
+  Select-Object Received, SenderAddress, Subject, Status""",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "7.8 Gelen / giden bağlayıcı, accepted domain, mailbox CAS",
+        "5.6 Oda / ekipman kutuları",
+        "Toplantı odası takvimi AutoAccept ile yönetilir.",
         None,
-        """Get-AcceptedDomain | Select-Object Name, DomainName, DomainType, Default
-Get-InboundConnector  | Select-Object Name, Enabled, SenderDomains, ConnectorType
-Get-OutboundConnector | Select-Object Name, Enabled, SmartHosts, UseMXRecord
-
-# Outlook mobil / ActiveSync / OWA ayarları (CASMailbox)
-Get-CASMailbox -Identity "ayse.yilmaz@contoso.com" |
-  Select-Object OWAEnabled, ActiveSyncEnabled, PopEnabled, ImapEnabled, MAPIEnabled
-Set-CASMailbox -Identity "ayse.yilmaz@contoso.com" -PopEnabled $false -ImapEnabled $false""",
+        None,
+        None,
+        """New-Mailbox -Room -Name "A101" -PrimarySmtpAddress "a101@contoso.com"
+Set-CalendarProcessing -Identity "a101@contoso.com" `
+  -AutomateProcessing AutoAccept -AddOrganizerToSubject:$false `
+  -DeleteSubject:$false -BookingWindowInDays 180 -MaximumDurationInMinutes 480""",
     )
 
-    add_cmd(
+    # ========== 6 ==========
+    H(doc, "6. SharePoint Online ve OneDrive", 1)
+
+    TOPIC(
         doc,
-        "7.9 Posta kutusu içeriği arama / eDiscovery (yüksek seviye)",
-        "Compliance PowerShell veya Microsoft Purview kullanın; yetki gerekir.",
-        """# Exchange Online'da Content Search genelde Security & Compliance PowerShell ile:
-# Connect-IPPSSession
-# New-ComplianceSearch -Name "Ara-Fatura" -ExchangeLocation "ayse.yilmaz@contoso.com" `
-#   -ContentMatchQuery "subject:fatura AND received>=2026-01-01"
-# Start-ComplianceSearch -Identity "Ara-Fatura"
-# Get-ComplianceSearch -Identity "Ara-Fatura"
-
-# Kullanıcı tarafı: Search-Mailbox eski; yerine Compliance Search tercih edin.""",
-    )
-
-    # =====================================================================
-    # 8. SHAREPOINT / ONEDRIVE
-    # =====================================================================
-    add_heading_styled(doc, "8. SharePoint Online ve OneDrive", level=1)
-
-    add_cmd(
-        doc,
-        "8.1 Kiracı site listesi ve depolama",
+        "6.1 Site envanteri, kota, oluşturma",
+        "Dosya evreninin haritası Get-PnPTenantSite ile çıkar.",
+        "Dış paylaşım (SharingCapability) şirket veri sınıflandırmasına göre kısıtlanmalıdır.",
+        "SharePoint Admin",
         None,
         """Connect-PnPOnline -Url "https://contoso-admin.sharepoint.com" -Interactive
 
-Get-PnPTenantSite -Detailed | Select-Object Url, Title, Template, Owner,
-  StorageUsageCurrent, StorageQuota, LastContentModifiedDate |
+Get-PnPTenantSite -Detailed |
+  Select-Object Url, Title, Template, StorageUsageCurrent, StorageQuota |
   Sort-Object StorageUsageCurrent -Descending |
-  Export-Csv "C:\\Temp\\spo_siteler.csv" -NoTypeInformation -Encoding UTF8
+  Export-Csv "$env:TEMP\\spo_siteler.csv" -NoTypeInformation -Encoding UTF8
 
-# Belirli site
-Get-PnPTenantSite -Url "https://contoso.sharepoint.com/sites/Operasyon"
-
-# Site kotası (MB)
-Set-PnPTenantSite -Url "https://contoso.sharepoint.com/sites/Operasyon" -StorageQuota 102400""",
-    )
-
-    add_cmd(
-        doc,
-        "8.2 Site oluşturma, üye, dış paylaşım",
-        None,
-        """# İletişim sitesi
 New-PnPSite -Type CommunicationSite -Title "Operasyon Portal" `
   -Url "https://contoso.sharepoint.com/sites/OperasyonPortal" `
   -Owner "admin@contoso.com" -Lcid 1055
 
-# Takım sitesi (Group bağlı)
-New-PnPSite -Type TeamSite -Title "Proje X" -Alias "projex" -Owners "admin@contoso.com"
-
-Connect-PnPOnline -Url "https://contoso.sharepoint.com/sites/OperasyonPortal" -Interactive
-Get-PnPWeb
-Get-PnPList | Select-Object Title, BaseTemplate, ItemCount, Hidden
-
-# Site üyeliği
-Add-PnPGroupMember -LoginName "ayse.yilmaz@contoso.com" -Group "Operasyon Portal Members"
-Get-PnPGroupMembers -Identity "Operasyon Portal Members"
-
-# Site düzeyinde paylaşım
-Set-PnPSite -Identity "https://contoso.sharepoint.com/sites/OperasyonPortal" `
-  -SharingCapability ExternalUserSharingOnly
-
-# Kiracı paylaşım (dikkat)
-# Set-PnPTenant -SharingCapability ExistingExternalUserSharingOnly""",
+Set-PnPTenantSite -Url "https://contoso.sharepoint.com/sites/OperasyonPortal" `
+  -StorageQuota 102400 -SharingCapability ExternalUserSharingOnly""",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "8.3 OneDrive — URL, erişim, paylaşılan dosya denetimi",
+        "6.2 OneDrive erişimi (işten ayrılma için kritik)",
+        "Ayrılan kişinin dosyalarını yöneticiye açmak için site owner eklenir.",
+        "OneDrive URL kişiselleşmiştir; provision edilmemişse önce personal site tetiklenir.",
         None,
-        """# Kullanıcı OneDrive URL
-Request-PnPPersonalSite -UserEmails "ayse.yilmaz@contoso.com"   # provision tetikle
-Get-PnPUserProfileProperty -Account "ayse.yilmaz@contoso.com" |
-  Select-Object -ExpandProperty UserProfileProperties |
-  Where-Object Key -match "PersonalSpace|OneDrive"
-
-# Admin olarak OneDrive'a erişim (site collection admin ekle)
-$odUrl = "https://contoso-my.sharepoint.com/personal/ayse_yilmaz_contoso_com"
-Set-PnPTenantSite -Url $odUrl -Owners "admin@contoso.com"
-
-# OneDrive depolama kotası (MB) — klasik SPO:
-# Set-SPOSite -Identity $odUrl -StorageQuota 1048576""",
-    )
-
-    add_cmd(
-        doc,
-        "8.4 Liste / kütüphane ve izin kırılması (özet)",
         None,
-        """Connect-PnPOnline -Url "https://contoso.sharepoint.com/sites/Operasyon" -Interactive
-
-New-PnPList -Title "Operasyon Kayitlari" -Template GenericList
-Add-PnPField -List "Operasyon Kayitlari" -DisplayName "Durum" -InternalName "Durum" `
-  -Type Choice -Choices "Acik","Kapali","Beklemede" -AddToDefaultView
-
-# Klasör / öğe izni — mirası kır
-$list = Get-PnPList -Identity "Documents"
-# Set-PnPList -Identity $list -BreakRoleInheritance -CopyRoleAssignments
-# Set-PnPGroupPermissions -Identity "Operasyon Members" -List "Documents" -AddRole "Contribute" """,
+        """Request-PnPPersonalSite -UserEmails "ayrilacak@contoso.com"
+# Tipik URL kalıbı:
+$od = "https://contoso-my.sharepoint.com/personal/ayrilacak_contoso_com"
+Set-PnPTenantSite -Url $od -Owners "mudur@contoso.com","admin@contoso.com" """,
     )
 
-    # =====================================================================
-    # 9. TEAMS
-    # =====================================================================
-    add_heading_styled(doc, "9. Microsoft Teams", level=1)
+    # ========== 7 ==========
+    H(doc, "7. Microsoft Teams", 1)
 
-    add_cmd(
+    TOPIC(
         doc,
-        "9.1 Ekip CRUD, kanal, üye rolleri",
+        "7.1 Ekip, üye, kanal yaşam döngüsü",
+        "Teams ekibi aslında bir M365 grubudur; GroupId ortaktır.",
+        "Gereksiz private team şişmesi yönetim yüküdür. Naming policy ve expiration policy "
+        "şirket standardı olmalıdır (portal/Graph ile).",
+        "Teams Admin",
         None,
         """Connect-MicrosoftTeams
-
-Get-Team | Select-Object DisplayName, GroupId, Visibility, MailNickName, Description
-
-$team = New-Team -DisplayName "Operasyon Teams" -MailNickName "operasyon-teams" `
-  -Visibility Private -Description "Operasyon ekibi" -Owner "admin@contoso.com"
-
+$team = New-Team -DisplayName "Operasyon" -MailNickName "operasyon-teams" `
+  -Visibility Private -Owner "admin@contoso.com"
 Add-TeamUser -GroupId $team.GroupId -User "ayse.yilmaz@contoso.com" -Role Member
 Add-TeamUser -GroupId $team.GroupId -User "mudur@contoso.com" -Role Owner
-Remove-TeamUser -GroupId $team.GroupId -User "ayse.yilmaz@contoso.com"
-
-Get-TeamUser -GroupId $team.GroupId | Select-Object User, Role
-
-New-TeamChannel -GroupId $team.GroupId -DisplayName "Gunluk" -MembershipType Standard
-New-TeamChannel -GroupId $team.GroupId -DisplayName "Yonetim" -MembershipType Private
-Get-TeamChannel -GroupId $team.GroupId
-
-Set-Team -GroupId $team.GroupId -AllowGiphy $false -AllowStickersAndMemes $false
-Set-TeamArchivedState -GroupId $team.GroupId -Archived $true
-# Remove-Team -GroupId $team.GroupId""",
+New-TeamChannel -GroupId $team.GroupId -DisplayName "Gunluk"
+Get-TeamUser -GroupId $team.GroupId
+Set-TeamArchivedState -GroupId $team.GroupId -Archived:$true""",
     )
 
-    add_cmd(
-        doc,
-        "9.2 Teams politika atama (özet)",
-        None,
-        """Get-CsTeamsMessagingPolicy | Select-Object Identity, Description
-Grant-CsTeamsMessagingPolicy -Identity "ayse.yilmaz@contoso.com" -PolicyName "Default"
-Get-CsOnlineUser -Identity "ayse.yilmaz@contoso.com" |
-  Select-Object UserPrincipalName, TeamsMessagingPolicy, TeamsMeetingPolicy""",
-    )
+    # ========== 8 ==========
+    H(doc, "8. Güvenlik, denetim, raporlama", 1)
 
-    # =====================================================================
-    # 10. ROLLER
-    # =====================================================================
-    add_heading_styled(doc, "10. Entra ID Rolleri ve Yönetim Birimleri", level=1)
-
-    add_cmd(
+    TOPIC(
         doc,
-        "10.1 Dizin rolleri — kimde hangi rol var",
+        "8.1 Kimde hangi admin rolü var?",
+        "Get-MgDirectoryRoleMember ile ayrıcalıklı hesap envanteri.",
+        "Ayda bir gözden geçirin. Unused admin = risk.",
+        "RoleManagement.Read.Directory / Global Reader",
         None,
-        """# Aktif (atanmış) roller
-Get-MgDirectoryRole -All | ForEach-Object {
+        """Get-MgDirectoryRole -All | ForEach-Object {
   $role = $_
   Get-MgDirectoryRoleMember -DirectoryRoleId $role.Id -All | ForEach-Object {
-    $m = $_
     $upn = $null
-    try { $upn = (Get-MgUser -UserId $m.Id -ErrorAction Stop).UserPrincipalName } catch {}
-    [PSCustomObject]@{ Role = $role.DisplayName; MemberId = $m.Id; UPN = $upn }
+    try { $upn = (Get-MgUser -UserId $_.Id -EA Stop).UserPrincipalName } catch {}
+    [PSCustomObject]@{ Role = $role.DisplayName; UPN = $upn; Id = $_.Id }
   }
-} | Sort-Object Role, UPN | Format-Table -AutoSize
-
-# Role template listesi (Global Administrator vb.)
-Get-MgDirectoryRoleTemplate -All | Select-Object DisplayName, Id, Description |
-  Sort-Object DisplayName""",
+} | Sort-Object Role, UPN""",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "10.2 Role atama / kaldırma",
+        "8.2 Oturum açma ve birleşik denetim kaydı",
+        "Şüpheli giriş, dosya indirme, grup üyeliği değişimi.",
+        "Audit log kapalı kiracıda soruşturma yapılamaz — Unified Audit Log’un açık olduğundan emin olun.",
+        "AuditLog.Read.All / View-Only Audit Logs",
         None,
-        """# Önce role’ü kiracıda etkinleştir (activate)
-$template = Get-MgDirectoryRoleTemplate -All |
-  Where-Object DisplayName -eq "User Administrator"
-$role = Get-MgDirectoryRole -All | Where-Object RoleTemplateId -eq $template.Id
-if (-not $role) {
-  $role = New-MgDirectoryRole -RoleTemplateId $template.Id
-}
-
-$user = Get-MgUser -UserId "helpdesk@contoso.com"
-New-MgDirectoryRoleMemberByRef -DirectoryRoleId $role.Id `
-  -OdataId "https://graph.microsoft.com/v1.0/directoryObjects/$($user.Id)"
-
-# Kaldır
-Remove-MgDirectoryRoleMemberByRef -DirectoryRoleId $role.Id -DirectoryObjectId $user.Id""",
-    )
-    add_warn(
-        doc,
-        "Global Administrator ataması yüksek risklidir. En az yetki ilkesine uyun; mümkünse Privileged Identity Management (PIM) kullanın.",
-    )
-
-    add_cmd(
-        doc,
-        "10.3 Administrative Unit (yönetim birimi)",
-        None,
-        """# AU oluştur
-$au = New-MgDirectoryAdministrativeUnit -DisplayName "AU-Operasyon" `
-  -Description "Operasyon kullanıcıları"
-
-# Kullanıcıyı AU'ya ekle
-New-MgDirectoryAdministrativeUnitMemberByRef -AdministrativeUnitId $au.Id `
-  -OdataId "https://graph.microsoft.com/v1.0/users/ayse.yilmaz@contoso.com"
-
-Get-MgDirectoryAdministrativeUnitMember -AdministrativeUnitId $au.Id -All""",
-    )
-
-    # =====================================================================
-    # 11. GÜVENLİK
-    # =====================================================================
-    add_heading_styled(doc, "11. Güvenlik, Denetim ve Uyumluluk", level=1)
-
-    add_cmd(
-        doc,
-        "11.1 Oturum açma ve denetim logları (Graph)",
-        "AuditLog.Read.All ve Directory.Read.All gerekir. Büyük kiracılarda filtre kullanın.",
-        """# Son oturum açmalar (örnek filtre)
-Get-MgAuditLogSignIn -Filter "createdDateTime ge $((Get-Date).AddDays(-1).ToString('yyyy-MM-ddTHH:mm:ssZ'))" `
-  -Top 50 |
+        """# Graph sign-in (son 24s örnek)
+Get-MgAuditLogSignIn -Top 50 `
+  -Filter "createdDateTime ge $((Get-Date).AddDays(-1).ToString('yyyy-MM-ddTHH:mm:ssZ'))" |
   Select-Object CreatedDateTime, UserPrincipalName, AppDisplayName, IpAddress,
-                @{N="Status";E={$_.Status.ErrorCode}},
-                @{N="City";E={$_.Location.City}}
+    @{N="Error";E={$_.Status.ErrorCode}}
 
-# Dizin denetim
-Get-MgAuditLogDirectoryAudit -Filter "activityDateTime ge $((Get-Date).AddDays(-1).ToString('yyyy-MM-ddTHH:mm:ssZ'))" `
-  -Top 50 |
-  Select-Object ActivityDateTime, ActivityDisplayName, OperationType,
-                @{N="InitiatedBy";E={$_.InitiatedBy.User.UserPrincipalName}}""",
-    )
-
-    add_cmd(
-        doc,
-        "11.2 Unified Audit Log (Exchange / Purview)",
-        None,
-        """Connect-ExchangeOnline -ShowBanner:$false
-
+# Unified audit (Exchange oturumu)
 Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-3) -EndDate (Get-Date) `
-  -Operations UserLoggedIn,FileDownloaded,FileAccessed,AddMemberToGroup `
-  -ResultSize 1000 |
-  Select-Object CreationDate, UserIds, Operations, ObjectId, ResultStatus |
-  Export-Csv "C:\\Temp\\audit.csv" -NoTypeInformation -Encoding UTF8
-
-# Belirli kullanıcı
-Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-7) -EndDate (Get-Date) `
-  -UserIds "ayse.yilmaz@contoso.com" -ResultSize 500""",
+  -Operations UserLoggedIn,FileDownloaded,AddMemberToGroup -ResultSize 1000 |
+  Select-Object CreationDate, UserIds, Operations, ObjectId |
+  Export-Csv "$env:TEMP\\audit.csv" -NoTypeInformation -Encoding UTF8""",
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "11.3 Koşullu erişim politikalarını okuma",
+        "8.3 Kullanım raporları (yönetim kurulu / operasyon)",
+        "Get-MgReport* CSV üretir: kim aktif, mailbox boyutu, Teams aktivitesi.",
+        "Lisans yenileme ve eğitim ihtiyacı için ayda bir alın.",
+        "Reports.Read.All",
         None,
-        """Connect-MgGraph -Scopes "Policy.Read.All"
-Get-MgIdentityConditionalAccessPolicy -All |
-  Select-Object Id, DisplayName, State, CreatedDateTime, ModifiedDateTime |
-  Format-Table -AutoSize
-
-# Detay
-# Get-MgIdentityConditionalAccessPolicy -ConditionalAccessPolicyId "<Id>" | ConvertTo-Json -Depth 6""",
+        """Get-MgReportOffice365ActiveUserDetail -Period D30 -OutFile "$env:TEMP\\o365_active.csv"
+Get-MgReportMailboxUsageDetail -Period D30 -OutFile "$env:TEMP\\mailbox_usage.csv"
+Get-MgReportOneDriveUsageAccountDetail -Period D30 -OutFile "$env:TEMP\\onedrive_usage.csv"
+Get-MgReportTeamsUserActivityUserDetail -Period D30 -OutFile "$env:TEMP\\teams_activity.csv" """,
     )
 
-    # =====================================================================
-    # 12. RAPORLAR
-    # =====================================================================
-    add_heading_styled(doc, "12. Raporlama ve Dışa Aktarma", level=1)
-
-    add_cmd(
+    # ========== 9 ==========
+    H(doc, "9. Operasyon runbook’ları (şirkette gerçek iş)", 1)
+    P(
         doc,
-        "12.1 Kullanım ve aktivite raporları",
-        "Get-MgReport* cmdlet’leri genelde CSV stream döner.",
-        """# Office 365 aktif kullanıcı (period: D7, D30, D90, D180)
-Get-MgReportOffice365ActiveUserDetail -Period D30 -OutFile "C:\\Temp\\o365_active_users.csv"
-
-Get-MgReportMailboxUsageDetail -Period D30 -OutFile "C:\\Temp\\mailbox_usage.csv"
-Get-MgReportOneDriveUsageAccountDetail -Period D30 -OutFile "C:\\Temp\\onedrive_usage.csv"
-Get-MgReportSharePointSiteUsageDetail -Period D30 -OutFile "C:\\Temp\\spo_usage.csv"
-Get-MgReportTeamsUserActivityUserDetail -Period D30 -OutFile "C:\\Temp\\teams_activity.csv"
-
-# Lisanssız aktif hesaplar
-Get-MgUser -All -Property "displayName,userPrincipalName,accountEnabled,assignedLicenses,userType" |
-  Where-Object { $_.AccountEnabled -and $_.UserType -eq "Member" -and $_.AssignedLicenses.Count -eq 0 } |
-  Select-Object DisplayName, UserPrincipalName |
-  Export-Csv "C:\\Temp\\lisanssiz.csv" -NoTypeInformation -Encoding UTF8""",
+        "Aşağıdakiler ezberlenecek komut değil; şirketin standart prosedürleridir. "
+        "Kendi domain’inize göre scriptleştirip saklayın.",
     )
 
-    # =====================================================================
-    # 13. TOPLU
-    # =====================================================================
-    add_heading_styled(doc, "13. Toplu / CSV Otomasyon Senaryoları", level=1)
-
-    add_cmd(
+    TOPIC(
         doc,
-        "13.1 CSV’den kullanıcı + lisans",
-        "CSV: DisplayName,UserPrincipalName,Department,JobTitle,SkuPartNumber",
-        """Connect-MgGraph -Scopes "User.ReadWrite.All","Organization.Read.All" -NoWelcome
-$csv = Import-Csv "C:\\Temp\\yeni_kullanicilar.csv"
-$skus = Get-MgSubscribedSku
+        "9.1 İşe alım (onboarding) — minimum paket",
+        "Hesap + konum + lisans + grup + (opsiyonel) Teams.",
+        "Sıra önemlidir: kullanıcı → UsageLocation → lisans → grup. Tersi hata üretir.",
+        None,
+        None,
+        """# --- Onboarding örneği ---
+$upn = "yeni@contoso.com"; $skuName = "SPE_E3"; $groupName = "SG-Operasyon"
+Connect-MgGraph -Scopes "User.ReadWrite.All","Group.ReadWrite.All","Organization.Read.All" -NoWelcome
 
-foreach ($row in $csv) {
-  $nick = ($row.UserPrincipalName -split "@")[0] -replace "[^a-zA-Z0-9]", ""
-  try {
-    $u = New-MgUser -DisplayName $row.DisplayName `
-      -UserPrincipalName $row.UserPrincipalName `
-      -MailNickname $nick -AccountEnabled `
-      -PasswordProfile @{ Password = "GeciciSifre!123"; ForceChangePasswordNextSignIn = $true } `
-      -UsageLocation "TR" -Department $row.Department -JobTitle $row.JobTitle
+New-MgUser -DisplayName "Yeni Çalışan" -UserPrincipalName $upn -MailNickname "yeni" `
+  -AccountEnabled -UsageLocation "TR" -Department "Operasyon" `
+  -PasswordProfile @{ Password="GeciciSifre!123"; ForceChangePasswordNextSignIn=$true }
 
-    $skuId = ($skus | Where-Object SkuPartNumber -eq $row.SkuPartNumber).SkuId
-    if ($skuId) {
-      Set-MgUserLicense -UserId $u.Id -AddLicenses @{ SkuId = $skuId } -RemoveLicenses @()
-    }
-    Write-Host "OK $($row.UserPrincipalName)" -ForegroundColor Green
-  } catch {
-    Write-Warning "HATA $($row.UserPrincipalName): $_"
-  }
-}""",
+$sku = (Get-MgSubscribedSku | Where-Object SkuPartNumber -eq $skuName).SkuId
+Set-MgUserLicense -UserId $upn -AddLicenses @{SkuId=$sku} -RemoveLicenses @()
+
+$g = (Get-MgGroup -Filter "displayName eq '$groupName'").Id
+New-MgGroupMember -GroupId $g -DirectoryObjectId (Get-MgUser -UserId $upn).Id
+Write-Host "Onboarding OK: $upn" """,
     )
 
-    add_cmd(
+    TOPIC(
         doc,
-        "13.2 CSV’den gruba üye ekleme",
-        "CSV: GroupDisplayName,UserPrincipalName",
-        """$rows = Import-Csv "C:\\Temp\\grup_uyelik.csv"
-foreach ($r in $rows) {
-  $g = Get-MgGroup -Filter "displayName eq '$($r.GroupDisplayName)'" | Select-Object -First 1
-  $u = Get-MgUser -UserId $r.UserPrincipalName
-  if ($g -and $u) {
-    try {
-      New-MgGroupMember -GroupId $g.Id -DirectoryObjectId $u.Id -ErrorAction Stop
-      "Added $($u.UserPrincipalName) -> $($g.DisplayName)"
-    } catch { Write-Warning $_ }
-  }
-}""",
-    )
-
-    add_cmd(
-        doc,
-        "13.3 İşten ayrılma prosedürü (özet script)",
-        "Hesabı kapat → oturum iptal → lisans kaldır → PK’yı shared yap → yönlendir → gruplardan çıkar.",
+        "9.2 İşten ayrılma (offboarding) — güvenli sıra",
+        "Oturum düşür → hesabı kapat → gruplardan çıkar → PK’yı shared yap / erişim ver → "
+        "OneDrive owner → lisans kaldır → (opsiyonel) sil / bekle.",
+        "Önce lisans kaldırırsanız posta kutusuna erişim ve arama senaryoları zorlaşır. "
+        "Önce erişimi güvenceye alın, maliyeti sonra kesin.",
+        None,
+        None,
         """$upn = "ayrilacak@contoso.com"
 Connect-MgGraph -Scopes "User.ReadWrite.All","Group.ReadWrite.All","Organization.Read.All" -NoWelcome
 Connect-ExchangeOnline -ShowBanner:$false
 
-# 1) Oturum + hesap
 Revoke-MgUserSignInSession -UserId $upn
 Update-MgUser -UserId $upn -AccountEnabled:$false
 
-# 2) Grup üyeliklerinden çıkar (dinamik gruplar hariç — kural ile yönetilir)
+$uid = (Get-MgUser -UserId $upn).Id
 Get-MgUserMemberOf -UserId $upn -All | ForEach-Object {
   if ($_.AdditionalProperties["@odata.type"] -eq "#microsoft.graph.group") {
-    try { Remove-MgGroupMemberByRef -GroupId $_.Id -DirectoryObjectId (Get-MgUser -UserId $upn).Id } catch {}
+    try { Remove-MgGroupMemberByRef -GroupId $_.Id -DirectoryObjectId $uid } catch {}
   }
 }
 
-# 3) Lisansları kaldır
+Set-Mailbox -Identity $upn -Type Shared
+# Yoneticiye Full Access — UPN'yi bilerek yazın
+Add-MailboxPermission -Identity $upn -User "mudur@contoso.com" -AccessRights FullAccess -InheritanceType All
+
 $lic = (Get-MgUserLicenseDetail -UserId $upn).SkuId
 if ($lic) { Set-MgUserLicense -UserId $upn -AddLicenses @() -RemoveLicenses $lic }
-
-# 4) Exchange: shared + yöneticisine Full Access + yönlendirme
-Set-Mailbox -Identity $upn -Type Shared
-$mgr = (Get-MgUserManager -UserId $upn -ErrorAction SilentlyContinue)
-if ($mgr) {
-  $mgrUpn = (Get-MgUser -UserId $mgr.Id).UserPrincipalName
-  Add-MailboxPermission -Identity $upn -User $mgrUpn -AccessRights FullAccess -InheritanceType All
-  Set-Mailbox -Identity $upn -ForwardingAddress $mgrUpn -DeliverToMailboxAndForward $true
-}
-
-Write-Host "Offboarding tamamlandı (gözden geçirin): $upn" """,
+Write-Host "Offboarding çekirdeği tamam. OneDrive owner ve legal hold'u elle doğrula." """,
     )
 
-    # =====================================================================
-    # 14. TROUBLESHOOTING
-    # =====================================================================
-    add_heading_styled(doc, "14. Sorun Giderme ve Sık Hatalar", level=1)
-
-    add_cmd(
+    TOPIC(
         doc,
-        "14.1 Yetki, token ve modül kontrolleri",
+        "9.3 CSV ile toplu kullanıcı açma",
+        "İşe alım dönemi / şirket göçü.",
+        "Önce 2 satırlık pilot CSV ile deneyin. Hataları satır satır loglayın.",
+        "CSV sütunları: DisplayName,UserPrincipalName,Department,JobTitle,SkuPartNumber",
         None,
+        """Connect-MgGraph -Scopes "User.ReadWrite.All","Organization.Read.All" -NoWelcome
+$skus = Get-MgSubscribedSku
+Import-Csv "C:\\Temp\\yeni_kullanicilar.csv" | ForEach-Object {
+  $row = $_; $nick = ($row.UserPrincipalName -split "@")[0] -replace "[^a-zA-Z0-9]"
+  try {
+    $u = New-MgUser -DisplayName $row.DisplayName -UserPrincipalName $row.UserPrincipalName `
+      -MailNickname $nick -AccountEnabled -UsageLocation "TR" `
+      -Department $row.Department -JobTitle $row.JobTitle `
+      -PasswordProfile @{Password="GeciciSifre!123"; ForceChangePasswordNextSignIn=$true}
+    $id = ($skus | Where-Object SkuPartNumber -eq $row.SkuPartNumber).SkuId
+    if ($id) { Set-MgUserLicense -UserId $u.Id -AddLicenses @{SkuId=$id} -RemoveLicenses @() }
+    "OK $($row.UserPrincipalName)"
+  } catch { Write-Warning "HATA $($row.UserPrincipalName): $_" }
+}""",
+    )
+
+    # ========== 10 ==========
+    H(doc, "10. Sorun giderme zihniyeti", 1)
+    bullet(
+        doc,
+        [
+            "Insufficient privileges → scope veya Entra rolü eksik. Get-MgContext / Find-MgGraphCommand.",
+            "Kullanıcı var ama mail yok → lisans/Exchange planı veya provision gecikmesi.",
+            "Cmdlet yok → yanlış modül veya EXO yerine Graph arıyorsunuz (veya tersi).",
+            "Filter hata → OData tırnak/boşluk; startswith(userPrincipalName,'ayse') formatı.",
+            "MessageTrace boş → zaman aralığı veya gecikme; 10 günden eski için historical search.",
+            "Değişiklik görünmüyor → Teams/EXO cache; 5–15 dk bekle veya yeni oturum.",
+        ],
+    )
+    CODE(
+        doc,
         """Get-MgContext
 (Get-MgContext).Scopes
-Get-ConnectionInformation
-Get-Module Microsoft.Graph* | Select-Object Name, Version
-
-# Son hatayı detaylı gör
+Find-MgGraphCommand -Command Set-MgUserLicense | Select-Object -ExpandProperty Permissions
 $Error[0] | Format-List * -Force
-$Error[0].Exception.Response
-
-# Graph 403 Insufficient privileges → eksik scope veya admin consent
-# Disconnect + Connect-MgGraph -Scopes ... yeniden
-
-# Exchange: "object currently in use" → Disconnect-ExchangeOnline; yeni oturum
-# "A window handle..." MFA/SSO → -Device veya tarayıcı profilini temizle
-
-# Find-MgGraphCommand ile cmdlet → permission eşle
-Find-MgGraphCommand -Command Get-MgUser | Select-Object -First 1 -ExpandProperty Permissions
-Find-MgGraphPermission User -ExactMatch:$false | Select-Object -First 20""",
+Get-ConnectionInformation
+Update-Module Microsoft.Graph, ExchangeOnlineManagement -Force""",
     )
 
-    add_cmd(
+    # ========== EK ==========
+    H(doc, "Ek A — Günlük / haftalık / aylık checklist", 1)
+    CODE(
         doc,
-        "14.2 Sık Graph filtre hataları",
-        None,
-        """# YANLIŞ: boşluk / tırnak sorunları
-# Get-MgUser -Filter "displayName eq Ayşe"
-
-# DOĞRU
-Get-MgUser -Filter "displayName eq 'Ayşe Yılmaz'"
-
-# startswith / endswith / contains
-Get-MgUser -Filter "startswith(userPrincipalName,'ayse')"
-# contains çoğu property'de desteklenmez → Search + ConsistencyLevel eventual
-
-Get-MgUser -ConsistencyLevel eventual -CountVariable cnt -Search '"mail:ayse"' -All
-Write-Host "Count: $cnt" """,
+        """Günlük
+  - Kritik servis: Get-MessageTrace ile failed bakış (isteğe bağlı)
+  - Yardım masası: parola/TAP/MFA
+Haftalık
+  - Lisanssız aktif Member raporu
+  - Silinen kullanıcılar (recycle) gözden geçirme
+  - Yeni admin rol atamaları
+Aylık
+  - SKU kota (Available)
+  - Get-MgReportOffice365ActiveUserDetail
+  - Dış paylaşım / Guest envanteri
+  - Transport rule listesi ve sahipleri
+  - Privileged rol gözden geçirme""",
     )
 
-    # =====================================================================
-    # 15. SÖZLÜK
-    # =====================================================================
-    add_heading_styled(doc, "15. Hızlı Cmdlet Sözlüğü", level=1)
-
+    H(doc, "Ek B — Hızlı cmdlet sözlüğü", 1)
     table = doc.add_table(rows=1, cols=3)
     table.style = "Table Grid"
     hdr = table.rows[0].cells
-    for i, t in enumerate(("Alan", "Cmdlet", "Amaç")):
-        hdr[i].text = t
+    for i, x in enumerate(("Alan", "Cmdlet", "Ne zaman")):
+        hdr[i].text = x
         for p in hdr[i].paragraphs:
-            for run in p.runs:
-                run.bold = True
-                run.font.size = Pt(8)
-
-    rows = [
-        ("Graph", "Connect-MgGraph / Disconnect-MgGraph", "Oturum aç/kapa"),
-        ("Graph", "Get/New/Update/Remove-MgUser", "Kullanıcı CRUD"),
-        ("Graph", "Revoke-MgUserSignInSession", "Oturumları düşür"),
-        ("Graph", "Set-MgUserLicense", "Lisans ekle/kaldır"),
-        ("Graph", "Get-MgSubscribedSku", "SKU / kota"),
-        ("Graph", "Get/New-MgGroup, New-MgGroupMember", "Grup / üyelik"),
-        ("Graph", "New-MgInvitation", "B2B misafir davet"),
-        ("Graph", "Get-MgAuditLogSignIn", "Oturum açma logu"),
-        ("Graph", "Get-MgReport*", "Kullanım CSV raporları"),
-        ("Graph", "Find-MgGraphCommand", "Cmdlet→izin bul"),
-        ("Exchange", "Connect-ExchangeOnline", "EXO oturumu"),
-        ("Exchange", "Get-EXOMailbox / Set-Mailbox", "PK oku/ayarla"),
-        ("Exchange", "New-Mailbox -Shared/-Room", "Shared / oda PK"),
-        ("Exchange", "Add-MailboxPermission", "Full Access"),
-        ("Exchange", "Add-RecipientPermission", "Send As"),
-        ("Exchange", "New/Get-TransportRule", "Mail flow"),
-        ("Exchange", "Get-MessageTrace", "İleti izleme"),
-        ("Exchange", "Search-UnifiedAuditLog", "Birleşik denetim"),
-        ("Exchange", "Enable-Mailbox -Archive", "Arşiv aç"),
-        ("Teams", "New-Team / Add-TeamUser", "Ekip / üye"),
-        ("Teams", "New-TeamChannel", "Kanal"),
-        ("Teams", "Set-TeamArchivedState", "Arşivle"),
-        ("SharePoint", "Connect-PnPOnline", "PnP bağlantı"),
-        ("SharePoint", "Get-PnPTenantSite / New-PnPSite", "Site listesi/oluştur"),
-        ("SharePoint", "Set-PnPTenantSite", "Kota / owner / sharing"),
-        ("Entra", "Get-MgDirectoryRole", "Dizin rolleri"),
-        ("Entra", "New-MgDirectoryAdministrativeUnit", "AU oluştur"),
-    ]
-    for alan, cmd, amac in rows:
+            for r in p.runs:
+                r.bold = True
+                r.font.size = Pt(8)
+    for a, c, n in [
+        ("Graph", "Connect-MgGraph", "Her kimlik/lisans oturumu"),
+        ("Graph", "Get/New/Update/Remove-MgUser", "Kullanıcı yaşam döngüsü"),
+        ("Graph", "Revoke-MgUserSignInSession", "İşten ayrılma / şüphe"),
+        ("Graph", "Set-MgUserLicense", "Lisans ata/al"),
+        ("Graph", "Get-MgSubscribedSku", "Kota / SKU"),
+        ("Graph", "New-MgGroup / New-MgGroupMember", "Grup modeli"),
+        ("Graph", "New-MgInvitation", "B2B misafir"),
+        ("Graph", "Get-MgReport*", "Aylık kullanım CSV"),
+        ("EXO", "Connect-ExchangeOnline", "Posta yönetimi"),
+        ("EXO", "Get-EXOMailbox / Set-Mailbox", "PK ayar"),
+        ("EXO", "New-Mailbox -Shared", "Ortak kutu"),
+        ("EXO", "Add-MailboxPermission", "Full Access"),
+        ("EXO", "New-TransportRule", "Mail politikası"),
+        ("EXO", "Get-MessageTrace", "Mail soruşturma"),
+        ("EXO", "Enable-Mailbox -Archive", "Arşiv"),
+        ("EXO", "Search-UnifiedAuditLog", "Denetim"),
+        ("Teams", "New-Team / Add-TeamUser", "Ekip yönetimi"),
+        ("SPO", "Connect-PnPOnline", "Site/OneDrive"),
+        ("SPO", "Get-PnPTenantSite / Set-PnPTenantSite", "Envanter / owner / kota"),
+    ]:
         cells = table.add_row().cells
-        cells[0].text = alan
-        cells[1].text = cmd
-        cells[2].text = amac
-        for c in cells:
-            for p in c.paragraphs:
-                for run in p.runs:
-                    run.font.size = Pt(7.5)
-                    run.font.name = "Calibri"
+        cells[0].text, cells[1].text, cells[2].text = a, c, n
+        for c_ in cells:
+            for p in c_.paragraphs:
+                for r in p.runs:
+                    r.font.size = Pt(7.5)
 
     doc.add_paragraph()
-    add_heading_styled(doc, "Yaygın SkuPartNumber Değerleri", level=1)
-    add_code(
+    H(doc, "Ek C — Öğrenme sırası (öneri)", 1)
+    P(
         doc,
-        """SPE_E3 / SPE_E5          Microsoft 365 E3 / E5
-ENTERPRISEPACK           Office 365 E3
-ENTERPRISEPREMIUM        Office 365 E5
-O365_BUSINESS_PREMIUM    Microsoft 365 Business Standard
-SPB                      Microsoft 365 Business Premium
-POWER_BI_PRO             Power BI Pro
-PROJECTPREMIUM           Project Plan 5
-VISIOCLIENT              Visio Plan 2
-EXCHANGESTANDARD         Exchange Online Plan 1
-EXCHANGEENTERPRISE       Exchange Online Plan 2""",
+        "1) Bağlanmayı ve Get-MgUser/Get-EXOMailbox okumayı ustalaştırın. "
+        "2) Test kullanıcıda New/Update/License/Group uygulayın. "
+        "3) Shared mailbox + permission. "
+        "4) Bir transport kuralını lab’da deneyin. "
+        "5) Offboarding runbook’unu test kiracıda prova edin. "
+        "6) Raporları CSV’ye alıp Excel’de okumayı alışkanlık yapın. "
+        "7) App-only (sertifika) otomasyona geçin.",
+        size=10,
     )
 
-    add_heading_styled(doc, "Kaynaklar", level=1)
-    add_para(
+    P(
         doc,
-        "• Graph PowerShell: https://learn.microsoft.com/powershell/microsoftgraph/\n"
-        "• Exchange Online: https://learn.microsoft.com/powershell/exchange/exchange-online-powershell\n"
-        "• Teams: https://learn.microsoft.com/microsoftteams/teams-powershell-overview\n"
-        "• PnP PowerShell: https://pnp.github.io/powershell/\n"
-        "• Graph Permissions: https://learn.microsoft.com/graph/permissions-reference\n"
-        "• Legacy geçiş (MSOnline/AzureAD → Graph): Microsoft Learn migration guides",
-        size=9.5,
+        "Resmi kaynaklar: learn.microsoft.com (Microsoft Graph PowerShell, Exchange Online PowerShell, "
+        "Teams PowerShell, PnP). Bu rehber şirket operasyonu için öğretici derlemedir; üretim öncesi "
+        "güncel cmdlet ve izinleri Learn’den doğrulayın.",
+        size=9,
+        italic=True,
+        color=RGBColor(0x66, 0x66, 0x66),
     )
-
-    footer = doc.add_paragraph()
-    r = footer.add_run(
-        "Bu belge operasyon ekipleri için detaylı bir komut referansıdır. "
-        "Cmdlet’ler, Graph scope’ları ve ürün adları zamanla değişebilir; "
-        "üretim öncesi resmi dokümantasyonu doğrulayın. "
-        "contoso.com ve C:\\Temp yollarını kendi ortamınıza göre değiştirin."
-    )
-    set_run_font(r, size=9, color=RGBColor(0x66, 0x66, 0x66))
-    r.italic = True
 
     doc.save(OUTPUT)
-    print(f"Saved: {OUTPUT}")
+    print("Saved", OUTPUT)
 
 
 if __name__ == "__main__":
