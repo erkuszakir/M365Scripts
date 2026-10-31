@@ -4,6 +4,9 @@
 **Sürüm:** 1.2 · **Kapsam:** Geniş / detaylı · **Dil:** Türkçe · **Seviye:** Acemi → Uzman  
 **Hedef kitle:** Bilgisayar, yazılım, bilişim sistemleri ve yönetim bilişim öğrencileri; junior M365 / Entra yöneticileri; operasyon ekipleri
 
+**Tek dosya Word kitabı:** [`Microsoft365_Sifirdan_Uzmanliga.docx`](Microsoft365_Sifirdan_Uzmanliga.docx)  
+**Tek dosya HTML:** [`Microsoft365_Sifirdan_Uzmanliga.html`](Microsoft365_Sifirdan_Uzmanliga.html)
+
 Bu kitap, Microsoft 365 Cloud ekosistemini **en temel kavramlardan** başlayarak **mimari tasarım, güvenlik mimarisi, otomasyon ve gerçek hayat senaryolarına** kadar sistematik olarak öğretir. Her bölümde:
 
 - kavramsal anlatım,
