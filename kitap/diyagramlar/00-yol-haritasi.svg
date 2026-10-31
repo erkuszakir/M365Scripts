@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="320" viewBox="0 0 920 320" role="img" aria-labelledby="t">
+  <title id="t">Öğrenme yol haritası</title>
+  <rect width="100%" height="100%" fill="#0f1419"/>
+  <defs>
+    <style>
+      .t{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5}
+      .s{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#9db0c5;font-size:12px}
+      .h{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5;font-size:16px;font-weight:700}
+      .box{fill:#1a2330;stroke:#3a4b5f;stroke-width:1.5}
+      .acc{fill:#1e3a5f;stroke:#5b9fd4;stroke-width:1.5}
+      .ok{fill:#163528;stroke:#3d9b6c;stroke-width:1.5}
+      .warn{fill:#3a2e14;stroke:#c9a227;stroke-width:1.5}
+      .line{stroke:#5b9fd4;stroke-width:1.5;fill:none}
+      .muted{stroke:#3a4b5f;stroke-width:1.2;fill:none}
+    </style>
+  </defs>
+  
+  <text class="h" x="24" y="36">Öğrenme yol haritası — Acemi → Uzman</text>
+  <rect class="box" x="24" y="70" width="200" height="180" rx="8"/>
+  <text class="t" x="44" y="100" font-size="14">1. Acemi</text>
+  <text class="s" x="44" y="128">Bulut, tenant,</text>
+  <text class="s" x="44" y="148">lisans, portal</text>
+  <text class="s" x="44" y="176">Bölüm 0–2</text>
+  <rect class="acc" x="248" y="70" width="200" height="180" rx="8"/>
+  <text class="t" x="268" y="100" font-size="14">2. Orta</text>
+  <text class="s" x="268" y="128">Entra, Exchange,</text>
+  <text class="s" x="268" y="148">SPO, Teams</text>
+  <text class="s" x="268" y="176">Bölüm 3–6</text>
+  <rect class="ok" x="472" y="70" width="200" height="180" rx="8"/>
+  <text class="t" x="492" y="100" font-size="14">3. İleri</text>
+  <text class="s" x="492" y="128">Zero Trust, DLP,</text>
+  <text class="s" x="492" y="148">PowerShell, Graph</text>
+  <text class="s" x="492" y="176">Bölüm 7–8</text>
+  <rect class="warn" x="696" y="70" width="200" height="180" rx="8"/>
+  <text class="t" x="716" y="100" font-size="14">4. Uzman</text>
+  <text class="s" x="716" y="128">Mimari, hibrit,</text>
+  <text class="s" x="716" y="148">migrasyon, capstone</text>
+  <text class="s" x="716" y="176">Bölüm 9–11</text>
+  <path class="line" d="M224 160 H248 M448 160 H472 M672 160 H696"/>
+
+</svg>

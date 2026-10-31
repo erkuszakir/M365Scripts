@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="380" viewBox="0 0 880 380" role="img" aria-labelledby="t">
+  <title id="t">Kimlik merkezi</title>
+  <rect width="100%" height="100%" fill="#0f1419"/>
+  <defs>
+    <style>
+      .t{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5}
+      .s{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#9db0c5;font-size:12px}
+      .h{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5;font-size:16px;font-weight:700}
+      .box{fill:#1a2330;stroke:#3a4b5f;stroke-width:1.5}
+      .acc{fill:#1e3a5f;stroke:#5b9fd4;stroke-width:1.5}
+      .ok{fill:#163528;stroke:#3d9b6c;stroke-width:1.5}
+      .warn{fill:#3a2e14;stroke:#c9a227;stroke-width:1.5}
+      .line{stroke:#5b9fd4;stroke-width:1.5;fill:none}
+      .muted{stroke:#3a4b5f;stroke-width:1.2;fill:none}
+    </style>
+  </defs>
+  
+  <text class="h" x="24" y="36">Entra ID — kimlik merkezi</text>
+  <rect class="acc" x="300" y="80" width="260" height="80" rx="10"/><text class="t" x="355" y="128" font-size="16">Entra ID Tenant</text>
+  <rect class="box" x="40" y="220" width="150" height="70" rx="8"/><text class="t" x="75" y="260">Kullanıcılar</text>
+  <rect class="box" x="210" y="220" width="150" height="70" rx="8"/><text class="t" x="255" y="260">Gruplar</text>
+  <rect class="box" x="380" y="220" width="150" height="70" rx="8"/><text class="t" x="410" y="260">Uygulamalar</text>
+  <rect class="box" x="550" y="220" width="150" height="70" rx="8"/><text class="t" x="595" y="260">Cihazlar</text>
+  <rect class="ok" x="720" y="220" width="140" height="70" rx="8"/><text class="t" x="755" y="250">CA / Roller</text>
+  <path class="line" d="M430 160 V210 M115 210 V220 M285 210 V220 M455 210 V220 M625 210 V220 M790 210 V220"/>
+  <text class="s" x="24" y="340">Tüm M365 iş yükleri bu dizine kimlik için başvurur.</text>
+
+</svg>
