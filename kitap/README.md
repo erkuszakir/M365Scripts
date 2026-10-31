@@ -1,3 +1,18 @@
+# Microsoft 365 Cloud Sistemleri — Sıfırdan Uzmanlığa
+
+> **v2.0 ANA METİN (üniversite seviyesi, geniş hacim)**  
+> Tek dosya Word (~1.5M kelime, tahmini **~5.000 sayfa** @300 kelime/sayfa):  
+> [`Microsoft365_Sifirdan_Uzmanliga_v2_TAM.docx`](Microsoft365_Sifirdan_Uzmanliga_v2_TAM.docx)  
+> Cilt cilt Word: `Microsoft365_v2_01-…` … `09-…`  
+> Markdown ciltler: [`ciltler/`](ciltler/)
+
+**Not:** Eski `Microsoft365_Sifirdan_Uzmanliga.docx` (v1.x) özet/kısa sürümdür; ders kitabı olarak **v2 TAM** kullanılmalıdır.
+
+---
+
+
+## v1 iskelet (kısa — arşiv)
+
 # Microsoft 365 Cloud Sistemleri  
 ## Sıfırdan Uzmanlığa — Üniversite Başucu Kitabı
 
@@ -104,3 +119,4 @@ bulunur.
 ## Lisans ve kullanım
 
 Eğitim amaçlıdır. Ekran görüntüleri ve ürün adları Microsoft’a aittir; diyagramlar ve senaryolar bu kitap için özgün üretilmiştir. Üretim tenant’ında denemeden önce mutlaka test / developer tenant kullanın.
+

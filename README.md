@@ -6,12 +6,11 @@ Microsoft 365 operasyon betikleri ve **eğitim kitabı**.
 
 Üniversite öğrencisi / junior admin için **geniş kapsamlı ve detaylı** başucu kaynağı (v1.2):
 
-- Klasör: [`kitap/`](kitap/)
+- **v2 TAM Word kitabı (~5.000 sayfa eşdeğeri):** [`kitap/Microsoft365_Sifirdan_Uzmanliga_v2_TAM.docx`](kitap/Microsoft365_Sifirdan_Uzmanliga_v2_TAM.docx)
+- Ciltler (md): [`kitap/ciltler/`](kitap/ciltler/)
+- Cilt cilt docx: `kitap/Microsoft365_v2_0*.docx`
 - İçindekiler: [`kitap/README.md`](kitap/README.md)
-- Tek dosya HTML (çevrimdışı okuma): [`kitap/Microsoft365_Sifirdan_Uzmanliga.html`](kitap/Microsoft365_Sifirdan_Uzmanliga.html)
-- Özgün SVG diyagramlar: [`kitap/diyagramlar/`](kitap/diyagramlar/)
-- Laboratuvarlar: [`kitap/lablar/`](kitap/lablar/)
-- Case studies: [`kitap/10-case-studies.md`](kitap/10-case-studies.md) · Capstone: [`kitap/11-capstone-proje.md`](kitap/11-capstone-proje.md)
+- Kısa v1 HTML/iskelet + diyagram/lab: `kitap/` altında arşiv olarak durur
 
 Örnek kurum senaryosu: **KuzeyLojistik A.Ş.**
 
