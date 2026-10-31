@@ -67,3 +67,19 @@ Maaş Excel’i “Everyone” ile paylaşılmıştı. Copilot soruya maaş aral
 - [ ] Copilot = izinlerin aynası olduğunu anlattım
 
 > **Sonraki:** [Bölüm 14 — KVKK, GDPR ve uyumluluk tasarımı](14-kvkk-gdpr-uyumluluk.md)
+
+
+## 13.9 Derinleşme: Copilot veri sınırları
+
+Anlatılacak doğru model:
+
+> Copilot, kullanıcının zaten erişebildiği içerikte yardımcı olur; yeni bir izin kapısı açmaz. Ama kötü paylaşımı ölçekler.
+
+Hazırlık programı 6 hafta:
+1. Oversharing avı
+2. Label yaygınlaştırma
+3. Misafir review
+4. Yüksek ayrıcalıklı hesap politikası
+5. Eğitim
+6. Pilot grup ölçümü
+

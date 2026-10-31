@@ -120,3 +120,43 @@ Windows’ta Desktop/Documents OneDrive’a yönlendirme verimliliği artırır 
 
 - Çok büyük PST / VM imajlarını OneDrive’a koymayın
 - Instrumentasyon / mühendislik klasörleri için policy istisnası
+
+
+## 5.13 Derinleşme: Site tasarım kalıpları
+
+### Kalıp A — Departman sitesi
+- Owners: departman müdürü + IT liaison (en az 2)
+- Members: güvenlik grubu `SG-Dept-X-Members`
+- Visitors: isteğe bağlı geniş okuma
+- Kütüphaneler: Politikalar (read), Çalışma (edit), Arşiv (read)
+
+### Kalıp B — Proje sitesi
+- Bitiş tarihi + sahiplik yenileme
+- Dış misafirler için ayrı Private channel / ayrı site tercihi
+- Proje bitince archive + read-only
+
+### Kalıp C — Kayıt merkezi (records)
+- Label + retention
+- Düzenleme kısıtı
+- eDiscovery dostu bilgi mimarisi
+
+## 5.14 Arama yönetimi
+
+- Managed properties / crawled properties (kavram)
+- Promote sonuçlar (bookmarks)
+- Vertical’ler (ör. Sadece Politikalar)
+- Kullanıcı “bulamıyorum” diyorsa: izin mi, metadata mı, search şeması mı?
+
+## 5.15 Paylaşım raporları ve oversharing avı
+
+Düzenli işler:
+1. Anyone link envanteri
+2. “Entire organization” ile paylaşılan hassas kütüphaneler
+3. Misafirlerin Owner olduğu siteler (anti-pattern)
+4. Orphaned sites (sahipsiz)
+
+## 5.16 Çalışılmış senaryo: İK dosya göçü
+
+Kaynak: `\\fs01\HR` (NTFS ACL karmaşası)  
+Hedef: `spo-hr` site + 3 kütüphane  
+Adımlar: envanter → ACL sadeleştirme (gruplara) → pilot 1 klasör → Migration Manager → doğrulama → eski share read-only → kapatma tarihi.

@@ -1,43 +1,20 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Microsoft 365 Cloud Sistemleri — Sıfırdan Uzmanlığa</title>
+<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Microsoft 365 — Sıfırdan Uzmanlığa v1.2</title>
 <style>
-:root { --bg:#0f1419; --panel:#161d26; --text:#e8eef5; --muted:#9db0c5; --accent:#5b9fd4; --line:#2a3544; --code:#0b1016; }
-* { box-sizing:border-box; }
-body { margin:0; font-family:"Segoe UI",Roboto,Arial,sans-serif; background:var(--bg); color:var(--text); line-height:1.55; }
-.layout { display:grid; grid-template-columns:300px 1fr; min-height:100vh; }
-nav { position:sticky; top:0; height:100vh; overflow:auto; background:var(--panel); border-right:1px solid var(--line); padding:20px 16px; }
-nav h1 { font-size:15px; margin:0 0 12px; line-height:1.35; }
-nav ol { margin:0; padding-left:18px; font-size:12px; }
-nav a { color:var(--accent); text-decoration:none; }
-main { padding:32px 40px 80px; max-width:920px; }
-h1 { font-size:1.8rem; } h2 { font-size:1.35rem; margin-top:2rem; } h3 { font-size:1.1rem; }
-table { border-collapse:collapse; width:100%; margin:12px 0 20px; font-size:0.92rem; }
-th,td { border:1px solid var(--line); padding:8px 10px; vertical-align:top; }
-th { background:#1a2330; text-align:left; }
-code { background:var(--code); padding:1px 5px; border-radius:4px; font-size:0.9em; }
-pre { background:var(--code); padding:14px; overflow:auto; border:1px solid var(--line); border-radius:8px; }
-pre code { padding:0; background:transparent; }
-blockquote { border-left:3px solid var(--accent); margin:12px 0; padding:6px 12px; color:var(--muted); }
-hr { border:none; border-top:1px solid var(--line); margin:28px 0; }
-figure.diagram { margin:18px 0; padding:12px; border:1px solid var(--line); border-radius:8px; background:#0b1016; }
-figure.diagram img { max-width:100%; height:auto; display:block; }
-@media (max-width:900px) { .layout { grid-template-columns:1fr; } nav { position:relative; height:auto; } }
-</style>
-</head>
-<body>
-<div class="layout">
-<nav>
-  <h1>Microsoft 365 Cloud Sistemleri<br/><span style="font-weight:400;color:var(--muted)">Sıfırdan Uzmanlığa · geniş kapsam</span></h1>
-  <ol><li><a href="#sec-0">Microsoft 365 Cloud Sistemleri</a></li><li><a href="#sec-1">Bölüm 0 — Ön Söz, Öğrenme Sözleşmesi ve Yol Haritası</a></li><li><a href="#sec-2">Bölüm 1 — Bulut Bilişim, SaaS ve Dijital İşyeri</a></li><li><a href="#sec-3">Bölüm 2 — Microsoft 365 Ekosistemi, Tenant ve Lisanslama</a></li><li><a href="#sec-4">Bölüm 3 — Kimlik Temelleri: Microsoft Entra ID</a></li><li><a href="#sec-5">Bölüm 4 — Exchange Online: Posta, Takvim ve Alıcılar</a></li><li><a href="#sec-6">Bölüm 5 — SharePoint Online ve OneDrive</a></li><li><a href="#sec-7">Bölüm 6 — Microsoft Teams ve İşbirliği Mimarisi</a></li><li><a href="#sec-8">Bölüm 7 — Güvenlik, Uyumluluk ve Zero Trust</a></li><li><a href="#sec-9">Bölüm 8 — Yönetim, PowerShell ve Microsoft Graph</a></li><li><a href="#sec-10">Bölüm 9 — Mimari, Hibrit, Migrasyon ve Uzman Uygulamalar</a></li><li><a href="#sec-11">Bölüm 12 — Uç Nokta Yönetimi: Microsoft Intune</a></li><li><a href="#sec-12">Bölüm 13 — Power Platform, Bağlayıcılar ve Copilot (M365 Bağlamı)</a></li><li><a href="#sec-13">Bölüm 14 — KVKK, GDPR ve Uyumluluk Tasarımı (M365’te)</a></li><li><a href="#sec-14">Bölüm 15 — İzleme, Raporlama ve Hizmet Sağlığı</a></li><li><a href="#sec-15">Bölüm 16 — Mülakat ve Capstone Savunma Soruları</a></li><li><a href="#sec-16">Bölüm 10 — Gerçek Hayat Case Study Derlemesi</a></li><li><a href="#sec-17">Bölüm 11 — Capstone: 500 Kişilik Şirketi Sıfırdan Kur</a></li><li><a href="#sec-18">Ek A — Sözlük</a></li><li><a href="#sec-19">Ek B — Sertifika ve Kariyer Haritası</a></li><li><a href="#sec-20">Ek C — Portal ve Komut Hızlı Referans</a></li><li><a href="#sec-21">Ek D — PowerShell / Graph Reçete Defteri</a></li></ol>
-</nav>
-<main><article id="sec-0">
+:root{--bg:#0f1419;--panel:#161d26;--text:#e8eef5;--muted:#9db0c5;--accent:#5b9fd4;--line:#2a3544;--code:#0b1016}
+*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+.layout{display:grid;grid-template-columns:300px 1fr;min-height:100vh}nav{position:sticky;top:0;height:100vh;overflow:auto;background:var(--panel);border-right:1px solid var(--line);padding:20px 16px}
+nav h1{font-size:15px;margin:0 0 12px;line-height:1.35}nav ol{margin:0;padding-left:18px;font-size:12px}nav a{color:var(--accent);text-decoration:none}
+main{padding:32px 40px 80px;max-width:920px}h1{font-size:1.8rem}h2{font-size:1.35rem;margin-top:2rem}h3{font-size:1.1rem}
+table{border-collapse:collapse;width:100%;margin:12px 0 20px;font-size:.92rem}th,td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}th{background:#1a2330;text-align:left}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}pre{background:var(--code);padding:14px;overflow:auto;border:1px solid var(--line);border-radius:8px}pre code{padding:0;background:transparent}
+blockquote{border-left:3px solid var(--accent);margin:12px 0;padding:6px 12px;color:var(--muted)}hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+figure.diagram{margin:18px 0;padding:12px;border:1px solid var(--line);border-radius:8px;background:#0b1016}figure.diagram img{max-width:100%;height:auto;display:block}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav{position:relative;height:auto}}
+</style></head><body><div class="layout"><nav><h1>Microsoft 365 Cloud<br/><span style="font-weight:400;color:var(--muted)">v1.2 geniş / detaylı</span></h1><ol><li><a href="#sec-0">Microsoft 365 Cloud Sistemleri</a></li><li><a href="#sec-1">Bölüm 0 — Ön Söz, Öğrenme Sözleşmesi ve Yol Haritası</a></li><li><a href="#sec-2">Bölüm 1 — Bulut Bilişim, SaaS ve Dijital İşyeri</a></li><li><a href="#sec-3">Bölüm 2 — Microsoft 365 Ekosistemi, Tenant ve Lisanslama</a></li><li><a href="#sec-4">Bölüm 3 — Kimlik Temelleri: Microsoft Entra ID</a></li><li><a href="#sec-5">Bölüm 4 — Exchange Online: Posta, Takvim ve Alıcılar</a></li><li><a href="#sec-6">Bölüm 5 — SharePoint Online ve OneDrive</a></li><li><a href="#sec-7">Bölüm 6 — Microsoft Teams ve İşbirliği Mimarisi</a></li><li><a href="#sec-8">Bölüm 7 — Güvenlik, Uyumluluk ve Zero Trust</a></li><li><a href="#sec-9">Bölüm 8 — Yönetim, PowerShell ve Microsoft Graph</a></li><li><a href="#sec-10">Bölüm 9 — Mimari, Hibrit, Migrasyon ve Uzman Uygulamalar</a></li><li><a href="#sec-11">Bölüm 12 — Uç Nokta Yönetimi: Microsoft Intune</a></li><li><a href="#sec-12">Bölüm 13 — Power Platform, Bağlayıcılar ve Copilot (M365 Bağlamı)</a></li><li><a href="#sec-13">Bölüm 14 — KVKK, GDPR ve Uyumluluk Tasarımı (M365’te)</a></li><li><a href="#sec-14">Bölüm 15 — İzleme, Raporlama ve Hizmet Sağlığı</a></li><li><a href="#sec-15">Bölüm 17 — Ağ, Bağlantı ve İstemci Performansı</a></li><li><a href="#sec-16">Bölüm 18 — Hibrit Kimlik: Entra Connect / Cloud Sync</a></li><li><a href="#sec-17">Bölüm 19 — Yedekleme, Felaket Kurtarma ve Fidye Yazılımı</a></li><li><a href="#sec-18">Bölüm 20 — Olay Müdahale (IR) Runbook’ları</a></li><li><a href="#sec-19">Bölüm 21 — Benimseme, Değişim Yönetimi ve Viva</a></li><li><a href="#sec-20">Bölüm 16 — Mülakat ve Capstone Savunma Soruları</a></li><li><a href="#sec-21">Bölüm 10 — Gerçek Hayat Case Study Derlemesi</a></li><li><a href="#sec-22">Bölüm 11 — Capstone: 500 Kişilik Şirketi Sıfırdan Kur</a></li><li><a href="#sec-23">Ek A — Sözlük</a></li><li><a href="#sec-24">Ek B — Sertifika ve Kariyer Haritası</a></li><li><a href="#sec-25">Ek C — Portal ve Komut Hızlı Referans</a></li><li><a href="#sec-26">Ek D — PowerShell / Graph Reçete Defteri</a></li><li><a href="#sec-27">Ek E — Günlük / Haftalık / Aylık Operasyon El Kitabı</a></li></ol></nav><main><article id="sec-0">
 <h1>Microsoft 365 Cloud Sistemleri</h1>
 <h2>Sıfırdan Uzmanlığa — Üniversite Başucu Kitabı</h2>
-<p><strong>Sürüm:</strong> 1.0 · <strong>Dil:</strong> Türkçe · <strong>Seviye:</strong> Acemi → Uzman  </p>
+<p><strong>Sürüm:</strong> 1.2 · <strong>Kapsam:</strong> Geniş / detaylı · <strong>Dil:</strong> Türkçe · <strong>Seviye:</strong> Acemi → Uzman  </p>
 <p><strong>Hedef kitle:</strong> Bilgisayar, yazılım, bilişim sistemleri ve yönetim bilişim öğrencileri; junior M365 / Entra yöneticileri; operasyon ekipleri</p>
 <p>Bu kitap, Microsoft 365 Cloud ekosistemini <strong>en temel kavramlardan</strong> başlayarak <strong>mimari tasarım, güvenlik mimarisi, otomasyon ve gerçek hayat senaryolarına</strong> kadar sistematik olarak öğretir. Her bölümde:</p>
 <ul>
@@ -97,6 +74,14 @@ figure.diagram img { max-width:100%; height:auto; display:block; }
 <li><a href="15-izleme-raporlama.md">İzleme, raporlama ve hizmet sağlığı</a></li>
 <li><a href="16-mulakat-savunma.md">Mülakat ve savunma soruları</a></li>
 </ol>
+<h3>Kısım VIII — Operasyonel uzmanlık (genişletme)</h3>
+<ol>
+<li><a href="17-ag-baglantilari-teams-exo.md">Ağ, bağlantı ve istemci performansı</a></li>
+<li><a href="18-hibrit-kimlik-entra-connect.md">Hibrit kimlik: Entra Connect / Cloud Sync</a></li>
+<li><a href="19-yedekleme-dr-fidye.md">Yedekleme, DR ve fidye yazılımı</a></li>
+<li><a href="20-olay-mudahale-runbook.md">Olay müdahale runbook’ları</a></li>
+<li><a href="21-viva-benimseme-degisim.md">Benimseme, değişim ve Viva</a></li>
+</ol>
 <h3>Kısım VII — Case studies &amp; proje</h3>
 <ol>
 <li><a href="10-case-studies.md">Gerçek hayat case study derlemesi</a></li>
@@ -120,6 +105,9 @@ figure.diagram img { max-width:100%; height:auto; display:block; }
 <li>Defender / Purview ile tehdit ve veri koruma katmanlarını kurarsınız.</li>
 <li>PowerShell ve Microsoft Graph ile tekrarlanabilir otomasyon yazarsınız.</li>
 <li>Hibrit senaryoları, migrasyonu ve mimari trade-off’ları savunabilirsiniz.</li>
+<li>Intune ile cihaz/uygulama korumasını CA’ya bağlarsınız.</li>
+<li>Ağ/VPN kaynaklı M365 sorunlarını yapılandırma sorunundan ayırırsınız.</li>
+<li>Yedekleme/IR/benimseme ile operasyonu uçtan uca kurarsınız.</li>
 </ol>
 <hr/>
 <h2>Lisans ve kullanım</h2>
@@ -186,6 +174,20 @@ figure.diagram img { max-width:100%; height:auto; display:block; }
 <li>[ ] Sonraki bölüm: bulut ve dijital işyeri temelleri</li>
 </ul>
 <blockquote><strong>Sonraki:</strong> <a href="01-bulut-ve-dijital-isyerleri.md">Bölüm 1 — Bulut bilişim, SaaS ve dijital işyeri</a></blockquote>
+<h2>0.7 Geniş tempo (detaylı / 12 hafta)</h2>
+<table>
+<tr><th>Hafta</th><th>Odak</th></tr>
+<tr><td>1–2</td><td>Temeller + tenant + Entra</td></tr>
+<tr><td>3–4</td><td>Exchange + SPO/OneDrive</td></tr>
+<tr><td>5</td><td>Teams + ağ temelleri</td></tr>
+<tr><td>6–7</td><td>Zero Trust + Purview + IR</td></tr>
+<tr><td>8</td><td>PowerShell/Graph otomasyon</td></tr>
+<tr><td>9</td><td>Intune + hibrit kimlik</td></tr>
+<tr><td>10</td><td>Power Platform/Copilot + KVKK</td></tr>
+<tr><td>11</td><td>Yedek/DR + izleme + benimseme</td></tr>
+<tr><td>12</td><td>Case bankası + Capstone savunması</td></tr>
+</table>
+<p>Dar okuma (8 hafta) hâlâ geçerli; bu tablo <strong>uzman derinliği</strong> içindir.</p>
 </article><article id="sec-2">
 <h1>Bölüm 1 — Bulut Bilişim, SaaS ve Dijital İşyeri</h1>
 <h2>1.1 Bulut nedir? (Gerçekten)</h2>
@@ -260,6 +262,17 @@ figure.diagram img { max-width:100%; height:auto; display:block; }
 <p><strong>Soru listesi:</strong> Hangi sistem authoritative HR? Dosya master’ı nerede? Yedek kimin sorumluluğu?</p>
 <h2>1.9 Değişime direnç ve benimsenme</h2>
 <p>Teknik göç başarılı, kullanıcı hâlâ eski file share kullanıyor olabilir. Adoption: şampiyon kullanıcılar, kısa eğitim, eski sistemin kapanış tarihi.</p>
+<h2>1.10 Derinleşme: TCO ve gizli maliyetler</h2>
+<p>Lisans satır fiyatı toplam maliyet değildir. TCO’ya ekleyin:</p>
+<ul>
+<li>Migrasyon danışmanlığı / araçları</li>
+<li>Ağ çıkış ve proxy yeniden tasarımı</li>
+<li>Eğitim ve şampiyon zamanı</li>
+<li>Üçüncü parti yedekleme</li>
+<li>Güvenlik eklentileri</li>
+<li>Yardım masası ticket artışı (ilk 90 gün)</li>
+</ul>
+<p><strong>Yöntem:</strong> 3 yıllık TCO tablosu (lisans + proje + operasyon). CFO dilinde konuşun.</p>
 </article><article id="sec-3">
 <h1>Bölüm 2 — Microsoft 365 Ekosistemi, Tenant ve Lisanslama</h1>
 <h2>2.1 Büyük resim: ekosistem haritası</h2>
@@ -391,6 +404,30 @@ figure.diagram img { max-width:100%; height:auto; display:block; }
 <li>Teams team creation by everyone</li>
 </ul>
 <p>İlk hafta “varsayılan sıkılaştırma” checklist’i çalıştırın (Bölüm 7 ile birlikte).</p>
+<h2>2.13 Derinleşme: Çok domainli organizasyon</h2>
+<p>Şirket birleşmesi: <code>kuzeylojistik.com</code> + <code>dogukargo.com</code></p>
+<p>Seçenekler:</p>
+<ol>
+<li>Tek tenant, çok domain (genelde tercih)</li>
+<li>İki tenant + galeri / migration (siyaset / yasal)</li>
+</ol>
+<p>Tek tenant’ta:</p>
+<ul>
+<li>UPN suffix politikası</li>
+<li>Email address policy</li>
+<li>Marka / Outlook imprint</li>
+<li>Eski domain’i accepted domain olarak tutma süresi</li>
+</ul>
+<h2>2.14 Partner ilişkileri ve GDAP (kavram)</h2>
+<p>MSP / partner erişimi:</p>
+<ul>
+<li>Granular Delegated Admin Privileges</li>
+<li>Süreli, az yetkili</li>
+<li>Partner’ın Global Admin’i “sonsuz” olmasın</li>
+</ul>
+<h2>2.15 Çalışılmış senaryo: Trial’dan prod’a</h2>
+<p>Trial üzerinde pilot yapılan yapılandırmayı prod’a “elle kopyalamayın”.  </p>
+<p>Infrastructure-as-config notları + ekran envanteri + mümkünse script ile yeniden kurun.</p>
 </article><article id="sec-4">
 <h1>Bölüm 3 — Kimlik Temelleri: Microsoft Entra ID</h1>
 <h2>3.1 Neden kimlik her şeyin merkezinde?</h2>
@@ -512,6 +549,68 @@ Parola  →  MFA  →  Passwordless (FIDO2 / Authenticator passwordless)  →  C
 <li>Düzenli olarak <strong>Enterprise applications</strong> envanteri çıkarın</li>
 </ul>
 <p>Bu, Bölüm 8’deki app-only otomasyonun güvenlik kardeşidir.</p>
+<h2>3.13 Derinleşme: Kimlik doğrulama yöntemleri karşılaştırması</h2>
+<table>
+<tr><th>Yöntem</th><th>Güç</th><th>Kullanılabilirlik</th><th>Tipik kullanım</th></tr>
+<tr><td>Parola + SMS MFA</td><td>Zayıf-orta</td><td>Yüksek</td><td>Miras / geçiş dönemi</td></tr>
+<tr><td>Authenticator push (number matching)</td><td>Orta-iyi</td><td>Yüksek</td><td>Genel çalışan</td></tr>
+<tr><td>TOTP (Authenticator)</td><td>Orta-iyi</td><td>Yüksek</td><td>Alternatif</td></tr>
+<tr><td>FIDO2 güvenlik anahtarı</td><td>Çok iyi</td><td>Orta</td><td>Admin / VIP</td></tr>
+<tr><td>Windows Hello for Business</td><td>Çok iyi</td><td>Yüksek (kurumsal PC)</td><td>Ofis cihazları</td></tr>
+<tr><td>Sertifika tabanlı</td><td>İyi</td><td>Orta</td><td>Özel senaryolar</td></tr>
+<tr><td>Temporary Access Pass</td><td>Orta</td><td>Geçici</td><td>Onboarding / kayıp cihaz</td></tr>
+</table>
+<p><strong>KuzeyLojistik politikası (örnek):</strong></p>
+<ul>
+<li>Tüm kullanıcılar: Authenticator number matching zorunlu</li>
+<li>Admin rolleri: FIDO2 veya WHfB + phishing-resistant CA</li>
+<li>SMS yalnızca istisna listesinde (ve süreli)</li>
+</ul>
+<h2>3.14 Password protection ve smart lockout</h2>
+<p>Entra Password Protection:</p>
+<ul>
+<li>Global banned password list</li>
+<li>Custom banned list (şirket adı, lokasyon, sezon)</li>
+<li>On-prem agent ile hibrit senaryoda AD’ye de uygulanabilir</li>
+</ul>
+<p>Smart lockout: Brute-force’a karşı kilitleme; gerçek kullanıcının meşru denemelerini ayırt etmeye çalışır. CA ile birlikte düşünün — “sadece lockout yeter” değildir.</p>
+<h2>3.15 Access reviews ve entitlement (ileri)</h2>
+<p>Büyük org’da kalıcı grup üyeliği çürür. Access review:</p>
+<ul>
+<li>Misafirleri 90 günde bir gözden geçir</li>
+<li>VIP güvenlik gruplarını 30/60 günde bir</li>
+<li>Teams/M365 group sahiplerine “hâlâ lazım mı?”</li>
+</ul>
+<p>Entitlement Management (lisansa bağlı): paket (access package) → onay → süreli erişim → otomatik kaldırma.</p>
+<h2>3.16 Uygulama proxy ve eski uygulamalar</h2>
+<p>On-prem HTTP uygulamalarını Entra Application Proxy ile yayımlama:</p>
+<ul>
+<li>Modern kimlik + CA cihaz koşulları eski app’e taşınır</li>
+<li>VPN’siz erişim senaryoları</li>
+<li>Connector makinesi yüksek erişilebilir olmalı</li>
+</ul>
+<h2>3.17 Loglar: neyi nereye bakarsınız?</h2>
+<table>
+<tr><th>Soru</th><th>Log</th></tr>
+<tr><td>Kim, nereden giriş yaptı?</td><td>Sign-in logs</td></tr>
+<tr><td>Hangi uygulama consent aldı?</td><td>Audit + enterprise apps</td></tr>
+<tr><td>Rol ataması ne zaman?</td><td>Directory audit</td></tr>
+<tr><td>Riskli oturum?</td><td>Identity Protection / risky sign-ins</td></tr>
+<tr><td>CA hangi politikayı uyguladı?</td><td>Sign-in → Conditional Access sekmesi</td></tr>
+</table>
+<p><strong>Pratik:</strong> Bir kullanıcı “giremiyorum” dediğinde önce sign-in log’daki <strong>Failure reason</strong> ve <strong>CA</strong> satırını okuyun; tahmin etmeyin.</p>
+<h2>3.18 Çalışılmış senaryo: Joiner otomasyon tasarımı</h2>
+<p>Girdiler (HR): employeeId, ad, soyad, department, title, manager, location, startDate  </p>
+<p>Çıktılar:</p>
+<ol>
+<li>UPN üretimi kuralı (<code>ad.soyad@</code> + çakışma çözümü)</li>
+<li>usageLocation = TR</li>
+<li>Dinamik gruplarla lisans + güvenlik grubu</li>
+<li>Manager alanı (onay akışları için)</li>
+<li>TAP veya geçici parola + ilk girişte değişim</li>
+<li>Welcome mail (Teams/Exchange hazır olduktan sonra)</li>
+</ol>
+<p>Hata yolları: HR attribute boş → kuyruk; lisans tükenmiş → alert; UPN çakışması → -2 suffix.</p>
 </article><article id="sec-5">
 <h1>Bölüm 4 — Exchange Online: Posta, Takvim ve Alıcılar</h1>
 <h2>4.1 Exchange Online ne işe yarar?</h2>
@@ -610,6 +709,52 @@ Gönderen → Edge/Transport → Malware/Spam filtreleri → Mailbox
 <p>Bazı sektörler journaling ister. Alternatif: journal rule / connector ile arşiv ürünü. SPF/DKIM’i üçüncü parti gönderenlerle bozmamaya dikkat.</p>
 <h2>4.13 Mobil cihaz posta politikaları</h2>
 <p>ActiveSync cihaz politikaları ve modern kimlik doğrulama. Legacy ActiveSync basic auth kapatılmalı; CA ile mobil Outlook zorunluluğu sık tercih.</p>
+<h2>4.14 Derinleşme: Anti-spam / anti-malware politika mimarisi</h2>
+<p>Katmanlar:</p>
+<ol>
+<li><strong>Connection filtering</strong> — IP allow/block, safe list tuzağı (allow list’i şişirmeyin)</li>
+<li><strong>Anti-spam policy</strong> — bulk threshold, spam action (MoveToJunky / Quarantine)</li>
+<li><strong>Anti-malware</strong> — common attachment filter (<code>.exe</code>, <code>.js</code> …)</li>
+<li><strong>Anti-phishing</strong> — mailbox intelligence, impersonation (user + domain)</li>
+<li><strong>Safe Attachments / Safe Links</strong> — Defender for Office 365</li>
+<li><strong> spoof intelligence / DMARC</strong> — kimlik doğrulama</li>
+</ol>
+<p><strong>Politika kapsamı:</strong> Anti-phish’i önce VIP / finans grubuna uygulayın, sonra genişletin.</p>
+<h3>Quarantine operasyonu</h3>
+<ul>
+<li>Kullanıcı quarantine bildirimleri (çok gürültülü olabilir)</li>
+<li>Admin quarantine release yetkisi</li>
+<li>Yanlış pozitif süreci: ticket → release → allow/override dikkatli</li>
+</ul>
+<h2>4.15 Message trace ve Troubleshooting ağacı</h2>
+<p>Belirti: “Mail gitmedi / gelmedi”</p>
+<ol>
+<li>Message trace (alıcı, zaman, subject)</li>
+<li>Quarantine’te mi?</li>
+<li>Transport rule düşürdü mü?</li>
+<li>SPF/DKIM fail + DMARC reject mi?</li>
+<li>Alıcı tarafı blokladı mı? (NDR kodu)</li>
+<li>Connector / hibrit mi?</li>
+</ol>
+<p>NDR kodlarını ezberlemeyin; yorumlamayı öğrenin (<code>5.7.1</code>, <code>4.4.7</code> timeout vb.).</p>
+<h2>4.16 Takvim paylaşımı ve cross-org</h2>
+<ul>
+<li>Organization relationship / individual sharing</li>
+<li>Free/busy hibritte</li>
+<li>Rooms’un booking window / conflict yönetimi</li>
+</ul>
+<h2>4.17 Public Folder mirası</h2>
+<p>Hâlâ public folder kullanan org’lar var. Modern hedef: SharePoint + Teams. Migrasyon planı olmadan sonsuza taşımayın.</p>
+<h2>4.18 Çalışılmış senaryo: Destek@ dönüşümü</h2>
+<p>Önce: 4 kişi shared’a parola ile giriyor.  </p>
+<p>Hedef:</p>
+<ol>
+<li>Shared mailbox, sign-in disabled</li>
+<li>Full Access + Send As</li>
+<li>Microsoft 365 group + Teams “Destek” (iç tartışma) — mailbox ayrı kalabilir</li>
+<li>SLA: gece nöbeti için Graph/Power Automate ile atama (ileride)</li>
+<li>Audit ve CA ile koruma</li>
+</ol>
 </article><article id="sec-6">
 <h1>Bölüm 5 — SharePoint Online ve OneDrive</h1>
 <h2>5.1 İki depo, iki niyet</h2>
@@ -712,6 +857,45 @@ Gönderen → Edge/Transport → Malware/Spam filtreleri → Mailbox
 <li>Çok büyük PST / VM imajlarını OneDrive’a koymayın</li>
 <li>Instrumentasyon / mühendislik klasörleri için policy istisnası</li>
 </ul>
+<h2>5.13 Derinleşme: Site tasarım kalıpları</h2>
+<h3>Kalıp A — Departman sitesi</h3>
+<ul>
+<li>Owners: departman müdürü + IT liaison (en az 2)</li>
+<li>Members: güvenlik grubu <code>SG-Dept-X-Members</code></li>
+<li>Visitors: isteğe bağlı geniş okuma</li>
+<li>Kütüphaneler: Politikalar (read), Çalışma (edit), Arşiv (read)</li>
+</ul>
+<h3>Kalıp B — Proje sitesi</h3>
+<ul>
+<li>Bitiş tarihi + sahiplik yenileme</li>
+<li>Dış misafirler için ayrı Private channel / ayrı site tercihi</li>
+<li>Proje bitince archive + read-only</li>
+</ul>
+<h3>Kalıp C — Kayıt merkezi (records)</h3>
+<ul>
+<li>Label + retention</li>
+<li>Düzenleme kısıtı</li>
+<li>eDiscovery dostu bilgi mimarisi</li>
+</ul>
+<h2>5.14 Arama yönetimi</h2>
+<ul>
+<li>Managed properties / crawled properties (kavram)</li>
+<li>Promote sonuçlar (bookmarks)</li>
+<li>Vertical’ler (ör. Sadece Politikalar)</li>
+<li>Kullanıcı “bulamıyorum” diyorsa: izin mi, metadata mı, search şeması mı?</li>
+</ul>
+<h2>5.15 Paylaşım raporları ve oversharing avı</h2>
+<p>Düzenli işler:</p>
+<ol>
+<li>Anyone link envanteri</li>
+<li>“Entire organization” ile paylaşılan hassas kütüphaneler</li>
+<li>Misafirlerin Owner olduğu siteler (anti-pattern)</li>
+<li>Orphaned sites (sahipsiz)</li>
+</ol>
+<h2>5.16 Çalışılmış senaryo: İK dosya göçü</h2>
+<p>Kaynak: <code>\\fs01\HR</code> (NTFS ACL karmaşası)  </p>
+<p>Hedef: <code>spo-hr</code> site + 3 kütüphane  </p>
+<p>Adımlar: envanter → ACL sadeleştirme (gruplara) → pilot 1 klasör → Migration Manager → doğrulama → eski share read-only → kapatma tarihi.</p>
 </article><article id="sec-7">
 <h1>Bölüm 6 — Microsoft Teams ve İşbirliği Mimarisi</h1>
 <h2>6.1 Teams nedir? (Sadece sohbet değil)</h2>
@@ -819,6 +1003,40 @@ Team
 <li><strong>Guest access:</strong> Azure B2B ile team’e üye</li>
 </ul>
 <p>İkisini karıştırmak destek ticket’larının klasik kaynağıdır.</p>
+<h2>6.13 Derinleşme: Bilgi mimarisi karar ağacı</h2>
+<p>Yeni iş ihtiyacı geldiğinde:</p>
+<ol>
+<li><strong>Kalıcı departman mı?</strong> → Departman team (uzun ömür)</li>
+<li><strong>Geçici proje mi?</strong> → Project team + expiration</li>
+<li><strong>Sadece duyuru mu?</strong> → Teams yerine communication site / org-wide (dikkat)</li>
+<li><strong>Hassas alt grup mu?</strong> → Private channel veya ayrı team (trade-off bilinerek)</li>
+<li><strong>Çok şirketli mi?</strong> → Shared channel / B2B guest net kurallarla</li>
+</ol>
+<h2>6.14 Toplantı güvenliği checklist</h2>
+<ul>
+<li>Lobisiz anonim katılım?</li>
+<li>Dış kullanıcı sunum yapabilir mi?</li>
+<li>Kayıt otomatik mi, nereye düşer, retention?</li>
+<li>Watermark / end-to-end encryption gereken toplantılar?</li>
+<li>VIP toplantılarda sensitivity label</li>
+</ul>
+<h2>6.15 Uygulama yönetişimi</h2>
+<ul>
+<li>Global app permission policy: hangi apps</li>
+<li>Blocked apps list</li>
+<li>Setup policy ile pin’lenen apps (yardım masası)</li>
+<li>Üçüncü parti chatbot / connector riski</li>
+</ul>
+<h2>6.16 Network anahtar noktaları (önizleme)</h2>
+<p>Teams ses/görüntü UDP ve belirli URL/IP aralıklarına bağımlıdır. Split tunneling ve proxy hataları “Teams bozuk” ticket’larının yarısıdır. Ayrıntı: Bölüm 17 (Ağ).</p>
+<h2>6.17 Çalışılmış senaryo: 800 team temizliği</h2>
+<ol>
+<li>Last activity &lt; 90 gün → aday</li>
+<li>Owner yok → IT sahipliği geçici</li>
+<li>Keep / Merge / Archive karar matrisi</li>
+<li>Naming policy + expiration aç</li>
+<li>Yeni team için talep formu (Power Automate onay)</li>
+</ol>
 </article><article id="sec-8">
 <h1>Bölüm 7 — Güvenlik, Uyumluluk ve Zero Trust</h1>
 <h2>7.1 Zero Trust tek cümle</h2>
@@ -921,6 +1139,51 @@ Team
 <tr><td>Aylık</td><td>CA report-only → enforce adayları, lisans+rol gözden geçirme</td></tr>
 <tr><td>Çeyreklik</td><td>Access review, break-glass testi, IR masa tatbikatı</td></tr>
 </table>
+<h2>7.12 Derinleşme: Conditional Access politika kataloğu (referans)</h2>
+<p>KuzeyLojistik v2 katalog (isimlendirme standardı: <code>CA-###-Amaç</code>):</p>
+<table>
+<tr><th>ID</th><th>Amaç</th><th>Mod</th></tr>
+<tr><td>CA-001-Base-MFA</td><td>Tüm bulut uygulamaları MFA</td><td>Report→On</td></tr>
+<tr><td>CA-002-Block-Legacy</td><td>Legacy auth engel</td><td>On</td></tr>
+<tr><td>CA-003-Admin-PhishResist</td><td>Directory rollerine phishing-resistant</td><td>On</td></tr>
+<tr><td>CA-004-Compliant-Device-Windows</td><td>Office apps için uyumlu cihaz (ofis)</td><td>Pilot</td></tr>
+<tr><td>CA-005-Guest-Restrict</td><td>Misafirleri seçili apps</td><td>On</td></tr>
+<tr><td>CA-006-Risky-SignIn</td><td>Yüksek risk engel / MFA</td><td>P2 ise</td></tr>
+<tr><td>CA-007-Session-SharePoint</td><td>Browser session controls</td><td>İsteğe</td></tr>
+<tr><td>CA-008-Block-Countries</td><td>İş yapılmayan ülkeler</td><td>Dikkatli</td></tr>
+</table>
+<p><strong>Dışlama grupları:</strong> Break-glass, Acil-erişim-cihazları, migrasyon servis hesapları (süreli!).</p>
+<h2>7.13 Attack simulation ve bilinç</h2>
+<p>Attack simulation training ile kontrollü phishing kampanyaları:</p>
+<ul>
+<li>Baseline ölç</li>
+<li>Eğitim ata</li>
+<li>Tekrar ölç</li>
+</ul>
+<p>Teknik kontrol + insan katmanı birlikte.</p>
+<h2>7.14 Insider risk ve communication compliance (kavram)</h2>
+<p>Hassas sektörlerde:</p>
+<ul>
+<li>Ani toplu indirme</li>
+<li>İstifa öncesi veri hareketi</li>
+<li>Uygunsuz iletişim politikaları</li>
+</ul>
+<p>Lisans ve hukuk çerçevesi şart; “herkesi casus gibi izle” değildir.</p>
+<h2>7.15 Defender XDR köprüsü</h2>
+<p>M365 sinyalleri (kimlik, email, endpoint) birleşik olaylarda birleşir. SOC için:</p>
+<ul>
+<li>Incident kuyruğu</li>
+<li>Automated investigation (lisansa göre)</li>
+<li>Threat analytics duyuruları</li>
+</ul>
+<h2>7.16 Çalışılmış senaryo: BEC müdahale 90 dakika</h2>
+<p>T0: Muhasebe şüpheli EFT maili  </p>
+<p>T+10: Header + Message trace + Threat Explorer  </p>
+<p>T+20: Kullanıcı oturum revoke + parola / MFA reset  </p>
+<p>T+30: Inbox kurallarını temizle  </p>
+<p>T+40: Benzer mailleri purge / ZAP  </p>
+<p>T+60: Finans sürecini dondur / sözlü teyit  </p>
+<p>T+90: Post-incident: DMARC, anti-impersonation, eğitim  </p>
 </article><article id="sec-9">
 <h1>Bölüm 8 — Yönetim, PowerShell ve Microsoft Graph</h1>
 <h2>8.1 Neden portal yetmez?</h2>
@@ -1043,6 +1306,44 @@ https://graph.microsoft.com/v1.0/groups/{id}/members
 <li>İletişim (helpdesk hazır mı?)</li>
 </ul>
 <p>Report-only / pilot / enforce üçlüsü sadece CA için değil; DLP ve birçok Teams politikası için de geçerlidir.</p>
+<h2>8.13 Derinleşme: Graph sorgu kalıpları</h2>
+<pre><code>
+GET /users?$select=displayName,userPrincipalName,accountEnabled&amp;$filter=accountEnabled eq true&amp;$top=999
+
+GET /groups/{id}/members
+
+GET /users/{id}/memberOf
+
+GET /auditLogs/signIns?$filter=userPrincipalName eq &#x27;ali@contoso.com&#x27;
+
+</code></pre>
+<p><strong>Throttling:</strong> 429 alırsanız <code>Retry-After</code> saygısı. Toplu işlerde batch (<code>$batch</code>) ve sayfalama (<code>@odata.nextLink</code>) zorunlu.</p>
+<h2>8.14 PnP / Exchange / Teams modül sınırları</h2>
+<table>
+<tr><th>İhtiyaç</th><th>Araç</th></tr>
+<tr><td>Kullanıcı/grup/lisans</td><td>Graph</td></tr>
+<tr><td>Mailbox/retention/EXO özel</td><td>Exchange Online PS</td></tr>
+<tr><td>Team politika derinliği</td><td>Teams PS / admin center</td></tr>
+<tr><td>SPO site/provision</td><td>PnP.PowerShell / Graph</td></tr>
+</table>
+<p>“Her şeyi Graph ile yaparım” henüz her senaryoda doğru değil; ama yön Graph’a doğrudur.</p>
+<h2>8.15 CI ile otomasyon</h2>
+<p>Örnek boru hattı:</p>
+<ol>
+<li>PR → syntax / PSScriptAnalyzer</li>
+<li>Onay kapısı</li>
+<li>App-only ile test tenant</li>
+<li>Manuel onay</li>
+<li>Prod</li>
+</ol>
+<h2>8.16 Çalışılmış senaryo: Aylık lisans savurganlık raporu</h2>
+<p>Job her ayın 1’i:</p>
+<ol>
+<li>Assigned vs sign-in 30/60/90 gün</li>
+<li>SKU bazlı maliyet tahmini</li>
+<li>Yöneticilere CSV + 5 maddelik özet</li>
+<li>“Kaldırılabilir aday” listesi (insan onayı olmadan kaldırma!)</li>
+</ol>
 </article><article id="sec-10">
 <h1>Bölüm 9 — Mimari, Hibrit, Migrasyon ve Uzman Uygulamalar</h1>
 <h2>9.1 Uzman neyi farklı yapar?</h2>
@@ -1130,6 +1431,40 @@ https://graph.microsoft.com/v1.0/groups/{id}/members
 <li>[ ] Break-glass + IR köprüm var</li>
 </ul>
 <blockquote><strong>Sonraki:</strong> <a href="10-case-studies.md">Bölüm 10 — Case study derlemesi</a></blockquote>
+<h2>9.11 Derinleşme: Karar kayıtları (ADR)</h2>
+<p>Her kritik mimari karar bir <strong>Architecture Decision Record</strong> olur:</p>
+<pre><code>
+Başlık: Cloud-only kimlik
+
+Durum: Kabul
+
+Bağlam: On-prem uygulama yok, 500 kullanıcı
+
+Karar: Entra cloud-only
+
+Sonuç: Connect maliyeti yok; ileride ERP gelirse Cloud Sync değerlendirilecek
+
+Tarih / sahip
+
+</code></pre>
+<p>Bu, “neden böyle?” sorusunu 18 ay sonra kurtarır.</p>
+<h2>9.12 Landing zone checklist (M365)</h2>
+<ul>
+<li>[ ] Break-glass ×2 test edildi</li>
+<li>[ ] Naming standards dokümanı</li>
+<li>[ ] CA baseline açık</li>
+<li>[ ] Legacy auth kapalı</li>
+<li>[ ] Sharing varsayılanı sıkı</li>
+<li>[ ] Audit açık</li>
+<li>[ ] DKIM/DMARC planı</li>
+<li>[ ] Backup/IR sahipleri belli</li>
+<li>[ ] Lisans/persona matrisi onaylı</li>
+</ul>
+<h2>9.13 Çalışılmış senaryo: 3 aylık migrasyon programı</h2>
+<p>Ay 1: kimlik + pilot mail  </p>
+<p>Ay 2: early adopter dosya + Teams  </p>
+<p>Ay 3: genel + eski sistem kapatma  </p>
+<p>Her ay: başarı ölçütü, eğitim, rollback, iletişim şablonu</p>
 </article><article id="sec-11">
 <h1>Bölüm 12 — Uç Nokta Yönetimi: Microsoft Intune</h1>
 <h2>12.1 Neden M365 kitabı Intune içerir?</h2>
@@ -1189,6 +1524,22 @@ https://graph.microsoft.com/v1.0/groups/{id}/members
 <li>[ ] BYOD için aşırı MDM tuzağını biliyorum</li>
 </ul>
 <blockquote><strong>Sonraki:</strong> <a href="13-power-platform-copilot.md">Bölüm 13 — Power Platform ve otomasyon ötesi</a></blockquote>
+<h2>12.10 Derinleşme: Uyumluluk + CA test matrisi</h2>
+<table>
+<tr><th>Cihaz durumu</th><th>Beklenen CA sonucu</th></tr>
+<tr><td>Hybrid join + compliant</td><td>İzin</td></tr>
+<tr><td>Registered ama noncompliant</td><td>Engel / sınırlı</td></tr>
+<tr><td>BYOD sadece MAM</td><td>Uygulama korumalı erişim</td></tr>
+<tr><td>Bilinmeyen cihaz</td><td>Blok veya web-only</td></tr>
+</table>
+<p>Test hesapları ve test cihazları production politikalarını doğrulamadan genişleteyin.</p>
+<h2>12.11 Autopilot başarısızlık teşhisi</h2>
+<ul>
+<li>Hash yanlış / tekrar kayıt</li>
+<li>ESP (Enrollment Status Page) timeout</li>
+<li>Uygulama bağımlılık sırası</li>
+<li>Ağ: cihaz OOBE’de internete çıkamıyor</li>
+</ul>
 </article><article id="sec-12">
 <h1>Bölüm 13 — Power Platform, Bağlayıcılar ve Copilot (M365 Bağlamı)</h1>
 <h2>13.1 Neden bu bölüm var?</h2>
@@ -1247,6 +1598,18 @@ https://graph.microsoft.com/v1.0/groups/{id}/members
 <li>[ ] Copilot = izinlerin aynası olduğunu anlattım</li>
 </ul>
 <blockquote><strong>Sonraki:</strong> <a href="14-kvkk-gdpr-uyumluluk.md">Bölüm 14 — KVKK, GDPR ve uyumluluk tasarımı</a></blockquote>
+<h2>13.9 Derinleşme: Copilot veri sınırları</h2>
+<p>Anlatılacak doğru model:</p>
+<blockquote>Copilot, kullanıcının zaten erişebildiği içerikte yardımcı olur; yeni bir izin kapısı açmaz. Ama kötü paylaşımı ölçekler.</blockquote>
+<p>Hazırlık programı 6 hafta:</p>
+<ol>
+<li>Oversharing avı</li>
+<li>Label yaygınlaştırma</li>
+<li>Misafir review</li>
+<li>Yüksek ayrıcalıklı hesap politikası</li>
+<li>Eğitim</li>
+<li>Pilot grup ölçümü</li>
+</ol>
 </article><article id="sec-13">
 <h1>Bölüm 14 — KVKK, GDPR ve Uyumluluk Tasarımı (M365’te)</h1>
 <h2>14.1 Uyarı (hukuki değil, teknik çerçeve)</h2>
@@ -1300,6 +1663,14 @@ https://graph.microsoft.com/v1.0/groups/{id}/members
 <li>[ ] Geo cevabını üç parçalı (workload/yedek/ISV) veriyorum</li>
 </ul>
 <blockquote><strong>Sonraki:</strong> <a href="15-izleme-raporlama.md">Bölüm 15 — İzleme, raporlama ve hizmet sağlığı</a></blockquote>
+<h2>14.10 Derinleşme: Veri haritası şablonu</h2>
+<table>
+<tr><th>Veri türü</th><th>Sistem</th><th>Hukuki gerekçe (İK doldurur)</th><th>Saklama</th><th>Erişim grubu</th><th>Dış aktarım?</th></tr>
+<tr><td>Özlük</td><td>SPO-HR</td><td>...</td><td>...</td><td>SG-HR</td><td>Hayır</td></tr>
+<tr><td>Müşteri sözleşme</td><td>SPO-Legal</td><td>...</td><td>...</td><td>SG-Legal</td><td>Misafir avukat</td></tr>
+<tr><td>Destek mail</td><td>EXO shared</td><td>...</td><td>...</td><td>Destek</td><td>Bazen</td></tr>
+</table>
+<p>Bu tablo olmadan DLP kuralları rastgele ateş eder.</p>
 </article><article id="sec-14">
 <h1>Bölüm 15 — İzleme, Raporlama ve Hizmet Sağlığı</h1>
 <h2>15.1 Uzman kör noktası</h2>
@@ -1365,7 +1736,398 @@ https://graph.microsoft.com/v1.0/groups/{id}/members
 <li>[ ] En az 5 güvenlik/operasyon alarmı tanımladım</li>
 </ul>
 <blockquote><strong>Sonraki:</strong> <a href="16-mulakat-savunma.md">Bölüm 16 — Sık sorulan mülakat / savunma soruları</a></blockquote>
+<h2>15.10 Derinleşme: Yönetici tek sayfa KPI</h2>
+<p>Aylık tek sayfa:</p>
+<ol>
+<li>Servis olayları (bizim / Microsoft)</li>
+<li>Aktif kullanıcı trendi</li>
+<li>Lisans israf adayı</li>
+<li>Phishing / quarantine özeti</li>
+<li>Oversharing trendi</li>
+<li>Açık IR sayısı</li>
+<li>Bir sonraki ayın değişiklikleri (Message Center)</li>
+</ol>
 </article><article id="sec-15">
+<h1>Bölüm 17 — Ağ, Bağlantı ve İstemci Performansı</h1>
+<h2>17.1 Neden ağ, M365 kitabında?</h2>
+<p>“Outlook yavaş”, “Teams ses kesiliyor”, “OneDrive sync takılıyor” ticket’larının önemli kısmı <strong>tenant ayarı değil, ağ yoludur</strong>. Uzman, Service Health ile proxy/firewall/DNS ayrımını yapar.</p>
+<p><figure class="diagram"><img src="diyagramlar/17-m365-ag-yolu.svg" alt="diyagramlar/17-m365-ag-yolu.svg"/><figcaption>diyagramlar/17-m365-ag-yolu.svg</figcaption></figure></p>
+<h2>17.2 Temel ilkeler</h2>
+<ol>
+<li><strong>Microsoft 365 trafiğini kırıp SSL inspection ile boğmayın</strong> (özellikle Teams media / bazı uçlar).</li>
+<li><strong>Optimize / allow list</strong> URL ve IP’leri kategorize edin (Microsoft’un yayınladığı endpoint listeleri).</li>
+<li><strong>DNS çözümlemesi doğru coğrafyaya</strong> gitsin (lokal DNS, yanlış forwarder).</li>
+<li><strong>UDP</strong> ses/görüntü için kritik; sadece TCP’ye düşmek kaliteyi öldürür.</li>
+<li><strong>Split tunneling</strong> VPN senaryolarında M365 için sık önerilir (kurum politikasına göre).</li>
+</ol>
+<h2>17.3 Endpoint kategorileri (kavramsal)</h2>
+<table>
+<tr><th>Kategori</th><th>Örnek etki</th></tr>
+<tr><td>Optimize</td><td>Teams media — en hassas</td></tr>
+<tr><td>Allow</td><td>Auth, Exchange, SPO</td></tr>
+<tr><td>Default</td><td>Daha az kritik</td></tr>
+</table>
+<p>Firewall ekibi “hepsini proxy’ye” derse işbirliği bozulur. M365 admin olarak endpoint gerekçesini anlatabilmelisiniz.</p>
+<h2>17.4 Teams medya yolu</h2>
+<pre><code>
+İstemci → UDP (SRTP) → Microsoft edge → karşı uç
+
+</code></pre>
+<p>Semptomlar:</p>
+<ul>
+<li>Robot ses / tek yönlü ses → UDP / NAT / QoS</li>
+<li>Toplantıya giremiyor ama sohbet çalışıyor → media vs signaling ayrımı</li>
+<li>VPN açıkken bozuk, kapalıyken iyi → split tunnel adayı</li>
+</ul>
+<p><strong>Araçlar:</strong> Teams çağrı kalitesi / Call Analytics, Experience Insights (lisansa göre), <code>netstat</code>/packet capture (ileri).</p>
+<h2>17.5 Exchange / Outlook bağlantısı</h2>
+<ul>
+<li>Modern Authentication zorunlu</li>
+<li>MAPI over HTTP</li>
+<li>Autodiscover sorunları (Bölüm 4)</li>
+<li>Conditional Access seçici → eski Outlook istemcileri kırılabilir (sürüm politikası)</li>
+</ul>
+<h2>17.6 Proxy, PAC ve SSL inspection tuzakları</h2>
+<ul>
+<li>PAC dosyası M365’i yanlışlıkla proxy’ye gönderir</li>
+<li>SSL inspection sertifika pin kırar / gecikme ekler</li>
+<li>Çift NAT + uzun path → timeout’lar</li>
+</ul>
+<h2>17.7 IPv6, MTU, QoS</h2>
+<ul>
+<li>MTU/fragment sorunları nadir ama inatçı</li>
+<li>QoS DSCP işaretleme (Wi-Fi/kablolu) ses için değerli</li>
+<li>Ev kullanıcılarında Wi-Fi kanal kalitesi “bulut sorunu” sanılır</li>
+</ul>
+<h2>17.8 Case Study 17-A — Proxy her şeyi yutuyor</h2>
+<p>KuzeyLojistik tüm HTTPS’i proxy’den geçirdi; Teams toplantıları çöktü.  </p>
+<p><strong>Çözüm:</strong> Optimize kategorisini bypass; ölçümle doğrula; güvenlik istisnasını belgele.</p>
+<h2>17.9 Case Study 17-B — VPN split tunnel yok</h2>
+<p>Uzaktan çalışanlar VPN’e zorunlu; EXO gecikmesi 400ms+.  </p>
+<p><strong>Çözüm:</strong> M365 split tunnel + CA ile cihaz uyumu devam.</p>
+<h2>17.10 Laboratuvar 17</h2>
+<ol>
+<li>Tenant’ınız için (veya örnek) 10 kritik URL/IP kategorisini tabloya dökün.</li>
+<li>“Teams ses kesik” için 6 adımlık teşhis ağacı yazın.</li>
+<li>VPN senaryosunda split tunnel artı/eksi listesi çıkarın.</li>
+<li>Service Health vs ağ ayrımı için karar tablosu yapın.</li>
+</ol>
+<h2>17.11 Kontrol listesi</h2>
+<ul>
+<li>[ ] Optimize/Allow ayrımını açıklayabiliyorum</li>
+<li>[ ] UDP’nin Teams için neden kritik olduğunu savundum</li>
+<li>[ ] SSL inspection istisna gerekçemi yazdım</li>
+<li>[ ] VPN + CA birlikte düşünülüyor</li>
+</ul>
+<blockquote><strong>Sonraki:</strong> <a href="18-hibrit-kimlik-entra-connect.md">Bölüm 18 — Hibrit kimlik derinlemesine</a></blockquote>
+</article><article id="sec-16">
+<h1>Bölüm 18 — Hibrit Kimlik: Entra Connect / Cloud Sync</h1>
+<h2>18.1 Ne zaman hibrit?</h2>
+<p>On-prem Active Directory hâlâ authoritative ise (eski uygulamalar, GPO, dosya sunucusu ACL) kimlikler çoğu zaman <strong>senkron</strong> edilir.</p>
+<table>
+<tr><th>Araç</th><th>Ne zaman</th></tr>
+<tr><td><strong>Entra Connect Sync</strong></td><td>Klasik, zengin özellik, sunucu tabanlı</td></tr>
+<tr><td><strong>Entra Cloud Sync</strong></td><td>Hafif agent, bazı senaryolar için daha modern/basit</td></tr>
+<tr><td><strong>Federation (AD FS)</strong></td><td>Özel gereksinim; çoğu yeni tasarımda kaçınılır</td></tr>
+</table>
+<p><figure class="diagram"><img src="diyagramlar/18-hibrit-kimlik.svg" alt="diyagramlar/18-hibrit-kimlik.svg"/><figcaption>diyagramlar/18-hibrit-kimlik.svg</figcaption></figure></p>
+<h2>18.2 Sync motorunun zihinsel modeli</h2>
+<pre><code>
+AD DS → (Connect) → Entra ID → M365 iş yükleri
+
+</code></pre>
+<ul>
+<li><strong>Source of authority:</strong> Buluta doğrudan değiştiremeyeceğiniz alanlar vardır (synced user’da UPN vs.).</li>
+<li>Soft delete / recycle bin davranışları</li>
+<li>OU filtering: hangi OU’lar sync edilecek</li>
+<li>Attribute filtering / transformations</li>
+</ul>
+<h2>18.3 Kimlik doğrulama yöntemleri (hibrit)</h2>
+<table>
+<tr><th>Yöntem</th><th>Açıklama</th></tr>
+<tr><td><strong>Password Hash Sync (PHS)</strong></td><td>Hash sync; önerilen varsayılan birçok senaryoda</td></tr>
+<tr><td><strong>Pass-through Auth (PTA)</strong></td><td>On-prem agent ile anlık doğrulama</td></tr>
+<tr><td><strong>Federation</strong></td><td>Token AD FS vb. üzerinden</td></tr>
+</table>
+<p><strong>PHS + Seamless SSO</strong> sık tercih. PTA’da agent yüksek erişilebilir olmalı.</p>
+<h2>18.4 Seamless SSO ve hybrid join</h2>
+<ul>
+<li>Hybrid Azure AD Join / Entra hybrid join: cihaz hem AD hem Entra’da</li>
+<li>SSO deneyimi intranet’te</li>
+<li>CA compliant cihaz sinyali Intune ile birleşir</li>
+</ul>
+<h2>18.5 Yaygın kırılmalar</h2>
+<ol>
+<li>Senkron hesabı parola değişti, sync durdu</li>
+<li>UPN suffix domain Entra’da doğrulanmamış</li>
+</ol>
+<ul>
+<li>Duplicate proxyAddresses → sync error</li>
+</ul>
+<ol>
+<li>OU filter yanlış → kullanıcılar gelmedi</li>
+<li>Soft match / hard match hataları (mail nickname)</li>
+<li>Connect sunucusu yama sonrası SQL/LocalDB sorunu</li>
+</ol>
+<p><strong>Teşhis:</strong> Synchronization Service Manager, Connect Health, Entra provisioning logs.</p>
+<h2>18.6 Güvenlik</h2>
+<ul>
+<li>Connect sunucusu <strong>Tier 0</strong> gibi korunur</li>
+<li>PHS ile buluta giden hash’ler hakkında yönetime doğru anlatım (mitosları düzeltin)</li>
+<li>Cloud-only break-glass hesapları sync dışı</li>
+<li>Admin hesaplarını mümkünse bulut tarafında ayrı düşünün (synced admin riski)</li>
+</ul>
+<h2>18.7 Staging mode ve yükseltme</h2>
+<ul>
+<li>İkinci Connect sunucusu staging mode’da hazır</li>
+<li>Felaket / yükseltmede hızlı kesiş</li>
+<li>Cloud Sync’e geçiş değerlendirmesi: özellik matrisi okunmadan “yenisi iyi” demeyin</li>
+</ul>
+<h2>18.8 Case Study 18-A — Sync durdu, kimse fark etmedi</h2>
+<p>3 gün sync kapalı; yeni işe girenler M365’e gelmedi.  </p>
+<p><strong>Düzeltme:</strong> Connect Health alert + NOC runbook + günlük “last success” metriği.</p>
+<h2>18.9 Case Study 18-B — Soft match ile yanlış kullanıcı birleşti</h2>
+<p>Aynı SMTP yüzünden cloud trial kullanıcısı on-prem ile birleşti; izinler karıştı.  </p>
+<p><strong>Ders:</strong> Migrasyon öncesi identity matching planı; hard match (ImmutableId) bilinçli.</p>
+<h2>18.10 Laboratuvar 18</h2>
+<ol>
+<li>Cloud-only vs PHS vs PTA karar matrisi (5 kriter puanlayın).</li>
+<li>Sync hata senaryosu için 8 adımlık IR yazın.</li>
+<li>Break-glass’ın sync dışında kalmasını nasıl garanti edersiniz?</li>
+<li>OU filter değişikliğinin risklerini listeleyin.</li>
+</ol>
+<h2>18.11 Kontrol listesi</h2>
+<ul>
+<li>[ ] Source of authority’yi açıklayabiliyorum</li>
+<li>[ ] PHS/PTA/Federation farkını savundum</li>
+<li>[ ] Connect sunucusunu Tier 0 gibi koruyacağım</li>
+<li>[ ] Alert olmadan sync ölümünü kabul etmiyorum</li>
+</ul>
+<blockquote><strong>Sonraki:</strong> <a href="19-yedekleme-dr-fidye.md">Bölüm 19 — Yedekleme, DR ve fidye yazılımı</a></blockquote>
+</article><article id="sec-17">
+<h1>Bölüm 19 — Yedekleme, Felaket Kurtarma ve Fidye Yazılımı</h1>
+<h2>19.1 “Microsoft yedekliyor” miti</h2>
+<p>Microsoft <strong>hizmet sürekliliği</strong> ve kendi yedekleme/replicasyonu ile platformu korur. Bu, sizin:</p>
+<ul>
+<li>yanlışlıkla silmenizi,</li>
+<li>fidye yazılımının şifrelemesini,</li>
+<li>kötü niyetli admin’in toplu silmesini,</li>
+<li>uzun süreli hukuki arşiv ihtiyacınızı</li>
+</ul>
+<p>otomatik çözmez. <strong>Retention ≠ backup.</strong> Hold ≠ full workload restore senaryosu her zaman.</p>
+<p><figure class="diagram"><img src="diyagramlar/19-yedek-katmanlari.svg" alt="diyagramlar/19-yedek-katmanlari.svg"/><figcaption>diyagramlar/19-yedek-katmanlari.svg</figcaption></figure></p>
+<h2>19.2 Ne korunmalı?</h2>
+<table>
+<tr><th>İş yükü</th><th>Risk</th><th>Tipik ek kontrol</th></tr>
+<tr><td>Exchange mailbox</td><td>Soft delete / purge</td><td>Retention, litig hold, 3rd party backup</td></tr>
+<tr><td>OneDrive/SPO</td><td>Ransomware encrypt</td><td>Versioning, recycle, restore, backup ürünü</td></tr>
+<tr><td>Teams</td><td>Chat/files karma</td><td>SPO/EXO alt katman + vendor</td></tr>
+<tr><td>Entra config</td><td>Politikaların silinmesi</td><td>Config export / IaC</td></tr>
+<tr><td>Intune politikaları</td><td>Yanlış deploy</td><td>Export / versiyon kontrol</td></tr>
+</table>
+<h2>19.3 SharePoint / OneDrive fidye senaryosu</h2>
+<p>Belirtiler: toplu uzantı değişimi, mass modify.  </p>
+<p>Cevap:</p>
+<ol>
+<li>Kullanıcıyı izole et (hesap/cihaz)</li>
+<li>Version history / library restore</li>
+<li>File history restore pencereleri</li>
+<li>Üçüncü parti backup’tan point-in-time</li>
+<li>IR + root cause (token çalındı mı?)</li>
+</ol>
+<h2>19.4 Retention ve backup birlikte</h2>
+<ul>
+<li>Retention: uyumluluk / düzen</li>
+<li>Backup: operasyonel geri dönüş (granüler, farklı tehdit modeli)</li>
+<li>İkisini karıştırmak maliyet veya boş güvenlik duygusu yaratır</li>
+</ul>
+<h2>19.5 Config as code / export disiplini</h2>
+<p>En azından düzenli export:</p>
+<ul>
+<li>CA politikaları</li>
+<li>Exchange transport rules</li>
+<li>Intune configuration profiles (mümkün olduğunca)</li>
+<li>Conditional Access JSON</li>
+</ul>
+<p>Felaket: yanlış CA ile herkesi kilitlemek → break-glass + bilinen iyi config.</p>
+<h2>19.6 RPO / RTO konuşması (iş dili)</h2>
+<p>Yönetime sorun:</p>
+<ul>
+<li>Bir mailbox için kabul edilen veri kaybı (RPO)?</li>
+<li>Ne kadar sürede dönmeli (RTO)?</li>
+<li>Tüm SPO’nun geri gelmesi mi, tek site mi?</li>
+</ul>
+<p>Cevapsız backup ihaleleri boşa gider.</p>
+<h2>19.7 Case Study 19-A — Crypto on OneDrive</h2>
+<p>Satış temsilcisinin PC’si ele geçti; OneDrive sync şifreledi. Versioning 30 gün kurtardı; 45 günlük dosyalar üçüncü parti backup’tan geldi.  </p>
+<p><strong>Ders:</strong> Versioning tek başına SLA yetmeyebilir.</p>
+<h2>19.8 Case Study 19-B — Admin yanlışlıkla site sildi</h2>
+<p>Site collection silindi; recycle pencereleri yetişti. Süreç belgesizdi; 6 saat panik.  </p>
+<p><strong>Düzeltme:</strong> Silme yetkisi kısıt + onay + backup + runbook.</p>
+<h2>19.9 Laboratuvar 19</h2>
+<ol>
+<li>KuzeyLojistik için RPO/RTO tablosu (mail, OD, SPO, Teams).</li>
+<li>Retention vs backup farkını yöneticiye 5 cümlede anlatın.</li>
+<li>Fidye için OneDrive/SPO müdahale kartı yazın.</li>
+<li>Hangi config’leri haftalık export edeceğinizi listeleyin.</li>
+</ol>
+<h2>19.10 Kontrol listesi</h2>
+<ul>
+<li>[ ] “Microsoft yedekliyor” mitini çürüttüm</li>
+<li>[ ] RPO/RTO sordum</li>
+<li>[ ] Versioning + recycle + backup katmanlarını ayırdım</li>
+<li>[ ] Config export disiplinim var</li>
+</ul>
+<blockquote><strong>Sonraki:</strong> <a href="20-olay-mudahale-runbook.md">Bölüm 20 — Olay müdahale runbook’ları</a></blockquote>
+</article><article id="sec-18">
+<h1>Bölüm 20 — Olay Müdahale (IR) Runbook’ları</h1>
+<h2>20.1 IR’nin M365’teki yeri</h2>
+<p>Güvenlik ürünü almak ≠ müdahale edebilmek. Runbook; panik anında <strong>sırayı</strong> verir.</p>
+<p><figure class="diagram"><img src="diyagramlar/20-ir-dongusu.svg" alt="diyagramlar/20-ir-dongusu.svg"/><figcaption>diyagramlar/20-ir-dongusu.svg</figcaption></figure></p>
+<p>Genel döngü: Hazırlık → Tespit → Kontrol altına alma → Yok etme → Kurtarma → Ders çıkarma</p>
+<h2>20.2 Roller</h2>
+<table>
+<tr><th>Rol</th><th>Görev</th></tr>
+<tr><td>Incident Commander</td><td>Karar ve iletişim</td></tr>
+<tr><td>Identity lead</td><td>Hesap/revoke/CA</td></tr>
+<tr><td>Messaging lead</td><td>Mail purge / rule</td></tr>
+<tr><td>Endpoint lead</td><td>Intune izolasyon</td></tr>
+<tr><td>Comms</td><td>Yönetim / kullanıcı mesajı</td></tr>
+<tr><td>Legal/HR</td><td>Gerektiğinde</td></tr>
+</table>
+<p>Küçük ekipte bir kişi birden fazla şapka takar; yine de şapkaları isimlendirin.</p>
+<h2>20.3 Runbook A — Hesap ele geçirme (account takeover)</h2>
+<p><strong>Tetik:</strong> Impossible travel, atypical token, kullanıcı bildirimi, MFA fatigue.</p>
+<p>Adımlar:</p>
+<ol>
+<li>Sign-in log + risky sign-in kanıtı al (ekran/CSV)</li>
+<li><code>revokeSignInSessions</code> + refresh token düşürme</li>
+<li>Parola reset / TAP + MFA yöntemlerini gözden geçir (agresör Authenticator eklemiş olabilir!)</li>
+<li>Inbox rules / forwarding kontrol (EXO)</li>
+<li>MFA fraud / authentication methods temizliği</li>
+<li>OAuth uygulama consent gözden geçir</li>
+<li>Cihaz uyumu / Intune mark as noncompliant gerekirse</li>
+<li>İletişim: kullanıcıya kontrollü bilgi</li>
+<li>Post-incident: CA güçlendir, legacy kapat</li>
+</ol>
+<h2>20.4 Runbook B — BEC / CEO fraud</h2>
+<ol>
+<li>Mesajı Threat Explorer’da bul</li>
+<li>Benzerleri seç + purge/ZAP</li>
+<li>Hedef mailbox kuralları</li>
+<li>Finans sürecini durdur (iş kontrolü)</li>
+<li>DMARC/anti-phish boşluk analizi</li>
+<li>Typosquat domain takibi (dış)</li>
+</ol>
+<h2>20.5 Runbook C — Toplu dosya şifreleme / silme</h2>
+<ol>
+<li>Kullanıcı/cihaz izole</li>
+<li>SPO/OD restore seçenekleri değerlendir</li>
+<li>Audit: kim, hangi app, hangi IP</li>
+<li>Token/app abuse?</li>
+<li>Backup’a geçiş kriteri</li>
+</ol>
+<h2>20.6 Runbook D — Yanlış CA ile kilitlenme</h2>
+<ol>
+<li>Break-glass ile gir</li>
+<li>Politika report-only / disable</li>
+<li>Etkilenen seti doğrula</li>
+<li>Değişiklik kaydı + iletişim</li>
+<li>Neden review kaçtı? (change window yok)</li>
+</ol>
+<h2>20.7 Kanıt ve zincir</h2>
+<ul>
+<li>Zaman dilimi (UTC vs local) notu</li>
+<li>Export’ların hash/integrity ihtiyacı (ileri adli)</li>
+<li>Ticket numarası ile runbook adımı eşle</li>
+</ul>
+<h2>20.8 Masa tatbikatı (tabletop)</h2>
+<p>Çeyrekte bir: “CFO’ya phishing, EFT istedi” senaryosunu saatsiz konuşun. Boşlukları runbook’a yazın.</p>
+<h2>20.9 Case Study 20-A — MFA yöntemini saldırgan ekledi</h2>
+<p>Revoke yapıldı ama Authenticator’da saldırgan device kaldı; tekrar girdi.  </p>
+<p><strong>Ders:</strong> Authentication methods temizliği unutulmamalı.</p>
+<h2>20.10 Laboratuvar 20</h2>
+<ol>
+<li>Runbook A’yı tek sayfalık “acil kart”a indirgeyin.</li>
+<li>Break-glass testini planlayın (ne sıklıkla, nasıl alarm).</li>
+<li>BEC için finans ekibiyle 5 maddelik süreç kontrolü yazın.</li>
+<li>Tabletop daveti taslağı hazırlayın.</li>
+</ol>
+<h2>20.11 Kontrol listesi</h2>
+<ul>
+<li>[ ] 4 temel runbook taslağım var</li>
+<li>[ ] Revoke + auth methods birlikte düşünülüyor</li>
+<li>[ ] Break-glass tatbikatı planlandı</li>
+<li>[ ] İş kontrolleri (finans) IR’nin parçası</li>
+</ul>
+<blockquote><strong>Sonraki:</strong> <a href="21-viva-benimseme-degisim.md">Bölüm 21 — Viva, benimseme ve değişim</a></blockquote>
+</article><article id="sec-19">
+<h1>Bölüm 21 — Benimseme, Değişim Yönetimi ve Viva</h1>
+<h2>21.1 Teknik başarı ≠ iş başarısı</h2>
+<p>M365’i açmak kolaydır; insanların doğru yerde, doğru alışkanlıkla çalışması zordur. Bu bölüm “yumuşak” görünür; uzmanlık farkı burada oluşur.</p>
+<h2>21.2 Benimseme çerçevesi</h2>
+<ol>
+<li><strong>Sponsor:</strong> Yönetim görünür destek</li>
+<li><strong>Şampiyon ağı:</strong> Her departmandan 1–2 kişi</li>
+<li><strong>Senaryo tabanlı eğitim:</strong> “Word nedir?” değil “Teklifi nasıl birlikte yazarız?”</li>
+<li><strong>Eski sistem kapanış tarihi:</strong> File share / Skype / paralel yapılar</li>
+<li><strong>Ölçüm:</strong> Kullanım + nitel geri bildirim</li>
+<li><strong>Geri bildirim döngüsü:</strong> Politika acıtıyorsa düzelt</li>
+</ol>
+<p><figure class="diagram"><img src="diyagramlar/21-benimseme-cercevesi.svg" alt="diyagramlar/21-benimseme-cercevesi.svg"/><figcaption>diyagramlar/21-benimseme-cercevesi.svg</figcaption></figure></p>
+<h2>21.3 Viva ailesi (yönetici bakışı)</h2>
+<table>
+<tr><th>Modül</th><th>Odak</th><th>Not</th></tr>
+<tr><td>Viva Engage</td><td>Topluluk / sohbet</td><td>Yammer evrimi</td></tr>
+<tr><td>Viva Learning</td><td>Öğrenme</td><td>İçerik kaynakları</td></tr>
+<tr><td>Viva Insights</td><td>Refah / verimlilik sinyalleri</td><td>Gizlilik hassas</td></tr>
+<tr><td>Viva Connections</td><td>Intranet girişi</td><td>SharePoint ile</td></tr>
+<tr><td>Viva Topics / diğer</td><td>Bilgi keşfi</td><td>Lisans/ürün değişebilir</td></tr>
+</table>
+<p>Ürün adları zamanla değişir; <strong>iş problemi → çözüm</strong> eşlemesi kalıcıdır.</p>
+<h2>21.4 Değişim iletişim şablonu</h2>
+<pre><code>
+Ne değişiyor?
+
+Neden şimdi?
+
+Sizin için fayda?
+
+Ne yapmanız gerekiyor? (3 adım)
+
+Nereden yardım alırsınız?
+
+Eski yöntem ne zaman kapanıyor?
+
+</code></pre>
+<h2>21.5 Direnç türleri ve cevaplar</h2>
+<table>
+<tr><th>Direnç</th><th>Kötü cevap</th><th>İyi cevap</th></tr>
+<tr><td>“Eski paylaşım daha hızlı”</td><td>Zorunlu kıl, anlatma</td><td>Senaryo demo + arama avantajı</td></tr>
+<tr><td>“Teams karmaşık”</td><td>Daha çok eğitim videosu</td><td>Şablon team + az kanal</td></tr>
+<tr><td>“Güvenlik işi yavaşlatıyor”</td><td>Umursama</td><td>Risk hikâyesi + istisna süreci</td></tr>
+</table>
+<h2>21.6 Case Study 21-A — Paralel evren</h2>
+<p>IT Teams’i açtı; muhasebe hâlâ e-posta eki + USB. 8 ay sonra “benimsenmedi” dendi.  </p>
+<p><strong>Kök neden:</strong> Eski yol kapanmadı, şampiyon yok, senaryo eğitimi yok.</p>
+<h2>21.7 Case Study 21-B — Aşırı politika</h2>
+<p>GIF kapalı, her toplantı lobili, dış paylaşım yok → kullanıcılar WhatsApp’a kaçtı.  </p>
+<p><strong>Ders:</strong> Güvenlik + kullanılabilirlik dengesi; gölge IT daha tehlikeli olabilir.</p>
+<h2>21.8 Laboratuvar 21</h2>
+<ol>
+<li>3 senaryolu eğitim outline’ı yazın (ofis, saha, yönetici).</li>
+<li>Şampiyon ağı için 1 sayfalık görev tanımı.</li>
+<li>Eski file share kapanış iletişim metni.</li>
+<li>5 benimsenme metriği seçin (vanity metric olmayan).</li>
+</ol>
+<h2>21.9 Kontrol listesi</h2>
+<ul>
+<li>[ ] Kapanış tarihi olmayan göçü göç saymıyorum</li>
+<li>[ ] Şampiyon modeli tasarladım</li>
+<li>[ ] Güvenlik vs kullanılabilirlik trade-off’unu yönetime anlatabiliyorum</li>
+</ul>
+<blockquote><strong>Sonraki:</strong> <a href="10-case-studies.md">Bölüm 10 — Case study derlemesi</a> (genişletilmiş) veya <a href="11-capstone-proje.md">Capstone</a></blockquote>
+</article><article id="sec-20">
 <h1>Bölüm 16 — Mülakat ve Capstone Savunma Soruları</h1>
 <p>Her soruya <strong>kısa cevap + derinleşme + tuzak</strong> formatında bakın.</p>
 <hr/>
@@ -1409,7 +2171,7 @@ https://graph.microsoft.com/v1.0/groups/{id}/members
 <li>Lab’da kırdığınız bir şeyi ve nasıl geri aldığınızı anlatın.</li>
 </ol>
 <blockquote><strong>Sonraki:</strong> <a href="EK-D-tarif-defteri.md">Ek D — PowerShell / Graph reçete defteri</a></blockquote>
-</article><article id="sec-16">
+</article><article id="sec-21">
 <h1>Bölüm 10 — Gerçek Hayat Case Study Derlemesi</h1>
 <p>Bu bölüm, kitaptaki vakaları <strong>çözüm çerçevesiyle</strong> bir araya getirir. Her case için aynı şablonu kullanın:</p>
 <ol>
@@ -1512,7 +2274,16 @@ https://graph.microsoft.com/v1.0/groups/{id}/members
 <hr/>
 <h2>Nasıl pratik yapılır?</h2>
 <p>Her CS için bir sayfalık “yönetici brifingi” yazın: yönetime 3 dakikada anlatılacak dilde. Teknik jargon yerine <strong>risk → etki → öneri</strong>.</p>
-</article><article id="sec-17">
+<h2>Detaylı dosyalar</h2>
+<p>Bazı case’ler ayrıntılı paket olarak genişletildi:</p>
+<ul>
+<li><a href="case-studies/CS-01-lisans-israfi.md">CS-01 Lisans israfı</a></li>
+<li><a href="case-studies/CS-03-shared-mailbox-compromise.md">CS-03 Shared mailbox compromise</a></li>
+<li><a href="case-studies/CS-06-bec-ceo-fraud.md">CS-06 BEC CEO fraud</a></li>
+<li><a href="case-studies/CS-10-offboarding.md">CS-10 Offboarding</a></li>
+</ul>
+<p>Ödev: Kalan 6 case için aynı şablonla detay dosyası üretin.</p>
+</article><article id="sec-22">
 <h1>Bölüm 11 — Capstone: 500 Kişilik Şirketi Sıfırdan Kur</h1>
 <h2>Proje özeti</h2>
 <p><strong>Kurum:</strong> KuzeyLojistik A.Ş. (büyüme senaryosu)  </p>
@@ -1565,7 +2336,19 @@ https://graph.microsoft.com/v1.0/groups/{id}/members
 </table>
 <h2>Not</h2>
 <p>Capstone’u bitirdiğinizde yalnızca “M365 kullanan” değil, <strong>M365’i tasarlayan</strong> olursunuz. Kariyer ekleri için <code>EK-B-sertifika-kariyer.md</code> dosyasına bakın.</p>
-</article><article id="sec-18">
+<h2>Genişletilmiş rubrik (detaylı değerlendirme)</h2>
+<table>
+<tr><th>Kriter</th><th>0</th><th>1</th><th>2</th></tr>
+<tr><td>Mimari bütünlük</td><td>Parçalı</td><td>Tutuyor</td><td>ADR’li savunulabilir</td></tr>
+<tr><td>Kimlik/CA</td><td>Eksik</td><td>Temel</td><td>Katalog + istisna</td></tr>
+<tr><td>İş yükleri</td><td>Yüzeysel</td><td>İyi</td><td>Governance’lı</td></tr>
+<tr><td>Güvenlik/uyumluluk</td><td>Yok</td><td>DLP/label var</td><td>Test→enforce + IR</td></tr>
+<tr><td>Otomasyon</td><td>Yok</td><td>Script</td><td>Runbook+idempotent</td></tr>
+<tr><td>Benimseme</td><td>Yok</td><td>Eğitim notu</td><td>Şampiyon+kapanış</td></tr>
+<tr><td>Anlatım</td><td>Teknik jargon</td><td>Anlaşılır</td><td>CFO+SOC dilinde</td></tr>
+</table>
+<p><strong>Minimum geçer:</strong> toplam ≥ 10/14 ve hiçbir kritik kriterde 0 yok.</p>
+</article><article id="sec-23">
 <h1>Ek A — Sözlük</h1>
 <table>
 <tr><th>Terim</th><th>Kısa anlam</th></tr>
@@ -1594,8 +2377,23 @@ https://graph.microsoft.com/v1.0/groups/{id}/members
 <tr><td><strong>DNS MX/SPF/DKIM/DMARC</strong></td><td>Posta teslim ve kimlik doğrulama kayıtları</td></tr>
 <tr><td><strong>Workload</strong></td><td>Exchange, Teams, SPO gibi iş yükü</td></tr>
 <tr><td><strong>App-only</strong></td><td>Uygulama kimliğiyle API erişimi</td></tr>
+<tr><td><strong>Autopilot</strong></td><td>Windows bulut provision</td></tr>
+<tr><td><strong>MAM / MDM</strong></td><td>Uygulama / cihaz yönetimi</td></tr>
+<tr><td><strong>PHS / PTA</strong></td><td>Password hash sync / pass-through auth</td></tr>
+<tr><td><strong>GDAP</strong></td><td>Granular partner admin yetkisi</td></tr>
+<tr><td><strong>RPO / RTO</strong></td><td>Kurtarma noktaları / süreleri</td></tr>
+<tr><td><strong>ZAP</strong></td><td>Zero-hour auto purge (mail)</td></tr>
+<tr><td><strong>BEC</strong></td><td>Business Email Compromise</td></tr>
+<tr><td><strong>ADR</strong></td><td>Architecture Decision Record</td></tr>
+<tr><td><strong>ESP</strong></td><td>Enrollment Status Page</td></tr>
+<tr><td><strong>Split tunneling</strong></td><td>VPN’de seçici trafik ayrımı</td></tr>
+<tr><td><strong>Soft match</strong></td><td>Mail ile kimlik birleştirme</td></tr>
+<tr><td><strong>ImmutableId</strong></td><td>Hard match anahtarı</td></tr>
+<tr><td><strong>Call Analytics</strong></td><td>Teams çağrı kalitesi</td></tr>
+<tr><td><strong>Message Center</strong></td><td>M365 değişiklik duyuruları</td></tr>
+<tr><td><strong>Oversharing</strong></td><td>Aşırı / yanlış paylaşım</td></tr>
 </table>
-</article><article id="sec-19">
+</article><article id="sec-24">
 <h1>Ek B — Sertifika ve Kariyer Haritası</h1>
 <p>Bu kitap bir sertifika kursu değildir; ama kariyer yolunu netleştirir.</p>
 <h2>Önerilen öğrenim → sınav hizası</h2>
@@ -1625,7 +2423,7 @@ https://graph.microsoft.com/v1.0/groups/{id}/members
 <li>Bir case study brifingi (CS-01…CS-10)</li>
 <li>Lab ekran çıktıları (hassas veri olmadan)</li>
 </ol>
-</article><article id="sec-20">
+</article><article id="sec-25">
 <h1>Ek C — Portal ve Komut Hızlı Referans</h1>
 <h2>Portallar</h2>
 <table>
@@ -1686,7 +2484,7 @@ Enable-Mailbox -Identity user@contoso.com -Archive
 <li>Uygulama &amp; cihaz erişimini gözden geçir</li>
 <li>Audit kaydı tut</li>
 </ol>
-</article><article id="sec-21">
+</article><article id="sec-26">
 <h1>Ek D — PowerShell / Graph Reçete Defteri</h1>
 <blockquote>Uyarı: Örnekler eğitim amaçlıdır. Production’da scope, WhatIf, pilot ve change window kullanın.</blockquote>
 <h2>D.1 Bağlantılar</h2>
@@ -1814,7 +2612,51 @@ New-TransportRule -Name &quot;External-Disclaimer&quot; `
 <li>[ ] Log + ticket bağlantısı</li>
 <li>[ ] Rollback notu</li>
 </ul>
-</article></main>
-</div>
-</body>
-</html>
+</article><article id="sec-27">
+<h1>Ek E — Günlük / Haftalık / Aylık Operasyon El Kitabı</h1>
+<p>Bu ek, kitabın “ne yapılmalı?” bilgisini <strong>takvim</strong>e çevirir.</p>
+<h2>Günlük (15–30 dk)</h2>
+<ul>
+<li>[ ] Service Health’te açık olay var mı?</li>
+<li>[ ] Defender / güvenlik kuyruğunda yüksek önem</li>
+<li>[ ] Quarantine anormal mi? (ani spike)</li>
+<li>[ ] Helpdesk’ten gelen “herkes giremiyor” — CA/regyon mu?</li>
+</ul>
+<h2>Haftalık (60–90 dk)</h2>
+<ul>
+<li>[ ] Message Center: önümüzdeki 30 günü etkileyen değişiklikler</li>
+<li>[ ] Misafir davet örneklemesi (5 rastgele)</li>
+<li>[ ] Yeni Anyone / org-wide paylaşım örneklemesi</li>
+<li>[ ] Sync Health (hibritse) last success</li>
+<li>[ ] Lisans tükenme / kapasite uyarısı</li>
+<li>[ ] Break-glass sign-in var mı? (olmamalı / varsa alarm)</li>
+</ul>
+<h2>Aylık</h2>
+<ul>
+<li>[ ] Lisans israf raporu (30/60/90)</li>
+<li>[ ] Secure Score delta + seçilen 2 iyileştirme</li>
+<li>[ ] CA report-only → enforce adayları</li>
+<li>[ ] Access review (misafir / VIP grup)</li>
+<li>[ ] Config export (CA, transport rules, kritik Intune)</li>
+<li>[ ] Yönetici tek sayfa KPI (Bölüm 15)</li>
+<li>[ ] Yedekleme geri dönüş tatbikatı (küçük pilot)</li>
+</ul>
+<h2>Çeyreklik</h2>
+<ul>
+<li>[ ] IR tabletop</li>
+<li>[ ] Break-glass giriş testi + alarm doğrulama</li>
+<li>[ ] Naming / Teams expiration gözden geçirme</li>
+<li>[ ] Persona-lisans matrisi güncelle</li>
+<li>[ ] Capstone benzeri “mimari drift” kontrolü</li>
+<li>[ ] Benimseme metrikleri + şampiyon toplantısı</li>
+</ul>
+<h2>Acil kart (buzdolabı / wiki pin)</h2>
+<ol>
+<li>Break-glass nasıl?</li>
+<li>Hesap revoke komutu / portal yolu</li>
+<li>Service Health URL</li>
+<li>IR Commander kim?</li>
+<li>Finans BEC teyit telefonu</li>
+</ol>
+<blockquote>Operasyon disiplini olmayan tenant, güzel portal ayarlarıyla bile uzman işi değildir.</blockquote>
+</article></main></div></body></html>

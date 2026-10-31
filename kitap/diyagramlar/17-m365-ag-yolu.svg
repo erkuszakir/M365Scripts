@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300" role="img" aria-labelledby="t">
+<title id="t">M365 ağ yolu</title>
+<rect width="100%" height="100%" fill="#0f1419"/>
+<defs><style>
+.t{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5}
+.s{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#9db0c5;font-size:12px}
+.h{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5;font-size:16px;font-weight:700}
+.box{fill:#1a2330;stroke:#3a4b5f;stroke-width:1.5}
+.acc{fill:#1e3a5f;stroke:#5b9fd4;stroke-width:1.5}
+.ok{fill:#163528;stroke:#3d9b6c;stroke-width:1.5}
+.warn{fill:#3a2e14;stroke:#c9a227;stroke-width:1.5}
+.line{stroke:#5b9fd4;stroke-width:1.5;fill:none}
+</style></defs>
+
+  <text class="h" x="24" y="36">M365 ağ yolu (basitleştirilmiş)</text>
+  <rect class="box" x="30" y="90" width="140" height="70" rx="8"/><text class="t" x="60" y="130">İstemci</text>
+  <rect class="warn" x="210" y="90" width="160" height="70" rx="8"/><text class="t" x="240" y="120">VPN/Proxy?</text><text class="s" x="230" y="142">split tunnel</text>
+  <rect class="acc" x="410" y="90" width="160" height="70" rx="8"/><text class="t" x="440" y="120">Internet edge</text><text class="s" x="445" y="142">UDP media</text>
+  <rect class="ok" x="610" y="90" width="250" height="70" rx="8"/><text class="t" x="660" y="130">Microsoft 365</text>
+  <path class="line" d="M170 125 H210 M370 125 H410 M570 125 H610"/>
+  <text class="s" x="30" y="220">Optimize kategorisini kör proxy’ye sokmak Teams sesini öldürür.</text>
+
+</svg>

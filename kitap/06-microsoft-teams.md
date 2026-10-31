@@ -118,3 +118,41 @@ Teams Rooms cihazları, hesap modeli (resource account), çevre birimleri ve mee
 - **Guest access:** Azure B2B ile team’e üye
 
 İkisini karıştırmak destek ticket’larının klasik kaynağıdır.
+
+
+## 6.13 Derinleşme: Bilgi mimarisi karar ağacı
+
+Yeni iş ihtiyacı geldiğinde:
+
+1. **Kalıcı departman mı?** → Departman team (uzun ömür)
+2. **Geçici proje mi?** → Project team + expiration
+3. **Sadece duyuru mu?** → Teams yerine communication site / org-wide (dikkat)
+4. **Hassas alt grup mu?** → Private channel veya ayrı team (trade-off bilinerek)
+5. **Çok şirketli mi?** → Shared channel / B2B guest net kurallarla
+
+## 6.14 Toplantı güvenliği checklist
+
+- Lobisiz anonim katılım?
+- Dış kullanıcı sunum yapabilir mi?
+- Kayıt otomatik mi, nereye düşer, retention?
+- Watermark / end-to-end encryption gereken toplantılar?
+- VIP toplantılarda sensitivity label
+
+## 6.15 Uygulama yönetişimi
+
+- Global app permission policy: hangi apps
+- Blocked apps list
+- Setup policy ile pin’lenen apps (yardım masası)
+- Üçüncü parti chatbot / connector riski
+
+## 6.16 Network anahtar noktaları (önizleme)
+
+Teams ses/görüntü UDP ve belirli URL/IP aralıklarına bağımlıdır. Split tunneling ve proxy hataları “Teams bozuk” ticket’larının yarısıdır. Ayrıntı: Bölüm 17 (Ağ).
+
+## 6.17 Çalışılmış senaryo: 800 team temizliği
+
+1. Last activity < 90 gün → aday
+2. Owner yok → IT sahipliği geçici
+3. Keep / Merge / Archive karar matrisi
+4. Naming policy + expiration aç
+5. Yeni team için talep formu (Power Automate onay)

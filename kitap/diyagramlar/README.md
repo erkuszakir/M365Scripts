@@ -28,3 +28,8 @@ Bu klasördeki SVG dosyaları kitap için **özgün** üretilmiştir. Bölüm me
 | 13-power-platform-risk.svg | Power Platform |
 | 14-uyumluluk-kontrolleri.svg | KVKK/uyumluluk |
 | 15-gozlem-dongusu.svg | İzleme |
+| 17-m365-ag-yolu.svg | Ağ |
+| 18-hibrit-kimlik.svg | Hibrit kimlik |
+| 19-yedek-katmanlari.svg | Yedek |
+| 20-ir-dongusu.svg | IR |
+| 21-benimseme-cercevesi.svg | Benimseme |

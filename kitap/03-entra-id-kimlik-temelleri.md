@@ -147,3 +147,71 @@ Kullanıcılar “bu uygulama posta kutunuza erişmek istiyor” diye consent ve
 - Düzenli olarak **Enterprise applications** envanteri çıkarın
 
 Bu, Bölüm 8’deki app-only otomasyonun güvenlik kardeşidir.
+
+
+## 3.13 Derinleşme: Kimlik doğrulama yöntemleri karşılaştırması
+
+| Yöntem | Güç | Kullanılabilirlik | Tipik kullanım |
+|--------|-----|-------------------|----------------|
+| Parola + SMS MFA | Zayıf-orta | Yüksek | Miras / geçiş dönemi |
+| Authenticator push (number matching) | Orta-iyi | Yüksek | Genel çalışan |
+| TOTP (Authenticator) | Orta-iyi | Yüksek | Alternatif |
+| FIDO2 güvenlik anahtarı | Çok iyi | Orta | Admin / VIP |
+| Windows Hello for Business | Çok iyi | Yüksek (kurumsal PC) | Ofis cihazları |
+| Sertifika tabanlı | İyi | Orta | Özel senaryolar |
+| Temporary Access Pass | Orta | Geçici | Onboarding / kayıp cihaz |
+
+**KuzeyLojistik politikası (örnek):**
+- Tüm kullanıcılar: Authenticator number matching zorunlu
+- Admin rolleri: FIDO2 veya WHfB + phishing-resistant CA
+- SMS yalnızca istisna listesinde (ve süreli)
+
+## 3.14 Password protection ve smart lockout
+
+Entra Password Protection:
+- Global banned password list
+- Custom banned list (şirket adı, lokasyon, sezon)
+- On-prem agent ile hibrit senaryoda AD’ye de uygulanabilir
+
+Smart lockout: Brute-force’a karşı kilitleme; gerçek kullanıcının meşru denemelerini ayırt etmeye çalışır. CA ile birlikte düşünün — “sadece lockout yeter” değildir.
+
+## 3.15 Access reviews ve entitlement (ileri)
+
+Büyük org’da kalıcı grup üyeliği çürür. Access review:
+- Misafirleri 90 günde bir gözden geçir
+- VIP güvenlik gruplarını 30/60 günde bir
+- Teams/M365 group sahiplerine “hâlâ lazım mı?”
+
+Entitlement Management (lisansa bağlı): paket (access package) → onay → süreli erişim → otomatik kaldırma.
+
+## 3.16 Uygulama proxy ve eski uygulamalar
+
+On-prem HTTP uygulamalarını Entra Application Proxy ile yayımlama:
+- Modern kimlik + CA cihaz koşulları eski app’e taşınır
+- VPN’siz erişim senaryoları
+- Connector makinesi yüksek erişilebilir olmalı
+
+## 3.17 Loglar: neyi nereye bakarsınız?
+
+| Soru | Log |
+|------|-----|
+| Kim, nereden giriş yaptı? | Sign-in logs |
+| Hangi uygulama consent aldı? | Audit + enterprise apps |
+| Rol ataması ne zaman? | Directory audit |
+| Riskli oturum? | Identity Protection / risky sign-ins |
+| CA hangi politikayı uyguladı? | Sign-in → Conditional Access sekmesi |
+
+**Pratik:** Bir kullanıcı “giremiyorum” dediğinde önce sign-in log’daki **Failure reason** ve **CA** satırını okuyun; tahmin etmeyin.
+
+## 3.18 Çalışılmış senaryo: Joiner otomasyon tasarımı
+
+Girdiler (HR): employeeId, ad, soyad, department, title, manager, location, startDate  
+Çıktılar:
+1. UPN üretimi kuralı (`ad.soyad@` + çakışma çözümü)
+2. usageLocation = TR
+3. Dinamik gruplarla lisans + güvenlik grubu
+4. Manager alanı (onay akışları için)
+5. TAP veya geçici parola + ilk girişte değişim
+6. Welcome mail (Teams/Exchange hazır olduktan sonra)
+
+Hata yolları: HR attribute boş → kuyruk; lisans tükenmiş → alert; UPN çakışması → -2 suffix.

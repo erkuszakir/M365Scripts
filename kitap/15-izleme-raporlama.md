@@ -73,3 +73,17 @@ Ayda 40 lisans “atanmış ama hiç giriş yok”. Graph raporu olmadan kimse g
 - [ ] En az 5 güvenlik/operasyon alarmı tanımladım
 
 > **Sonraki:** [Bölüm 16 — Sık sorulan mülakat / savunma soruları](16-mulakat-savunma.md)
+
+
+## 15.10 Derinleşme: Yönetici tek sayfa KPI
+
+Aylık tek sayfa:
+
+1. Servis olayları (bizim / Microsoft)
+2. Aktif kullanıcı trendi
+3. Lisans israf adayı
+4. Phishing / quarantine özeti
+5. Oversharing trendi
+6. Açık IR sayısı
+7. Bir sonraki ayın değişiklikleri (Message Center)
+

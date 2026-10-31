@@ -155,3 +155,30 @@ Yeni tenant’larda sık gevşek kalanlar:
 - Teams team creation by everyone
 
 İlk hafta “varsayılan sıkılaştırma” checklist’i çalıştırın (Bölüm 7 ile birlikte).
+
+
+## 2.13 Derinleşme: Çok domainli organizasyon
+
+Şirket birleşmesi: `kuzeylojistik.com` + `dogukargo.com`
+
+Seçenekler:
+1. Tek tenant, çok domain (genelde tercih)
+2. İki tenant + galeri / migration (siyaset / yasal)
+
+Tek tenant’ta:
+- UPN suffix politikası
+- Email address policy
+- Marka / Outlook imprint
+- Eski domain’i accepted domain olarak tutma süresi
+
+## 2.14 Partner ilişkileri ve GDAP (kavram)
+
+MSP / partner erişimi:
+- Granular Delegated Admin Privileges
+- Süreli, az yetkili
+- Partner’ın Global Admin’i “sonsuz” olmasın
+
+## 2.15 Çalışılmış senaryo: Trial’dan prod’a
+
+Trial üzerinde pilot yapılan yapılandırmayı prod’a “elle kopyalamayın”.  
+Infrastructure-as-config notları + ekran envanteri + mümkünse script ile yeniden kurun.

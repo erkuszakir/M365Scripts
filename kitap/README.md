@@ -1,7 +1,7 @@
 # Microsoft 365 Cloud Sistemleri  
 ## Sıfırdan Uzmanlığa — Üniversite Başucu Kitabı
 
-**Sürüm:** 1.0 · **Dil:** Türkçe · **Seviye:** Acemi → Uzman  
+**Sürüm:** 1.2 · **Kapsam:** Geniş / detaylı · **Dil:** Türkçe · **Seviye:** Acemi → Uzman  
 **Hedef kitle:** Bilgisayar, yazılım, bilişim sistemleri ve yönetim bilişim öğrencileri; junior M365 / Entra yöneticileri; operasyon ekipleri
 
 Bu kitap, Microsoft 365 Cloud ekosistemini **en temel kavramlardan** başlayarak **mimari tasarım, güvenlik mimarisi, otomasyon ve gerçek hayat senaryolarına** kadar sistematik olarak öğretir. Her bölümde:
@@ -61,6 +61,13 @@ bulunur.
 15. [İzleme, raporlama ve hizmet sağlığı](15-izleme-raporlama.md)
 16. [Mülakat ve savunma soruları](16-mulakat-savunma.md)
 
+### Kısım VIII — Operasyonel uzmanlık (genişletme)
+17. [Ağ, bağlantı ve istemci performansı](17-ag-baglantilari-teams-exo.md)
+18. [Hibrit kimlik: Entra Connect / Cloud Sync](18-hibrit-kimlik-entra-connect.md)
+19. [Yedekleme, DR ve fidye yazılımı](19-yedekleme-dr-fidye.md)
+20. [Olay müdahale runbook’ları](20-olay-mudahale-runbook.md)
+21. [Benimseme, değişim ve Viva](21-viva-benimseme-degisim.md)
+
 ### Kısım VII — Case studies & proje
 
 10. [Gerçek hayat case study derlemesi](10-case-studies.md)
@@ -73,6 +80,7 @@ bulunur.
 - [Sertifika ve kariyer haritası](EK-B-sertifika-kariyer.md)
 - [Komut ve portal hızlı referans](EK-C-hizli-referans.md)
 - [PowerShell/Graph tarif defteri](EK-D-tarif-defteri.md)
+- [Operasyon el kitabı (günlük/haftalık/aylık)](EK-E-operasyon-el-kitabi.md)
 
 ---
 
@@ -84,6 +92,9 @@ bulunur.
 4. Defender / Purview ile tehdit ve veri koruma katmanlarını kurarsınız.
 5. PowerShell ve Microsoft Graph ile tekrarlanabilir otomasyon yazarsınız.
 6. Hibrit senaryoları, migrasyonu ve mimari trade-off’ları savunabilirsiniz.
+7. Intune ile cihaz/uygulama korumasını CA’ya bağlarsınız.
+8. Ağ/VPN kaynaklı M365 sorunlarını yapılandırma sorunundan ayırırsınız.
+9. Yedekleme/IR/benimseme ile operasyonu uçtan uca kurarsınız.
 
 ---
 

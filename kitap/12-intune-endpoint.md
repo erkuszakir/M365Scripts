@@ -71,3 +71,23 @@ Saha çalışanına tam MDM dayatıldı; kişisel telefon reddedildi, gölge Wha
 - [ ] BYOD için aşırı MDM tuzağını biliyorum
 
 > **Sonraki:** [Bölüm 13 — Power Platform ve otomasyon ötesi](13-power-platform-copilot.md)
+
+
+## 12.10 Derinleşme: Uyumluluk + CA test matrisi
+
+| Cihaz durumu | Beklenen CA sonucu |
+|--------------|--------------------|
+| Hybrid join + compliant | İzin |
+| Registered ama noncompliant | Engel / sınırlı |
+| BYOD sadece MAM | Uygulama korumalı erişim |
+| Bilinmeyen cihaz | Blok veya web-only |
+
+Test hesapları ve test cihazları production politikalarını doğrulamadan genişleteyin.
+
+## 12.11 Autopilot başarısızlık teşhisi
+
+- Hash yanlış / tekrar kayıt
+- ESP (Enrollment Status Page) timeout
+- Uygulama bağımlılık sırası
+- Ağ: cihaz OOBE’de internete çıkamıyor
+

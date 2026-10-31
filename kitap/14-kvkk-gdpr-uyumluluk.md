@@ -62,3 +62,15 @@ IT her şeyi sınırsız sakladı; maliyet + ihlal yüzeyi büyüdü.
 - [ ] Geo cevabını üç parçalı (workload/yedek/ISV) veriyorum
 
 > **Sonraki:** [Bölüm 15 — İzleme, raporlama ve hizmet sağlığı](15-izleme-raporlama.md)
+
+
+## 14.10 Derinleşme: Veri haritası şablonu
+
+| Veri türü | Sistem | Hukuki gerekçe (İK doldurur) | Saklama | Erişim grubu | Dış aktarım? |
+|-----------|--------|------------------------------|---------|--------------|--------------|
+| Özlük | SPO-HR | ... | ... | SG-HR | Hayır |
+| Müşteri sözleşme | SPO-Legal | ... | ... | SG-Legal | Misafir avukat |
+| Destek mail | EXO shared | ... | ... | Destek | Bazen |
+
+Bu tablo olmadan DLP kuralları rastgele ateş eder.
+

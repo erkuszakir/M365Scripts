@@ -122,3 +122,56 @@ Her halkada bir kontrol yoksa zincir kırılmaz. “Sadece antivirus” yetmez.
 | Haftalık | Secure Score deltas, sharing anomalies, guest review örnekleme |
 | Aylık | CA report-only → enforce adayları, lisans+rol gözden geçirme |
 | Çeyreklik | Access review, break-glass testi, IR masa tatbikatı |
+
+
+## 7.12 Derinleşme: Conditional Access politika kataloğu (referans)
+
+KuzeyLojistik v2 katalog (isimlendirme standardı: `CA-###-Amaç`):
+
+| ID | Amaç | Mod |
+|----|------|-----|
+| CA-001-Base-MFA | Tüm bulut uygulamaları MFA | Report→On |
+| CA-002-Block-Legacy | Legacy auth engel | On |
+| CA-003-Admin-PhishResist | Directory rollerine phishing-resistant | On |
+| CA-004-Compliant-Device-Windows | Office apps için uyumlu cihaz (ofis) | Pilot |
+| CA-005-Guest-Restrict | Misafirleri seçili apps | On |
+| CA-006-Risky-SignIn | Yüksek risk engel / MFA | P2 ise |
+| CA-007-Session-SharePoint | Browser session controls | İsteğe |
+| CA-008-Block-Countries | İş yapılmayan ülkeler | Dikkatli |
+
+**Dışlama grupları:** Break-glass, Acil-erişim-cihazları, migrasyon servis hesapları (süreli!).
+
+## 7.13 Attack simulation ve bilinç
+
+Attack simulation training ile kontrollü phishing kampanyaları:
+- Baseline ölç
+- Eğitim ata
+- Tekrar ölç
+
+Teknik kontrol + insan katmanı birlikte.
+
+## 7.14 Insider risk ve communication compliance (kavram)
+
+Hassas sektörlerde:
+- Ani toplu indirme
+- İstifa öncesi veri hareketi
+- Uygunsuz iletişim politikaları
+
+Lisans ve hukuk çerçevesi şart; “herkesi casus gibi izle” değildir.
+
+## 7.15 Defender XDR köprüsü
+
+M365 sinyalleri (kimlik, email, endpoint) birleşik olaylarda birleşir. SOC için:
+- Incident kuyruğu
+- Automated investigation (lisansa göre)
+- Threat analytics duyuruları
+
+## 7.16 Çalışılmış senaryo: BEC müdahale 90 dakika
+
+T0: Muhasebe şüpheli EFT maili  
+T+10: Header + Message trace + Threat Explorer  
+T+20: Kullanıcı oturum revoke + parola / MFA reset  
+T+30: Inbox kurallarını temizle  
+T+40: Benzer mailleri purge / ZAP  
+T+60: Finans sürecini dondur / sözlü teyit  
+T+90: Post-incident: DMARC, anti-impersonation, eğitim  

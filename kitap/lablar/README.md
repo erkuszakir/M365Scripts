@@ -13,5 +13,8 @@ Her lab, ilgili bölümün sonunda da özetlenir. Burada tek sayfalık çalışm
 | L7 | [L7-zero-trust-mini.md](L7-zero-trust-mini.md) | 7 |
 | L8 | [L8-graph-rapor.md](L8-graph-rapor.md) | 8 |
 | L9 | [L9-mimari-tek-sayfa.md](L9-mimari-tek-sayfa.md) | 9 |
+| L10 | [L10-ir-tabletop.md](L10-ir-tabletop.md) | 20 |
+| L11 | [L11-oversharing-avi.md](L11-oversharing-avi.md) | 5,13 |
+| L12 | [L12-hibrit-karar.md](L12-hibrit-karar.md) | 18 |
 
 **Güvenlik:** Gerçek kişisel veri kullanmayın. Developer / sandbox tenant tercih edin.

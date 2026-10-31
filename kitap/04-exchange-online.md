@@ -120,3 +120,56 @@ Bazı sektörler journaling ister. Alternatif: journal rule / connector ile arş
 ## 4.13 Mobil cihaz posta politikaları
 
 ActiveSync cihaz politikaları ve modern kimlik doğrulama. Legacy ActiveSync basic auth kapatılmalı; CA ile mobil Outlook zorunluluğu sık tercih.
+
+
+## 4.14 Derinleşme: Anti-spam / anti-malware politika mimarisi
+
+Katmanlar:
+
+1. **Connection filtering** — IP allow/block, safe list tuzağı (allow list’i şişirmeyin)
+2. **Anti-spam policy** — bulk threshold, spam action (MoveToJunky / Quarantine)
+3. **Anti-malware** — common attachment filter (`.exe`, `.js` …)
+4. **Anti-phishing** — mailbox intelligence, impersonation (user + domain)
+5. **Safe Attachments / Safe Links** — Defender for Office 365
+6. ** spoof intelligence / DMARC** — kimlik doğrulama
+
+**Politika kapsamı:** Anti-phish’i önce VIP / finans grubuna uygulayın, sonra genişletin.
+
+### Quarantine operasyonu
+
+- Kullanıcı quarantine bildirimleri (çok gürültülü olabilir)
+- Admin quarantine release yetkisi
+- Yanlış pozitif süreci: ticket → release → allow/override dikkatli
+
+## 4.15 Message trace ve Troubleshooting ağacı
+
+Belirti: “Mail gitmedi / gelmedi”
+
+1. Message trace (alıcı, zaman, subject)
+2. Quarantine’te mi?
+3. Transport rule düşürdü mü?
+4. SPF/DKIM fail + DMARC reject mi?
+5. Alıcı tarafı blokladı mı? (NDR kodu)
+6. Connector / hibrit mi?
+
+NDR kodlarını ezberlemeyin; yorumlamayı öğrenin (`5.7.1`, `4.4.7` timeout vb.).
+
+## 4.16 Takvim paylaşımı ve cross-org
+
+- Organization relationship / individual sharing
+- Free/busy hibritte
+- Rooms’un booking window / conflict yönetimi
+
+## 4.17 Public Folder mirası
+
+Hâlâ public folder kullanan org’lar var. Modern hedef: SharePoint + Teams. Migrasyon planı olmadan sonsuza taşımayın.
+
+## 4.18 Çalışılmış senaryo: Destek@ dönüşümü
+
+Önce: 4 kişi shared’a parola ile giriyor.  
+Hedef:
+1. Shared mailbox, sign-in disabled
+2. Full Access + Send As
+3. Microsoft 365 group + Teams “Destek” (iç tartışma) — mailbox ayrı kalabilir
+4. SLA: gece nöbeti için Graph/Power Automate ile atama (ileride)
+5. Audit ve CA ile koruma

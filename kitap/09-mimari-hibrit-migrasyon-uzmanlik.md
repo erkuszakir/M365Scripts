@@ -106,3 +106,38 @@ Cuma gecesi 400 GB file share tek seferde taşındı; Pazartesi permission’lar
 - [ ] Break-glass + IR köprüm var
 
 > **Sonraki:** [Bölüm 10 — Case study derlemesi](10-case-studies.md)
+
+
+## 9.11 Derinleşme: Karar kayıtları (ADR)
+
+Her kritik mimari karar bir **Architecture Decision Record** olur:
+
+```
+Başlık: Cloud-only kimlik
+Durum: Kabul
+Bağlam: On-prem uygulama yok, 500 kullanıcı
+Karar: Entra cloud-only
+Sonuç: Connect maliyeti yok; ileride ERP gelirse Cloud Sync değerlendirilecek
+Tarih / sahip
+```
+
+Bu, “neden böyle?” sorusunu 18 ay sonra kurtarır.
+
+## 9.12 Landing zone checklist (M365)
+
+- [ ] Break-glass ×2 test edildi
+- [ ] Naming standards dokümanı
+- [ ] CA baseline açık
+- [ ] Legacy auth kapalı
+- [ ] Sharing varsayılanı sıkı
+- [ ] Audit açık
+- [ ] DKIM/DMARC planı
+- [ ] Backup/IR sahipleri belli
+- [ ] Lisans/persona matrisi onaylı
+
+## 9.13 Çalışılmış senaryo: 3 aylık migrasyon programı
+
+Ay 1: kimlik + pilot mail  
+Ay 2: early adopter dosya + Teams  
+Ay 3: genel + eski sistem kapatma  
+Her ay: başarı ölçütü, eğitim, rollback, iletişim şablonu

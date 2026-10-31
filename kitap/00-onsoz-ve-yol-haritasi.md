@@ -70,3 +70,20 @@ Bu kitap boyunca aynı firmayı (“**KuzeyLojistik A.Ş.**”) örnek kurum ola
 - [ ] Sonraki bölüm: bulut ve dijital işyeri temelleri
 
 > **Sonraki:** [Bölüm 1 — Bulut bilişim, SaaS ve dijital işyeri](01-bulut-ve-dijital-isyerleri.md)
+
+
+## 0.7 Geniş tempo (detaylı / 12 hafta)
+
+| Hafta | Odak |
+|------:|------|
+| 1–2 | Temeller + tenant + Entra |
+| 3–4 | Exchange + SPO/OneDrive |
+| 5 | Teams + ağ temelleri |
+| 6–7 | Zero Trust + Purview + IR |
+| 8 | PowerShell/Graph otomasyon |
+| 9 | Intune + hibrit kimlik |
+| 10 | Power Platform/Copilot + KVKK |
+| 11 | Yedek/DR + izleme + benimseme |
+| 12 | Case bankası + Capstone savunması |
+
+Dar okuma (8 hafta) hâlâ geçerli; bu tablo **uzman derinliği** içindir.

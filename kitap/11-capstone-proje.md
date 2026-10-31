@@ -57,3 +57,19 @@ Bu bir “tenant’ı gerçekten kur” projesi olabilir (developer tenant) veya
 ## Not
 
 Capstone’u bitirdiğinizde yalnızca “M365 kullanan” değil, **M365’i tasarlayan** olursunuz. Kariyer ekleri için `EK-B-sertifika-kariyer.md` dosyasına bakın.
+
+
+## Genişletilmiş rubrik (detaylı değerlendirme)
+
+| Kriter | 0 | 1 | 2 |
+|--------|---|---|---|
+| Mimari bütünlük | Parçalı | Tutuyor | ADR’li savunulabilir |
+| Kimlik/CA | Eksik | Temel | Katalog + istisna |
+| İş yükleri | Yüzeysel | İyi | Governance’lı |
+| Güvenlik/uyumluluk | Yok | DLP/label var | Test→enforce + IR |
+| Otomasyon | Yok | Script | Runbook+idempotent |
+| Benimseme | Yok | Eğitim notu | Şampiyon+kapanış |
+| Anlatım | Teknik jargon | Anlaşılır | CFO+SOC dilinde |
+
+**Minimum geçer:** toplam ≥ 10/14 ve hiçbir kritik kriterde 0 yok.
+

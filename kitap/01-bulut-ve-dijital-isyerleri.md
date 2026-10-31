@@ -91,3 +91,18 @@ Birçok kurum AWS/GCP + M365 birlikte kullanır. Kimlik köprüsü (Entra) ve ve
 ## 1.9 Değişime direnç ve benimsenme
 
 Teknik göç başarılı, kullanıcı hâlâ eski file share kullanıyor olabilir. Adoption: şampiyon kullanıcılar, kısa eğitim, eski sistemin kapanış tarihi.
+
+
+## 1.10 Derinleşme: TCO ve gizli maliyetler
+
+Lisans satır fiyatı toplam maliyet değildir. TCO’ya ekleyin:
+
+- Migrasyon danışmanlığı / araçları
+- Ağ çıkış ve proxy yeniden tasarımı
+- Eğitim ve şampiyon zamanı
+- Üçüncü parti yedekleme
+- Güvenlik eklentileri
+- Yardım masası ticket artışı (ilk 90 gün)
+
+**Yöntem:** 3 yıllık TCO tablosu (lisans + proje + operasyon). CFO dilinde konuşun.
+

@@ -139,3 +139,43 @@ Production tenant’ta:
 - İletişim (helpdesk hazır mı?)
 
 Report-only / pilot / enforce üçlüsü sadece CA için değil; DLP ve birçok Teams politikası için de geçerlidir.
+
+
+## 8.13 Derinleşme: Graph sorgu kalıpları
+
+```
+GET /users?$select=displayName,userPrincipalName,accountEnabled&$filter=accountEnabled eq true&$top=999
+GET /groups/{id}/members
+GET /users/{id}/memberOf
+GET /auditLogs/signIns?$filter=userPrincipalName eq 'ali@contoso.com'
+```
+
+**Throttling:** 429 alırsanız `Retry-After` saygısı. Toplu işlerde batch (`$batch`) ve sayfalama (`@odata.nextLink`) zorunlu.
+
+## 8.14 PnP / Exchange / Teams modül sınırları
+
+| İhtiyaç | Araç |
+|---------|------|
+| Kullanıcı/grup/lisans | Graph |
+| Mailbox/retention/EXO özel | Exchange Online PS |
+| Team politika derinliği | Teams PS / admin center |
+| SPO site/provision | PnP.PowerShell / Graph |
+
+“Her şeyi Graph ile yaparım” henüz her senaryoda doğru değil; ama yön Graph’a doğrudur.
+
+## 8.15 CI ile otomasyon
+
+Örnek boru hattı:
+1. PR → syntax / PSScriptAnalyzer
+2. Onay kapısı
+3. App-only ile test tenant
+4. Manuel onay
+5. Prod
+
+## 8.16 Çalışılmış senaryo: Aylık lisans savurganlık raporu
+
+Job her ayın 1’i:
+1. Assigned vs sign-in 30/60/90 gün
+2. SKU bazlı maliyet tahmini
+3. Yöneticilere CSV + 5 maddelik özet
+4. “Kaldırılabilir aday” listesi (insan onayı olmadan kaldırma!)

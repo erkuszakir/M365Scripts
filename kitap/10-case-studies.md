@@ -133,3 +133,15 @@ Bu bölüm, kitaptaki vakaları **çözüm çerçevesiyle** bir araya getirir. H
 ## Nasıl pratik yapılır?
 
 Her CS için bir sayfalık “yönetici brifingi” yazın: yönetime 3 dakikada anlatılacak dilde. Teknik jargon yerine **risk → etki → öneri**.
+
+
+## Detaylı dosyalar
+
+Bazı case’ler ayrıntılı paket olarak genişletildi:
+
+- [CS-01 Lisans israfı](case-studies/CS-01-lisans-israfi.md)
+- [CS-03 Shared mailbox compromise](case-studies/CS-03-shared-mailbox-compromise.md)
+- [CS-06 BEC CEO fraud](case-studies/CS-06-bec-ceo-fraud.md)
+- [CS-10 Offboarding](case-studies/CS-10-offboarding.md)
+
+Ödev: Kalan 6 case için aynı şablonla detay dosyası üretin.
