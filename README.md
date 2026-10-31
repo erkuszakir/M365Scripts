@@ -4,7 +4,7 @@ Microsoft 365 operasyon betikleri ve **eğitim kitabı**.
 
 ## Kitap — Microsoft 365 Cloud Sistemleri: Sıfırdan Uzmanlığa
 
-Üniversite öğrencisi / junior admin için başucu kaynağı:
+Üniversite öğrencisi / junior admin için **geniş kapsamlı ve detaylı** başucu kaynağı (v1.2):
 
 - Klasör: [`kitap/`](kitap/)
 - İçindekiler: [`kitap/README.md`](kitap/README.md)
