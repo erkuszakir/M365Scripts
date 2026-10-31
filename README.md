@@ -2,6 +2,17 @@
 
 Microsoft 365 operasyon betikleri ve **eğitim kitabı**.
 
+## Asıl talep: Online uygulamalar eğitim kitabı (v3)
+
+**Odak:** Word, Excel, PowerPoint, Outlook, Teams, OneDrive, SharePoint, OneNote, Loop, Forms, Planner, To Do, Lists, Whiteboard, Stream, Bookings, Viva, Copilot, Power Platform…
+
+- **Tek Word:** [`kitap/Microsoft365_Online_Uygulamalar_Egitim_Kitabi_v3.docx`](kitap/Microsoft365_Online_Uygulamalar_Egitim_Kitabi_v3.docx)
+- Açıklama: [`kitap/UYGULAMA_KITABI_OKU.md`](kitap/UYGULAMA_KITABI_OKU.md)
+- Kaynak ciltler: [`kitap/uygulamalar/`](kitap/uygulamalar/)
+
+> Not: `ciltler/` altındaki v2 metin admin/mimari hattıdır; uygulama eğitimi için v3 kullanın.
+
+
 ## Kitap — Microsoft 365 Cloud Sistemleri: Sıfırdan Uzmanlığa
 
 Üniversite öğrencisi / junior admin için **geniş kapsamlı ve detaylı** başucu kaynağı (v1.2):
