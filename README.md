@@ -2,6 +2,11 @@
 
 Microsoft 365 operasyon betikleri ve **eğitim kitabı**.
 
+## TAM kitap (SharePoint + Teams + Exchange + Admin + tüm uygulamalar)
+
+- **Tek Word:** [`kitap/Microsoft365_TAM_Egitim_Kitabi.docx`](kitap/Microsoft365_TAM_Egitim_Kitabi.docx)
+- Açıklama: [`kitap/TAM_KITAP_OKU.md`](kitap/TAM_KITAP_OKU.md)
+
 ## Asıl talep: Online uygulamalar eğitim kitabı (v3)
 
 **Odak:** Word, Excel, PowerPoint, Outlook, Teams, OneDrive, SharePoint, OneNote, Loop, Forms, Planner, To Do, Lists, Whiteboard, Stream, Bookings, Viva, Copilot, Power Platform…
