@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="420" viewBox="0 0 920 420" role="img" aria-labelledby="t">
+  <title id="t">Referans mimari</title>
+  <rect width="100%" height="100%" fill="#0f1419"/>
+  <defs>
+    <style>
+      .t{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5}
+      .s{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#9db0c5;font-size:12px}
+      .h{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5;font-size:16px;font-weight:700}
+      .box{fill:#1a2330;stroke:#3a4b5f;stroke-width:1.5}
+      .acc{fill:#1e3a5f;stroke:#5b9fd4;stroke-width:1.5}
+      .ok{fill:#163528;stroke:#3d9b6c;stroke-width:1.5}
+      .warn{fill:#3a2e14;stroke:#c9a227;stroke-width:1.5}
+      .line{stroke:#5b9fd4;stroke-width:1.5;fill:none}
+      .muted{stroke:#3a4b5f;stroke-width:1.2;fill:none}
+    </style>
+  </defs>
+  
+  <text class="h" x="24" y="36">KuzeyLojistik referans mimari (özet)</text>
+  <rect class="acc" x="40" y="70" width="840" height="44" rx="6"/><text class="t" x="60" y="98">Kimlik: Entra · CA tabanı · break-glass · (PIM)</text>
+  <rect class="box" x="40" y="125" width="840" height="44" rx="6"/><text class="t" x="60" y="153">Endpoint: Intune ofis · App Protection saha</text>
+  <rect class="ok" x="40" y="180" width="840" height="44" rx="6"/><text class="t" x="60" y="208">İş yükleri: EXO · SPO hub · Teams naming/expiration</text>
+  <rect class="warn" x="40" y="235" width="840" height="44" rx="6"/><text class="t" x="60" y="263">Güvenlik: Defender O365 · DMARC · anti-phish</text>
+  <rect class="box" x="40" y="290" width="840" height="44" rx="6"/><text class="t" x="60" y="318">Veri: Labels · DLP staging→enforce · retention</text>
+  <rect class="acc" x="40" y="345" width="840" height="44" rx="6"/><text class="t" x="60" y="373">Operasyon: Graph otomasyon · on/offboarding runbook · audit</text>
+
+</svg>

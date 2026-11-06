@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360" role="img" aria-labelledby="t">
+  <title id="t">Conditional Access akışı</title>
+  <rect width="100%" height="100%" fill="#0f1419"/>
+  <defs>
+    <style>
+      .t{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5}
+      .s{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#9db0c5;font-size:12px}
+      .h{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5;font-size:16px;font-weight:700}
+      .box{fill:#1a2330;stroke:#3a4b5f;stroke-width:1.5}
+      .acc{fill:#1e3a5f;stroke:#5b9fd4;stroke-width:1.5}
+      .ok{fill:#163528;stroke:#3d9b6c;stroke-width:1.5}
+      .warn{fill:#3a2e14;stroke:#c9a227;stroke-width:1.5}
+      .line{stroke:#5b9fd4;stroke-width:1.5;fill:none}
+      .muted{stroke:#3a4b5f;stroke-width:1.2;fill:none}
+    </style>
+  </defs>
+  
+  <text class="h" x="24" y="36">Conditional Access akışı</text>
+  <rect class="box" x="30" y="100" width="150" height="70" rx="8"/><text class="t" x="60" y="140">Sinyaller</text>
+  <text class="s" x="45" y="190">kullanıcı · konum</text>
+  <text class="s" x="45" y="208">cihaz · risk · app</text>
+  <rect class="acc" x="260" y="100" width="180" height="70" rx="8"/><text class="t" x="290" y="140">CA Politikası</text>
+  <text class="s" x="280" y="190">koşul eşleşirse</text>
+  <rect class="ok" x="520" y="70" width="160" height="55" rx="8"/><text class="t" x="555" y="104">İzin ver + MFA</text>
+  <rect class="warn" x="520" y="140" width="160" height="55" rx="8"/><text class="t" x="555" y="174">Oturum kontrol</text>
+  <rect class="box" x="520" y="210" width="160" height="55" rx="8"/><text class="t" x="575" y="244">Engelle</text>
+  <rect class="acc" x="720" y="120" width="150" height="70" rx="8"/><text class="t" x="755" y="160">Kaynak app</text>
+  <path class="line" d="M180 135 H260 M440 135 H520 M680 135 H720"/>
+  <text class="s" x="24" y="310">Report-only ile başlayın · break-glass hesaplarını bilinçli istisna yapın · admin’lere phishing-resistant MFA</text>
+
+</svg>
