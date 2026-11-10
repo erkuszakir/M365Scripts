@@ -66,6 +66,23 @@ export function KullanicilarPage() {
         </button>
       </header>
 
+      <section className="panel detail-block yetki-box">
+        <h2>Yetki nasıl verilir?</h2>
+        <ul className="yetki-list">
+          <li>
+            <strong>Yeni kullanıcı:</strong> Yeni kullanıcı → Rol seçin (
+            <em>Admin</em> = ofis/yönetim, <em>User</em> = saha) → Kaydet.
+          </li>
+          <li>
+            <strong>Mevcut kullanıcı:</strong> Düzenle → Rol’ü Admin veya User yapın → Kaydet.
+          </li>
+          <li>
+            <strong>Admin</strong> pano, iş emri ve kullanıcı yönetir; <strong>User</strong> yalnızca
+            kendine atanan işleri görür.
+          </li>
+        </ul>
+      </section>
+
       {formAcik && (
         <form className="form-panel" onSubmit={onEkle}>
           <h2>Yeni kullanıcı</h2>
@@ -88,10 +105,10 @@ export function KullanicilarPage() {
             />
           </label>
           <label>
-            Rol
+            Rol (yetki)
             <select value={rol} onChange={(e) => setRol(e.target.value as Role)}>
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
+              <option value="user">User — saha / atanmış işler</option>
+              <option value="admin">Admin — pano, iş emri, kullanıcı yönetimi</option>
             </select>
           </label>
           {hata && <p className="form-error">{hata}</p>}
@@ -159,10 +176,10 @@ export function KullanicilarPage() {
               <input value={editAd} onChange={(e) => setEditAd(e.target.value)} required />
             </label>
             <label>
-              Rol
+              Rol (yetki)
               <select value={editRol} onChange={(e) => setEditRol(e.target.value as Role)}>
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
+                <option value="user">User — saha / atanmış işler</option>
+                <option value="admin">Admin — pano, iş emri, kullanıcı yönetimi</option>
               </select>
             </label>
             <label>

@@ -21,6 +21,30 @@ Kapsam: **Nakliye**, **Depolama**, **Yol survey**. Muhasebe Logo’da kalır.
 | User  | `mehmet`  | `1234` |
 | User  | `ayse`    | `1234` |
 
+## Admin / User yetkisi nasıl verilir?
+
+Yetkiyi yalnızca **Admin** verir. `admin / 1234` ile giriş yapın.
+
+### Yeni kişiye yetki
+1. Alt menüden **Kullanıcı** sekmesine gidin.
+2. **Yeni kullanıcı** butonuna basın.
+3. Kullanıcı adı, ad soyad ve şifre girin.
+4. **Rol** alanından seçin:
+   - **Admin** → pano, iş emri, kullanıcı yönetimi (ofis)
+   - **User** → sadece kendine atanan işler / saha ekranı
+5. **Kaydet**.
+
+### Mevcut kişinin yetkisini değiştirme
+1. **Kullanıcı** listesinde ilgili kişinin **Düzenle** butonuna basın.
+2. **Rol** alanını `Admin` veya `User` yapın.
+3. İsterseniz yeni şifre de verin.
+4. **Kaydet**.
+
+### Pasifleştirme / silme
+- **Pasifleştir**: giriş yapamaz, kayıt durur.
+- **Sil**: kullanıcı silinir; atanmış işlerde atama kaldırılır.
+- Kendi hesabınızı silemezsiniz. Son aktif admin pasifleştirilemez / silinemez.
+
 ## Çalıştırma
 
 ```bash
