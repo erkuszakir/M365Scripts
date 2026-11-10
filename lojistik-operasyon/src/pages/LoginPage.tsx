@@ -45,6 +45,7 @@ export function LoginPage() {
               autoComplete="username"
               value={kullaniciAdi}
               onChange={(e) => setKullaniciAdi(e.target.value)}
+              placeholder="admin"
               required
             />
           </label>
@@ -64,9 +65,15 @@ export function LoginPage() {
           </button>
         </form>
 
-        <p className="login-hints">
-          Hesap bilgilerinizi yöneticinizden alın. Şifreler arayüzde gösterilmez.
-        </p>
+        <div className="login-hints">
+          <p>
+            <strong>Kullanıcı adları:</strong> admin (Admin) · ahmet / mehmet / ayse (User)
+          </p>
+          <p>
+            Şifre, Cursor Secrets içindeki <strong>SEED_ADMIN_PASSWORD</strong> (admin) ve{' '}
+            <strong>SEED_USER_PASSWORD</strong> (saha) değerleridir. En az 8 karakter, harf + rakam.
+          </p>
+        </div>
       </div>
     </div>
   )

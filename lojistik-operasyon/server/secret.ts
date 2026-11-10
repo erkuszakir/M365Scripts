@@ -7,17 +7,19 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const dataDir = path.join(__dirname, 'data')
 const secretFile = path.join(dataDir, 'jwt.secret')
 
+const localDev = process.env.ALLOW_LOCAL_DEV === '1'
+
 /**
- * JWT imza anahtarı yalnızca ortam değişkeninden veya (yerel geliştirme için)
- * gitignore’lı rastgele üretilmiş dosyadan gelir. Kaynak kodda sabit secret yok.
+ * JWT imza anahtarı kaynak kodda sabit değildir.
+ * Yayında JWT_SECRET zorunlu; yerelde (ALLOW_LOCAL_DEV=1) rastgele dosya üretilebilir.
  */
 export function resolveJwtSecret(): string {
   const fromEnv = process.env.JWT_SECRET?.trim()
   if (fromEnv && fromEnv.length >= 32) return fromEnv
 
-  if (process.env.NODE_ENV === 'production' || process.env.REQUIRE_JWT_SECRET === '1') {
+  if (!localDev) {
     throw new Error(
-      'JWT_SECRET ortam değişkeni zorunlu (en az 32 karakter). Yayın ortamında secret tanımlayın.',
+      'JWT_SECRET ortam değişkeni zorunlu (en az 32 karakter). Cursor Secrets’a ekleyin.',
     )
   }
 
@@ -30,7 +32,7 @@ export function resolveJwtSecret(): string {
 
   const generated = crypto.randomBytes(48).toString('base64url')
   fs.writeFileSync(secretFile, generated, { mode: 0o600 })
-  console.warn('[güvenlik] JWT_SECRET yok; yerel rastgele anahtar üretildi (server/data/jwt.secret).')
+  console.warn('[güvenlik] ALLOW_LOCAL_DEV: JWT_SECRET yok; yerel anahtar üretildi.')
   return generated
 }
 
@@ -44,4 +46,8 @@ export function validatePassword(sifre: string): string | null {
     return 'Şifre en az bir harf ve bir rakam içermelidir.'
   }
   return null
+}
+
+export function isLocalDev() {
+  return localDev
 }

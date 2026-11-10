@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { randomPassword } from './secret.js'
+import { isLocalDev, randomPassword, validatePassword } from './secret.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const dataDir = path.join(__dirname, 'data')
@@ -47,42 +47,111 @@ export function initDb() {
 
   const count = db.prepare('SELECT COUNT(*) AS c FROM kullanicilar').get() as { c: number }
   if (count.c === 0) seed()
+  else syncSeedPasswords()
 }
 
 function hash(sifre: string) {
   return bcrypt.hashSync(sifre, 10)
 }
 
-function resolveSeedPasswords() {
-  const admin =
-    process.env.SEED_ADMIN_PASSWORD?.trim() || `Adm-${randomPassword(6)}`
-  const user = process.env.SEED_USER_PASSWORD?.trim() || `Usr-${randomPassword(6)}`
-  return { admin, user }
+function resolveSeedPasswords(): { admin: string; user: string; fromEnv: boolean } {
+  const adminEnv = process.env.SEED_ADMIN_PASSWORD?.trim()
+  const userEnv = process.env.SEED_USER_PASSWORD?.trim()
+
+  if (adminEnv) {
+    const adminErr = validatePassword(adminEnv)
+    if (adminErr) throw new Error(`SEED_ADMIN_PASSWORD geçersiz: ${adminErr}`)
+    const user = userEnv || adminEnv
+    if (userEnv) {
+      const userErr = validatePassword(userEnv)
+      if (userErr) throw new Error(`SEED_USER_PASSWORD geçersiz: ${userErr}`)
+    }
+    return { admin: adminEnv, user, fromEnv: true }
+  }
+
+  if (!isLocalDev()) {
+    throw new Error(
+      'SEED_ADMIN_PASSWORD zorunlu. Cursor Secrets’a en az 8 karakter (harf+rakam) bir şifre ekleyin.',
+    )
+  }
+
+  return {
+    admin: `Adm-${randomPassword(6)}1`,
+    user: `Usr-${randomPassword(6)}1`,
+    fromEnv: false,
+  }
+}
+
+function upsertUser(input: {
+  id: string
+  kullaniciAdi: string
+  adSoyad: string
+  rol: 'admin' | 'user'
+  sifre: string
+  now: string
+}) {
+  const existing = db
+    .prepare('SELECT id FROM kullanicilar WHERE kullanici_adi = ? COLLATE NOCASE')
+    .get(input.kullaniciAdi) as { id: string } | undefined
+
+  if (existing) {
+    db.prepare('UPDATE kullanicilar SET sifre_hash = ?, ad_soyad = ?, rol = ?, aktif = 1 WHERE id = ?').run(
+      hash(input.sifre),
+      input.adSoyad,
+      input.rol,
+      existing.id,
+    )
+    return existing.id
+  }
+
+  db.prepare(`
+    INSERT INTO kullanicilar (id, kullanici_adi, sifre_hash, ad_soyad, rol, aktif, olusturma_zamani)
+    VALUES (?, ?, ?, ?, ?, 1, ?)
+  `).run(input.id, input.kullaniciAdi, hash(input.sifre), input.adSoyad, input.rol, input.now)
+  return input.id
+}
+
+/** Yayın secret’ları değişince giriş açılsın diye şifreleri senkronlar. */
+export function syncSeedPasswords() {
+  const adminEnv = process.env.SEED_ADMIN_PASSWORD?.trim()
+  if (!adminEnv) return
+  const { admin, user } = resolveSeedPasswords()
+  const now = new Date().toISOString()
+  upsertUser({
+    id: 'u-admin',
+    kullaniciAdi: 'admin',
+    adSoyad: 'Operasyon Yöneticisi',
+    rol: 'admin',
+    sifre: admin,
+    now,
+  })
+  for (const u of [
+    { id: 'u-ahmet', kullaniciAdi: 'ahmet', adSoyad: 'Ahmet Yılmaz' },
+    { id: 'u-mehmet', kullaniciAdi: 'mehmet', adSoyad: 'Mehmet Kara' },
+    { id: 'u-ayse', kullaniciAdi: 'ayse', adSoyad: 'Ayşe Demir' },
+  ]) {
+    upsertUser({ ...u, rol: 'user', sifre: user, now })
+  }
 }
 
 function writeLocalCredentials(adminPass: string, userPass: string) {
+  if (!isLocalDev()) return
   const lines = [
-    'İlk giriş bilgileri (yalnızca yerel dosya; git’e girmez)',
+    'Yerel geliştirme ilk giriş bilgileri (git’e girmez)',
     `admin / ${adminPass}`,
     `ahmet / ${userPass}`,
     `mehmet / ${userPass}`,
     `ayse / ${userPass}`,
-    '',
-    'Bu dosyayı güvenli tutun veya ilk girişten sonra şifreleri değiştirin.',
   ]
   fs.writeFileSync(credentialsFile, lines.join('\n'), { mode: 0o600 })
-  console.warn('[kurulum] Örnek kullanıcı şifreleri server/data/ilk-giris.txt dosyasına yazıldı.')
+  console.warn('[kurulum] Yerel şifreler server/data/ilk-giris.txt dosyasına yazıldı.')
 }
 
 function seed() {
   const now = new Date().toISOString()
   const bugun = now.slice(0, 10)
-  const { admin: adminPass, user: userPass } = resolveSeedPasswords()
+  const { admin: adminPass, user: userPass, fromEnv } = resolveSeedPasswords()
 
-  const insertUser = db.prepare(`
-    INSERT INTO kullanicilar (id, kullanici_adi, sifre_hash, ad_soyad, rol, aktif, olusturma_zamani)
-    VALUES (@id, @kullaniciAdi, @sifreHash, @adSoyad, @rol, 1, @olusturmaZamani)
-  `)
   const insertIs = db.prepare(`
     INSERT INTO is_emirleri (
       id, baslik, aciklama, tip, durum, lokasyon, tarih, atanan_id, arac, notlar,
@@ -94,37 +163,37 @@ function seed() {
   `)
 
   const tx = db.transaction(() => {
-    insertUser.run({
+    upsertUser({
       id: 'u-admin',
       kullaniciAdi: 'admin',
-      sifreHash: hash(adminPass),
       adSoyad: 'Operasyon Yöneticisi',
       rol: 'admin',
-      olusturmaZamani: now,
+      sifre: adminPass,
+      now,
     })
-    insertUser.run({
+    upsertUser({
       id: 'u-ahmet',
       kullaniciAdi: 'ahmet',
-      sifreHash: hash(userPass),
       adSoyad: 'Ahmet Yılmaz',
       rol: 'user',
-      olusturmaZamani: now,
+      sifre: userPass,
+      now,
     })
-    insertUser.run({
+    upsertUser({
       id: 'u-mehmet',
       kullaniciAdi: 'mehmet',
-      sifreHash: hash(userPass),
       adSoyad: 'Mehmet Kara',
       rol: 'user',
-      olusturmaZamani: now,
+      sifre: userPass,
+      now,
     })
-    insertUser.run({
+    upsertUser({
       id: 'u-ayse',
       kullaniciAdi: 'ayse',
-      sifreHash: hash(userPass),
       adSoyad: 'Ayşe Demir',
       rol: 'user',
-      olusturmaZamani: now,
+      sifre: userPass,
+      now,
     })
 
     const isler = [
@@ -224,10 +293,14 @@ function seed() {
   })
 
   tx()
-  writeLocalCredentials(adminPass, userPass)
+  if (!fromEnv) writeLocalCredentials(adminPass, userPass)
+  else console.warn('[kurulum] Kullanıcılar SEED_* secret değerleriyle hazır.')
 }
 
 export function resetDemoDb() {
+  if (process.env.ALLOW_DEMO_RESET !== '1' && !isLocalDev()) {
+    throw new Error('Demo sıfırlama bu ortamda kapalı.')
+  }
   db.exec('DELETE FROM is_emirleri; DELETE FROM kullanicilar;')
   seed()
 }

@@ -287,6 +287,12 @@ router.patch('/is-emirleri/:id', requireAuth, (req, res) => {
 })
 
 router.post('/demo/sifirla', requireAuth, requireAdmin, (_req, res) => {
-  resetDemoDb()
-  res.json({ ok: true })
+  try {
+    resetDemoDb()
+    res.json({ ok: true })
+  } catch (err) {
+    res.status(403).json({
+      hata: err instanceof Error ? err.message : 'Demo sıfırlama kapalı.',
+    })
+  }
 })

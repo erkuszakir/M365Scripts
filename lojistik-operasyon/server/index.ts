@@ -1,5 +1,6 @@
 import cors from 'cors'
 import express from 'express'
+import { requireCursorViewer } from './cursorGate.js'
 import { initDb } from './db.js'
 import { router } from './routes.js'
 
@@ -19,7 +20,7 @@ app.use(
 )
 app.use(express.json({ limit: '1mb' }))
 app.get('/api/health', (_req, res) => res.json({ ok: true }))
-app.use('/api', router)
+app.use('/api', requireCursorViewer, router)
 
 app.listen(port, '127.0.0.1', () => {
   console.log(`Lojistik API http://127.0.0.1:${port}`)
