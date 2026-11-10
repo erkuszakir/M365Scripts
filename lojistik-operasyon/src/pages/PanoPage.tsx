@@ -74,8 +74,9 @@ export function PanoPage() {
       <button
         type="button"
         className="btn btn-ghost btn-block"
-        onClick={() => {
-          if (confirm('Örnek veriler sıfırlansın mı?')) demoSifirla()
+        onClick={async () => {
+          if (!confirm('Örnek veriler sıfırlansın mı?')) return
+          await demoSifirla()
         }}
       >
         Demo verisini sıfırla

@@ -12,9 +12,9 @@ export type IsEmriDurum =
 export interface Kullanici {
   id: string
   kullaniciAdi: string
-  sifre: string
   adSoyad: string
   rol: Role
+  aktif: boolean
 }
 
 export interface IsEmri {

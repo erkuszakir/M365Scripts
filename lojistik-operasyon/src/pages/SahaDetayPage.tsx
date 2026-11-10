@@ -29,15 +29,19 @@ export function SahaDetayPage() {
     )
   }
 
-  function aksiyon(durum: IsEmriDurum) {
-    durumGuncelle(ie!.id, durum, not)
-    setMesaj(
-      durum === 'tamamlandi'
-        ? 'İş tamamlandı olarak işaretlendi.'
-        : durum === 'sorunlu'
-          ? 'Sorun kaydedildi. Operasyon bilgilendirilecek.'
-          : 'İş devam ediyor olarak güncellendi.',
-    )
+  async function aksiyon(durum: IsEmriDurum) {
+    try {
+      await durumGuncelle(ie!.id, durum, not)
+      setMesaj(
+        durum === 'tamamlandi'
+          ? 'İş tamamlandı olarak işaretlendi.'
+          : durum === 'sorunlu'
+            ? 'Sorun kaydedildi. Operasyon bilgilendirilecek.'
+            : 'İş devam ediyor olarak güncellendi.',
+      )
+    } catch (err) {
+      setMesaj(err instanceof Error ? err.message : 'Güncelleme başarısız.')
+    }
   }
 
   return (

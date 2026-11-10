@@ -6,7 +6,7 @@ import { TIP_ETIKET, type IsEmriTipi } from '../types'
 export function YeniIsEmriPage() {
   const { isEmriEkle, kullanicilar } = useApp()
   const navigate = useNavigate()
-  const sahacilar = kullanicilar.filter((k) => k.rol === 'user')
+  const sahacilar = kullanicilar.filter((k) => k.rol === 'user' && k.aktif)
 
   const [baslik, setBaslik] = useState('')
   const [aciklama, setAciklama] = useState('')
@@ -15,19 +15,25 @@ export function YeniIsEmriPage() {
   const [tarih, setTarih] = useState(new Date().toISOString().slice(0, 10))
   const [atananId, setAtananId] = useState('')
   const [arac, setArac] = useState('')
+  const [kaydediliyor, setKaydediliyor] = useState(false)
 
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault()
-    const yeni = isEmriEkle({
-      baslik,
-      aciklama,
-      tip,
-      lokasyon,
-      tarih,
-      atananId: atananId || null,
-      arac,
-    })
-    navigate(`/is-emirleri/${yeni.id}`)
+    setKaydediliyor(true)
+    try {
+      const yeni = await isEmriEkle({
+        baslik,
+        aciklama,
+        tip,
+        lokasyon,
+        tarih,
+        atananId: atananId || null,
+        arac,
+      })
+      navigate(`/is-emirleri/${yeni.id}`)
+    } finally {
+      setKaydediliyor(false)
+    }
   }
 
   return (
@@ -85,8 +91,8 @@ export function YeniIsEmriPage() {
             placeholder="Plaka · tip"
           />
         </label>
-        <button type="submit" className="btn btn-primary btn-block">
-          Kaydet
+        <button type="submit" className="btn btn-primary btn-block" disabled={kaydediliyor}>
+          {kaydediliyor ? 'Kaydediliyor…' : 'Kaydet'}
         </button>
       </form>
     </div>

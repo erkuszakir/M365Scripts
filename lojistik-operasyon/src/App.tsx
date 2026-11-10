@@ -4,6 +4,7 @@ import { Layout } from './components/Layout'
 import { useApp } from './context/AppContext'
 import { IsEmriDetayPage } from './pages/IsEmriDetayPage'
 import { IsEmirleriPage } from './pages/IsEmirleriPage'
+import { KullanicilarPage } from './pages/KullanicilarPage'
 import { LoginPage } from './pages/LoginPage'
 import { PanoPage } from './pages/PanoPage'
 import { SahaDetayPage } from './pages/SahaDetayPage'
@@ -12,7 +13,8 @@ import { YeniIsEmriPage } from './pages/YeniIsEmriPage'
 import type { Role } from './types'
 
 function Protected({ rol, children }: { rol?: Role; children: ReactNode }) {
-  const { oturum } = useApp()
+  const { oturum, hazir } = useApp()
+  if (!hazir) return <div className="page"><p className="muted">Yükleniyor…</p></div>
   if (!oturum) return <Navigate to="/giris" replace />
   if (rol && oturum.rol !== rol) {
     return <Navigate to={oturum.rol === 'admin' ? '/' : '/saha'} replace />
@@ -65,6 +67,14 @@ export default function App() {
           }
         />
         <Route
+          path="/kullanicilar"
+          element={
+            <Protected rol="admin">
+              <KullanicilarPage />
+            </Protected>
+          }
+        />
+        <Route
           path="/saha"
           element={
             <Protected rol="user">
@@ -96,7 +106,8 @@ export default function App() {
 }
 
 function RootRedirect() {
-  const { oturum } = useApp()
+  const { oturum, hazir } = useApp()
+  if (!hazir) return <div className="page"><p className="muted">Yükleniyor…</p></div>
   if (!oturum) return <Navigate to="/giris" replace />
   return <Navigate to={oturum.rol === 'admin' ? '/' : '/saha'} replace />
 }

@@ -9,13 +9,14 @@ export function IsEmriDetayPage() {
   const navigate = useNavigate()
   const { isEmirleri, kullanicilar, kullaniciBul, isEmriGuncelle, oturum } = useApp()
   const ie = isEmirleri.find((x) => x.id === id)
-  const sahacilar = kullanicilar.filter((k) => k.rol === 'user')
+  const sahacilar = kullanicilar.filter((k) => k.rol === 'user' && k.aktif)
 
   const [atananId, setAtananId] = useState(ie?.atananId ?? '')
   const [durum, setDurum] = useState<IsEmriDurum>(ie?.durum ?? 'bekliyor')
   const [notlar, setNotlar] = useState(ie?.notlar ?? '')
   const [arac, setArac] = useState(ie?.arac ?? '')
   const [kaydedildi, setKaydedildi] = useState(false)
+  const [kaydediliyor, setKaydediliyor] = useState(false)
 
   if (!ie) {
     return (
@@ -31,16 +32,21 @@ export function IsEmriDetayPage() {
   const atanan = kullaniciBul(ie.atananId)
   const admin = oturum?.rol === 'admin'
 
-  function onSave(e: FormEvent) {
+  async function onSave(e: FormEvent) {
     e.preventDefault()
-    isEmriGuncelle(ie!.id, {
-      atananId: atananId || null,
-      durum,
-      notlar,
-      arac,
-    })
-    setKaydedildi(true)
-    window.setTimeout(() => setKaydedildi(false), 1800)
+    setKaydediliyor(true)
+    try {
+      await isEmriGuncelle(ie!.id, {
+        atananId: atananId || null,
+        durum,
+        notlar,
+        arac,
+      })
+      setKaydedildi(true)
+      window.setTimeout(() => setKaydedildi(false), 1800)
+    } finally {
+      setKaydediliyor(false)
+    }
   }
 
   return (
@@ -108,8 +114,8 @@ export function IsEmriDetayPage() {
             Notlar
             <textarea value={notlar} onChange={(e) => setNotlar(e.target.value)} rows={3} />
           </label>
-          <button type="submit" className="btn btn-primary btn-block">
-            Kaydet
+          <button type="submit" className="btn btn-primary btn-block" disabled={kaydediliyor}>
+            {kaydediliyor ? 'Kaydediliyor…' : 'Kaydet'}
           </button>
           {kaydedildi && <p className="success">Kaydedildi.</p>}
         </form>

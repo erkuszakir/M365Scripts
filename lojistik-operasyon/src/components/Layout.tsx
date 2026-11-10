@@ -14,7 +14,9 @@ export function Layout() {
           <span className="brand-mark" aria-hidden />
           <div>
             <p className="brand-name">Lojistik Operasyon</p>
-            <p className="brand-sub">{oturum.adSoyad} · {admin ? 'Admin' : 'User'}</p>
+            <p className="brand-sub">
+              {oturum.adSoyad} · {admin ? 'Admin' : 'User'}
+            </p>
           </div>
         </div>
         <button type="button" className="btn btn-ghost" onClick={cikisYap}>
@@ -33,7 +35,10 @@ export function Layout() {
               Pano
             </NavLink>
             <NavLink to="/is-emirleri" className={navClass}>
-              İş Emirleri
+              İşler
+            </NavLink>
+            <NavLink to="/kullanicilar" className={navClass}>
+              Kullanıcı
             </NavLink>
             <NavLink to="/yeni" className={navClass}>
               + Yeni

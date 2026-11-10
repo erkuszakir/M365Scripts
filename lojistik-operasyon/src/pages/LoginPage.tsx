@@ -3,19 +3,30 @@ import { Navigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 
 export function LoginPage() {
-  const { oturum, girisYap } = useApp()
+  const { oturum, hazir, girisYap } = useApp()
   const [kullaniciAdi, setKullaniciAdi] = useState('')
   const [sifre, setSifre] = useState('')
   const [hata, setHata] = useState<string | null>(null)
+  const [bekliyor, setBekliyor] = useState(false)
+
+  if (!hazir) {
+    return (
+      <div className="login-screen">
+        <p className="loading-text">Yükleniyor…</p>
+      </div>
+    )
+  }
 
   if (oturum) {
     return <Navigate to={oturum.rol === 'admin' ? '/' : '/saha'} replace />
   }
 
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault()
-    const err = girisYap(kullaniciAdi, sifre)
+    setBekliyor(true)
+    const err = await girisYap(kullaniciAdi, sifre)
     setHata(err)
+    setBekliyor(false)
   }
 
   return (
@@ -50,8 +61,8 @@ export function LoginPage() {
             />
           </label>
           {hata && <p className="form-error">{hata}</p>}
-          <button type="submit" className="btn btn-primary btn-block">
-            Giriş yap
+          <button type="submit" className="btn btn-primary btn-block" disabled={bekliyor}>
+            {bekliyor ? 'Giriş yapılıyor…' : 'Giriş yap'}
           </button>
         </form>
 
