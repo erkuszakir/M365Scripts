@@ -2,27 +2,28 @@
 
 Nakliye, depo ve yol survey operasyon yönetimi.
 
-## Giriş (yayın)
+## İlk giriş (şifresiz bootstrap)
 
-1. Cursor ile private uygulamayı açın (oturum zorunlu).
-2. Kullanıcı adı + şifre girin.
-3. Hesap **e-postası**, açık Cursor hesabının e-postası ile **aynı** olmalı.
+`SEED_ADMIN_PASSWORD` **tanımlı değilse**:
+1. Cursor ile uygulamayı açın
+2. **Şifresiz ilk giriş** butonuna basın
+3. Cursor e-postanız admin olur
 
-| Secret | Açıklama |
-|--------|----------|
-| `JWT_SECRET` | ≥32 karakter oturum anahtarı (zorunlu) |
-| `SEED_ADMIN_EMAIL` | Admin’in Cursor e-postası (zorunlu) |
-| `SEED_ADMIN_PASSWORD` | Admin şifresi, min. 8, harf+rakam (zorunlu) |
-| `CORS_ORIGIN` | Opsiyonel izinli kökenler |
+Sonra Secrets’a ekleyin:
+- `JWT_SECRET` (≥32 karakter)
+- `SEED_ADMIN_EMAIL` (Cursor e-postanız)
+- `SEED_ADMIN_PASSWORD` (min. 8, harf+rakam)
 
-**Not:** Paylaşılan `SEED_USER_PASSWORD` yok. Saha kullanıcıları Admin panelinden **kişiye özel e-posta + şifre** ile eklenir. Seed yalnızca `admin` oluşturur.
+Secret eklenince şifresiz giriş kapanır; bundan sonra şifre zorunludur.
 
-## Çalıştırma (yerel)
+## Sonraki kullanıcılar
+
+Admin panelinden kişiye özel **e-posta + benzersiz şifre** ile ekleyin (paylaşılan saha şifresi yok).
+
+## Yerel
 
 ```bash
 cd lojistik-operasyon
 npm install
 npm run dev
 ```
-
-Yerelde `ALLOW_LOCAL_DEV=1` kullanılır; admin `dev@example.com` ile seed edilir (`cursor/identity.dev.ts` ile uyumlu).

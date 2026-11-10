@@ -10,17 +10,17 @@ const secretFile = path.join(dataDir, 'jwt.secret')
 const localDev = process.env.ALLOW_LOCAL_DEV === '1'
 
 /**
- * JWT imza anahtarı kaynak kodda sabit değildir.
- * Yayında JWT_SECRET zorunlu; yerelde (ALLOW_LOCAL_DEV=1) rastgele dosya üretilebilir.
+ * JWT anahtarı kaynak kodda sabit değildir.
+ * JWT_SECRET varsa o kullanılır; yoksa gitignore’lı rastgele dosya üretilir
+ * (şifresiz ilk kurulum için uygulamanın ayağa kalkabilmesi).
+ * REQUIRE_JWT_SECRET=1 ise ortam değişkeni zorunlu.
  */
 export function resolveJwtSecret(): string {
   const fromEnv = process.env.JWT_SECRET?.trim()
   if (fromEnv && fromEnv.length >= 32) return fromEnv
 
-  if (!localDev) {
-    throw new Error(
-      'JWT_SECRET ortam değişkeni zorunlu (en az 32 karakter). Cursor Secrets’a ekleyin.',
-    )
+  if (process.env.REQUIRE_JWT_SECRET === '1') {
+    throw new Error('JWT_SECRET zorunlu (en az 32 karakter).')
   }
 
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
@@ -32,7 +32,7 @@ export function resolveJwtSecret(): string {
 
   const generated = crypto.randomBytes(48).toString('base64url')
   fs.writeFileSync(secretFile, generated, { mode: 0o600 })
-  console.warn('[güvenlik] ALLOW_LOCAL_DEV: JWT_SECRET yok; yerel anahtar üretildi.')
+  console.warn('[güvenlik] JWT_SECRET yok; rastgele anahtar üretildi (kalıcı dosya, kaynak kodda değil).')
   return generated
 }
 

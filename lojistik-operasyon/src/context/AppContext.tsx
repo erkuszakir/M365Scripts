@@ -28,7 +28,10 @@ interface AppContextValue {
   isEmirleri: IsEmri[]
   oturum: Kullanici | null
   yenile: () => Promise<void>
+  sifresizIlkGiris: boolean
+  cursorEmail: string | null
   girisYap: (kullaniciAdi: string, sifre: string) => Promise<string | null>
+  sifresizGiris: () => Promise<string | null>
   cikisYap: () => void
   isEmriEkle: (girdi: YeniIsEmriGirdi) => Promise<IsEmri>
   isEmriGuncelle: (
@@ -79,6 +82,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [kullanicilar, setKullanicilar] = useState<Kullanici[]>([])
   const [isEmirleri, setIsEmirleri] = useState<IsEmri[]>([])
   const [oturum, setOturum] = useState<Kullanici | null>(null)
+  const [sifresizIlkGiris, setSifresizIlkGiris] = useState(false)
+  const [cursorEmail, setCursorEmail] = useState<string | null>(null)
 
   const kullaniciBul = useCallback(
     (id: string | null) => (id ? kullanicilar.find((k) => k.id === id) : undefined),
@@ -118,6 +123,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     async function boot() {
       clearLegacyToken()
       try {
+        const status = await api.setupStatus()
+        setSifresizIlkGiris(status.sifresizIlkGiris)
+        setCursorEmail(status.cursorEmail)
+      } catch {
+        setSifresizIlkGiris(false)
+        setCursorEmail(null)
+      }
+      try {
         await yenile()
       } finally {
         setHazir(true)
@@ -139,6 +152,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
     },
     [yenile],
   )
+
+  const sifresizGiris = useCallback(async () => {
+    try {
+      const res = await api.bootstrap()
+      setOturum(res.kullanici)
+      setSifresizIlkGiris(true)
+      await yenile()
+      return null
+    } catch (err) {
+      return err instanceof Error ? err.message : 'Şifresiz giriş başarısız.'
+    }
+  }, [yenile])
 
   const cikisYap = useCallback(() => {
     void api.logout().catch(() => undefined)
@@ -250,8 +275,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       kullanicilar,
       isEmirleri,
       oturum,
+      sifresizIlkGiris,
+      cursorEmail,
       yenile,
       girisYap,
+      sifresizGiris,
       cikisYap,
       isEmriEkle,
       isEmriGuncelle,
@@ -268,8 +296,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       kullanicilar,
       isEmirleri,
       oturum,
+      sifresizIlkGiris,
+      cursorEmail,
       yenile,
       girisYap,
+      sifresizGiris,
       cikisYap,
       isEmriEkle,
       isEmriGuncelle,

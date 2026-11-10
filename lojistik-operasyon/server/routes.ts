@@ -7,7 +7,7 @@ import {
   setSessionCookie,
   signToken,
 } from './auth.js'
-import { db } from './db.js'
+import { db, ensureAdminFromCursor, isBootstrapOpen } from './db.js'
 import { rateLimit } from './rateLimit.js'
 import { validatePassword } from './secret.js'
 import {
@@ -27,6 +27,44 @@ export const router = Router()
 router.get('/health', (_req, res) => {
   res.json({ ok: true })
 })
+
+router.get('/auth/setup-status', (_req, res) => {
+  res.json({
+    sifresizIlkGiris: isBootstrapOpen(),
+    cursorEmail: _req.cursorViewer?.email ?? null,
+  })
+})
+
+router.post(
+  '/auth/bootstrap',
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    key: (req) => `bootstrap:${req.cursorViewer?.email || req.ip || 'unknown'}`,
+  }),
+  (req, res) => {
+    if (!isBootstrapOpen()) {
+      return res.status(403).json({
+        hata: 'Şifresiz giriş kapalı. SEED_ADMIN_PASSWORD eklendikten sonra şifre ile girin.',
+      })
+    }
+    const viewer = req.cursorViewer
+    if (!viewer?.email) {
+      return res.status(403).json({ hata: 'Cursor kimliği eksik.' })
+    }
+
+    try {
+      const row = ensureAdminFromCursor({ email: viewer.email, name: viewer.name })
+      const kullanici = mapKullanici(row)
+      setSessionCookie(res, signToken(kullanici))
+      return res.json({ kullanici, sifresiz: true })
+    } catch (err) {
+      return res.status(400).json({
+        hata: err instanceof Error ? err.message : 'Bootstrap başarısız.',
+      })
+    }
+  },
+)
 
 router.post(
   '/auth/login',

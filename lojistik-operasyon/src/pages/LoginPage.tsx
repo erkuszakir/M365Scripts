@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 
 export function LoginPage() {
-  const { oturum, hazir, girisYap } = useApp()
+  const { oturum, hazir, girisYap, sifresizGiris, sifresizIlkGiris, cursorEmail } = useApp()
   const [kullaniciAdi, setKullaniciAdi] = useState('')
   const [sifre, setSifre] = useState('')
   const [hata, setHata] = useState<string | null>(null)
@@ -29,6 +29,13 @@ export function LoginPage() {
     setBekliyor(false)
   }
 
+  async function onBootstrap() {
+    setBekliyor(true)
+    const err = await sifresizGiris()
+    setHata(err)
+    setBekliyor(false)
+  }
+
   return (
     <div className="login-screen">
       <div className="login-panel">
@@ -38,45 +45,60 @@ export function LoginPage() {
           <p>Nakliye, depo ve yol survey işlerini tek yerden yönetin.</p>
         </div>
 
-        <form className="login-form" onSubmit={onSubmit}>
-          <label>
-            Kullanıcı adı
-            <input
-              autoComplete="username"
-              value={kullaniciAdi}
-              onChange={(e) => setKullaniciAdi(e.target.value)}
-              placeholder="admin"
-              required
-            />
-          </label>
-          <label>
-            Şifre
-            <input
-              type="password"
-              autoComplete="current-password"
-              value={sifre}
-              onChange={(e) => setSifre(e.target.value)}
-              required
-            />
-          </label>
-          {hata && <p className="form-error">{hata}</p>}
-          <button type="submit" className="btn btn-primary btn-block" disabled={bekliyor}>
-            {bekliyor ? 'Giriş yapılıyor…' : 'Giriş yap'}
-          </button>
-        </form>
+        {sifresizIlkGiris && (
+          <div className="login-form">
+            <p className="muted" style={{ marginBottom: 8 }}>
+              İlk kurulum: şifre henüz yok. Cursor hesabınız admin olur.
+              {cursorEmail ? ` (${cursorEmail})` : ''}
+            </p>
+            <button
+              type="button"
+              className="btn btn-primary btn-block btn-lg"
+              disabled={bekliyor}
+              onClick={() => void onBootstrap()}
+            >
+              {bekliyor ? 'Giriş yapılıyor…' : 'Şifresiz ilk giriş'}
+            </button>
+            <p className="muted" style={{ marginTop: 10, fontSize: '0.9rem' }}>
+              Sonra Cursor Secrets’a SEED_ADMIN_PASSWORD (ve SEED_ADMIN_EMAIL) ekleyin; şifre
+              zorunlu olur.
+            </p>
+            {hata && <p className="form-error">{hata}</p>}
+          </div>
+        )}
 
-        <div className="login-hints">
-          <p>
-            Önce Cursor ile uygulamayı açın. Hesap e-postanız, kullanıcı kaydındaki e-posta ile aynı
-            olmalı.
-          </p>
-          <p>
-            İlk admin: kullanıcı <strong>admin</strong>, şifre{' '}
-            <strong>SEED_ADMIN_PASSWORD</strong>, e-posta <strong>SEED_ADMIN_EMAIL</strong>{' '}
-            (Cursor e-postanız).
-          </p>
-          <p>Diğer personeli Admin panelinden kendi e-posta + benzersiz şifre ile ekleyin.</p>
-        </div>
+        {!sifresizIlkGiris && (
+          <form className="login-form" onSubmit={onSubmit}>
+            <label>
+              Kullanıcı adı
+              <input
+                autoComplete="username"
+                value={kullaniciAdi}
+                onChange={(e) => setKullaniciAdi(e.target.value)}
+                placeholder="admin"
+                required
+              />
+            </label>
+            <label>
+              Şifre
+              <input
+                type="password"
+                autoComplete="current-password"
+                value={sifre}
+                onChange={(e) => setSifre(e.target.value)}
+                required
+              />
+            </label>
+            {hata && <p className="form-error">{hata}</p>}
+            <button type="submit" className="btn btn-primary btn-block" disabled={bekliyor}>
+              {bekliyor ? 'Giriş yapılıyor…' : 'Giriş yap'}
+            </button>
+            <p className="login-hints">
+              Cursor e-postanız hesap e-postasıyla aynı olmalı. Admin şifresi:{' '}
+              SEED_ADMIN_PASSWORD.
+            </p>
+          </form>
+        )}
       </div>
     </div>
   )

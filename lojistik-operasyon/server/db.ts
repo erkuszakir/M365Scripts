@@ -4,7 +4,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { isLocalDev, randomPassword, validatePassword } from './secret.js'
-import { isValidEmail, normalizeEmail } from './types.js'
+import { isValidEmail, normalizeEmail, type KullaniciRow } from './types.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const dataDir = path.join(__dirname, 'data')
@@ -16,6 +16,11 @@ if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
 export const db = new Database(dbPath)
 db.pragma('journal_mode = WAL')
 db.pragma('foreign_keys = ON')
+
+/** SEED_ADMIN_PASSWORD yoksa ilk giriş şifresiz bootstrap açıktır. */
+export function isBootstrapOpen() {
+  return !process.env.SEED_ADMIN_PASSWORD?.trim()
+}
 
 export function initDb() {
   db.exec(`
@@ -51,8 +56,12 @@ export function initDb() {
   ensureEmailIndex()
 
   const count = db.prepare('SELECT COUNT(*) AS c FROM kullanicilar').get() as { c: number }
-  if (count.c === 0) seed()
-  else syncAdminSeed()
+  if (count.c === 0) {
+    if (process.env.SEED_ADMIN_PASSWORD?.trim()) seedWithSecrets()
+    else console.warn('[kurulum] Bootstrap açık: SEED_ADMIN_PASSWORD yok, ilk giriş şifresiz.')
+  } else {
+    syncAdminSeed()
+  }
 }
 
 function ensureEmailColumn() {
@@ -74,56 +83,42 @@ function hash(sifre: string) {
   return bcrypt.hashSync(sifre, 10)
 }
 
-function resolveAdminSeed(): { password: string; email: string; fromEnv: boolean } {
-  const adminPass = process.env.SEED_ADMIN_PASSWORD?.trim()
+function resolveAdminSeed(): { password: string; email: string } {
+  const adminPass = process.env.SEED_ADMIN_PASSWORD!.trim()
+  const passErr = validatePassword(adminPass)
+  if (passErr) throw new Error(`SEED_ADMIN_PASSWORD geçersiz: ${passErr}`)
+
   const adminEmailRaw = process.env.SEED_ADMIN_EMAIL?.trim()
-
-  if (adminPass) {
-    const passErr = validatePassword(adminPass)
-    if (passErr) throw new Error(`SEED_ADMIN_PASSWORD geçersiz: ${passErr}`)
-    if (!adminEmailRaw) {
-      throw new Error('SEED_ADMIN_EMAIL zorunlu (Cursor hesabınızın e-postası).')
-    }
-    const email = normalizeEmail(adminEmailRaw)
-    if (!isValidEmail(email)) throw new Error('SEED_ADMIN_EMAIL geçersiz.')
-    return { password: adminPass, email, fromEnv: true }
+  if (!adminEmailRaw) {
+    throw new Error('SEED_ADMIN_EMAIL zorunlu (Cursor hesabınızın e-postası).')
   }
-
-  if (!isLocalDev()) {
-    throw new Error(
-      'SEED_ADMIN_PASSWORD ve SEED_ADMIN_EMAIL zorunlu. Cursor Secrets’a ekleyin.',
-    )
-  }
-
-  return {
-    password: `Adm-${randomPassword(6)}1`,
-    email: 'dev@example.com',
-    fromEnv: false,
-  }
+  const email = normalizeEmail(adminEmailRaw)
+  if (!isValidEmail(email)) throw new Error('SEED_ADMIN_EMAIL geçersiz.')
+  return { password: adminPass, email }
 }
 
-function upsertAdmin(input: { password: string; email: string; now: string }) {
+function upsertAdmin(input: { password: string; email: string; now: string; adSoyad?: string }) {
   const byName = db
     .prepare('SELECT id FROM kullanicilar WHERE kullanici_adi = ? COLLATE NOCASE')
     .get('admin') as { id: string } | undefined
+  const adSoyad = input.adSoyad || 'Operasyon Yöneticisi'
 
   if (byName) {
     db.prepare(
       `UPDATE kullanicilar
        SET sifre_hash = ?, ad_soyad = ?, email = ?, rol = 'admin', aktif = 1
        WHERE id = ?`,
-    ).run(hash(input.password), 'Operasyon Yöneticisi', input.email, byName.id)
+    ).run(hash(input.password), adSoyad, input.email, byName.id)
     return byName.id
   }
 
   db.prepare(`
     INSERT INTO kullanicilar (id, kullanici_adi, sifre_hash, ad_soyad, email, rol, aktif, olusturma_zamani)
-    VALUES ('u-admin', 'admin', ?, 'Operasyon Yöneticisi', ?, 'admin', 1, ?)
-  `).run(hash(input.password), input.email, input.now)
+    VALUES ('u-admin', 'admin', ?, ?, ?, 'admin', 1, ?)
+  `).run(hash(input.password), adSoyad, input.email, input.now)
   return 'u-admin'
 }
 
-/** Yalnızca admin seed secret’larını senkronlar. Paylaşılan saha şifresi yok. */
 export function syncAdminSeed() {
   const adminPass = process.env.SEED_ADMIN_PASSWORD?.trim()
   if (!adminPass) return
@@ -131,26 +126,40 @@ export function syncAdminSeed() {
   upsertAdmin({ password, email, now: new Date().toISOString() })
 }
 
-function writeLocalCredentials(password: string, email: string) {
-  if (!isLocalDev()) return
-  const lines = [
-    'Yerel geliştirme (git’e girmez)',
-    `kullanıcı: admin`,
-    `e-posta (Cursor simülasyonu ile eşleşmeli): ${email}`,
-    `şifre: ${password}`,
-    '',
-    'Saha kullanıcıları seed edilmez; admin panelinden e-posta + benzersiz şifre ile ekleyin.',
-  ]
-  fs.writeFileSync(credentialsFile, lines.join('\n'), { mode: 0o600 })
-  console.warn('[kurulum] Yerel admin bilgileri server/data/ilk-giris.txt dosyasına yazıldı.')
+/** Cursor görüntüleyicisinden şifresiz admin oluşturur / günceller (yalnızca bootstrap). */
+export function ensureAdminFromCursor(input: { email: string; name?: string }): KullaniciRow {
+  if (!isBootstrapOpen()) {
+    throw new Error('Şifresiz giriş kapalı. SEED_ADMIN_PASSWORD tanımlı.')
+  }
+  const email = normalizeEmail(input.email)
+  if (!isValidEmail(email)) throw new Error('Cursor e-postası geçersiz.')
+
+  const now = new Date().toISOString()
+  const placeholder = `Boot-${randomPassword(12)}1a`
+  const adSoyad = (input.name || '').trim() || 'Operasyon Yöneticisi'
+  const adminId = upsertAdmin({ password: placeholder, email, now, adSoyad })
+  seedSampleJobsIfEmpty(adminId)
+
+  if (isLocalDev()) {
+    fs.writeFileSync(
+      credentialsFile,
+      [
+        'Bootstrap (şifresiz) aktif — SEED_ADMIN_PASSWORD eklenince şifre zorunlu olur.',
+        `admin e-posta: ${email}`,
+      ].join('\n'),
+      { mode: 0o600 },
+    )
+  }
+
+  return db.prepare('SELECT * FROM kullanicilar WHERE id = ?').get(adminId) as KullaniciRow
 }
 
-function seed() {
+function seedSampleJobsIfEmpty(adminId: string) {
+  const jobCount = db.prepare('SELECT COUNT(*) AS c FROM is_emirleri').get() as { c: number }
+  if (jobCount.c > 0) return
+
   const now = new Date().toISOString()
   const bugun = now.slice(0, 10)
-  const { password, email, fromEnv } = resolveAdminSeed()
-  const adminId = upsertAdmin({ password, email, now })
-
   const insertIs = db.prepare(`
     INSERT INTO is_emirleri (
       id, baslik, aciklama, tip, durum, lokasyon, tarih, atanan_id, arac, notlar,
@@ -165,7 +174,7 @@ function seed() {
     {
       id: 'ie-1001',
       baslik: 'Gebze → Ankara parça sevkiyatı',
-      aciklama: 'Paletli yük, 12 ton. Alıcı depo 09:00–16:00 arası teslim kabul ediyor.',
+      aciklama: 'Paletli yük, 12 ton.',
       tip: 'nakliye',
       durum: 'bekliyor',
       lokasyon: 'Gebze / Ankara',
@@ -180,7 +189,7 @@ function seed() {
     {
       id: 'ie-1002',
       baslik: 'Depo A — giriş mal kabul',
-      aciklama: 'Tedarikçi irsaliyesi. Raf B3–B5 yerleştirme.',
+      aciklama: 'Raf B3–B5 yerleştirme.',
       tip: 'depo',
       durum: 'bekliyor',
       lokasyon: 'Merkez Depo A',
@@ -195,7 +204,7 @@ function seed() {
     {
       id: 'ie-1003',
       baslik: 'D100 km 42–58 yol survey',
-      aciklama: 'Köprü geçişleri, dar viraj ve yükseklik kısıtlarını belgele.',
+      aciklama: 'Dar viraj ve yükseklik kısıtlarını belgele.',
       tip: 'survey',
       durum: 'bekliyor',
       lokasyon: 'D100 / Sakarya',
@@ -213,7 +222,12 @@ function seed() {
     for (const ie of isler) insertIs.run(ie)
   })
   tx()
+}
 
-  if (!fromEnv) writeLocalCredentials(password, email)
-  else console.warn('[kurulum] Admin SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD ile hazır.')
+function seedWithSecrets() {
+  const now = new Date().toISOString()
+  const { password, email } = resolveAdminSeed()
+  const adminId = upsertAdmin({ password, email, now })
+  seedSampleJobsIfEmpty(adminId)
+  console.warn('[kurulum] Admin SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD ile hazır.')
 }
