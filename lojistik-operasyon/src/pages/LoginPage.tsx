@@ -1,13 +1,33 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 
 export function LoginPage() {
-  const { oturum, hazir, girisYap, sifresizGiris, sifresizIlkGiris, cursorEmail } = useApp()
+  const {
+    oturum,
+    hazir,
+    girisYap,
+    sifresizGiris,
+    sifresizIlkGiris,
+    cursorEmail,
+    setupBiliniyor,
+  } = useApp()
   const [kullaniciAdi, setKullaniciAdi] = useState('')
   const [sifre, setSifre] = useState('')
   const [hata, setHata] = useState<string | null>(null)
   const [bekliyor, setBekliyor] = useState(false)
+  const autoTried = useRef(false)
+
+  // Şifresiz mod: form gösterme, Cursor ile otomatik giriş
+  useEffect(() => {
+    if (!hazir || !setupBiliniyor || oturum || !sifresizIlkGiris || autoTried.current) return
+    autoTried.current = true
+    setBekliyor(true)
+    void sifresizGiris().then((err) => {
+      setHata(err)
+      setBekliyor(false)
+    })
+  }, [hazir, setupBiliniyor, oturum, sifresizIlkGiris, sifresizGiris])
 
   if (!hazir) {
     return (
@@ -29,12 +49,15 @@ export function LoginPage() {
     setBekliyor(false)
   }
 
-  async function onBootstrap() {
+  async function onRetryBootstrap() {
     setBekliyor(true)
+    setHata(null)
     const err = await sifresizGiris()
     setHata(err)
     setBekliyor(false)
   }
+
+  const sifresizMod = !setupBiliniyor || sifresizIlkGiris
 
   return (
     <div className="login-screen">
@@ -45,29 +68,26 @@ export function LoginPage() {
           <p>Nakliye, depo ve yol survey işlerini tek yerden yönetin.</p>
         </div>
 
-        {sifresizIlkGiris && (
+        {sifresizMod ? (
           <div className="login-form">
             <p className="muted" style={{ marginBottom: 8 }}>
-              İlk kurulum: şifre henüz yok. Cursor hesabınız admin olur.
+              {bekliyor
+                ? 'Cursor hesabınızla giriş yapılıyor…'
+                : 'Şifre yok — Cursor hesabınızla girilir.'}
               {cursorEmail ? ` (${cursorEmail})` : ''}
             </p>
-            <button
-              type="button"
-              className="btn btn-primary btn-block btn-lg"
-              disabled={bekliyor}
-              onClick={() => void onBootstrap()}
-            >
-              {bekliyor ? 'Giriş yapılıyor…' : 'Şifresiz ilk giriş'}
-            </button>
-            <p className="muted" style={{ marginTop: 10, fontSize: '0.9rem' }}>
-              Sonra Cursor Secrets’a SEED_ADMIN_PASSWORD (ve SEED_ADMIN_EMAIL) ekleyin; şifre
-              zorunlu olur.
-            </p>
+            {!bekliyor && (
+              <button
+                type="button"
+                className="btn btn-primary btn-block btn-lg"
+                onClick={() => void onRetryBootstrap()}
+              >
+                Tekrar dene
+              </button>
+            )}
             {hata && <p className="form-error">{hata}</p>}
           </div>
-        )}
-
-        {!sifresizIlkGiris && (
+        ) : (
           <form className="login-form" onSubmit={onSubmit}>
             <label>
               Kullanıcı adı
@@ -94,8 +114,7 @@ export function LoginPage() {
               {bekliyor ? 'Giriş yapılıyor…' : 'Giriş yap'}
             </button>
             <p className="login-hints">
-              Cursor e-postanız hesap e-postasıyla aynı olmalı. Admin şifresi:{' '}
-              SEED_ADMIN_PASSWORD.
+              Cursor e-postanız hesap e-postasıyla aynı olmalı. Admin şifresi: SEED_ADMIN_PASSWORD.
             </p>
           </form>
         )}

@@ -126,13 +126,33 @@ export function syncAdminSeed() {
   upsertAdmin({ password, email, now: new Date().toISOString() })
 }
 
-/** Cursor görüntüleyicisinden şifresiz admin oluşturur / günceller (yalnızca bootstrap). */
-export function ensureAdminFromCursor(input: { email: string; name?: string }): KullaniciRow {
+/**
+ * Şifresiz mod: Cursor e-postasıyla oturum açar.
+ * - E-posta eşleşen aktif kullanıcı varsa onu döner (admin yeniden yazılmaz).
+ * - Hiç kullanıcı yoksa ilk Cursor görüntüleyicisini admin yapar.
+ * - Kullanıcılar var ama e-posta eşleşmiyorsa reddeder.
+ */
+export function loginOrBootstrapFromCursor(input: {
+  email: string
+  name?: string
+}): KullaniciRow {
   if (!isBootstrapOpen()) {
     throw new Error('Şifresiz giriş kapalı. SEED_ADMIN_PASSWORD tanımlı.')
   }
   const email = normalizeEmail(input.email)
   if (!isValidEmail(email)) throw new Error('Cursor e-postası geçersiz.')
+
+  const existing = db
+    .prepare('SELECT * FROM kullanicilar WHERE lower(email) = ? AND aktif = 1')
+    .get(email) as KullaniciRow | undefined
+  if (existing) return existing
+
+  const userCount = db.prepare('SELECT COUNT(*) AS c FROM kullanicilar').get() as { c: number }
+  if (userCount.c > 0) {
+    throw new Error(
+      'Bu Cursor hesabı kayıtlı değil. Admin panelinden e-posta ile kullanıcı eklenmeli.',
+    )
+  }
 
   const now = new Date().toISOString()
   const placeholder = `Boot-${randomPassword(12)}1a`

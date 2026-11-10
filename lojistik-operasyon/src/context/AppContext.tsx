@@ -29,6 +29,7 @@ interface AppContextValue {
   oturum: Kullanici | null
   yenile: () => Promise<void>
   sifresizIlkGiris: boolean
+  setupBiliniyor: boolean
   cursorEmail: string | null
   girisYap: (kullaniciAdi: string, sifre: string) => Promise<string | null>
   sifresizGiris: () => Promise<string | null>
@@ -82,7 +83,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [kullanicilar, setKullanicilar] = useState<Kullanici[]>([])
   const [isEmirleri, setIsEmirleri] = useState<IsEmri[]>([])
   const [oturum, setOturum] = useState<Kullanici | null>(null)
-  const [sifresizIlkGiris, setSifresizIlkGiris] = useState(false)
+  const [sifresizIlkGiris, setSifresizIlkGiris] = useState(true)
+  const [setupBiliniyor, setSetupBiliniyor] = useState(false)
   const [cursorEmail, setCursorEmail] = useState<string | null>(null)
 
   const kullaniciBul = useCallback(
@@ -122,19 +124,43 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     async function boot() {
       clearLegacyToken()
+      // Secret yokken şifre formu göstermemek için varsayılan şifresiz.
+      // setup-status başarısız olsa bile şifre ekranına düşme.
+      let passwordless = true
       try {
         const status = await api.setupStatus()
-        setSifresizIlkGiris(status.sifresizIlkGiris)
+        passwordless = status.sifresizIlkGiris
+        setSifresizIlkGiris(passwordless)
         setCursorEmail(status.cursorEmail)
+        setSetupBiliniyor(true)
       } catch {
-        setSifresizIlkGiris(false)
+        setSifresizIlkGiris(true)
         setCursorEmail(null)
+        setSetupBiliniyor(false)
       }
+
+      let hasSession = false
       try {
+        const me = await api.me()
+        setOturum(me.kullanici)
+        hasSession = true
         await yenile()
-      } finally {
-        setHazir(true)
+      } catch {
+        setOturum(null)
       }
+
+      if (!hasSession && passwordless) {
+        try {
+          const res = await api.bootstrap()
+          setOturum(res.kullanici)
+          setSifresizIlkGiris(true)
+          await yenile()
+        } catch {
+          /* LoginPage yeniden dener / hata gösterir */
+        }
+      }
+
+      setHazir(true)
     }
     void boot()
   }, [yenile])
@@ -276,6 +302,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       isEmirleri,
       oturum,
       sifresizIlkGiris,
+      setupBiliniyor,
       cursorEmail,
       yenile,
       girisYap,
@@ -297,6 +324,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       isEmirleri,
       oturum,
       sifresizIlkGiris,
+      setupBiliniyor,
       cursorEmail,
       yenile,
       girisYap,

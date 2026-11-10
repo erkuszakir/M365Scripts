@@ -7,7 +7,7 @@ import {
   setSessionCookie,
   signToken,
 } from './auth.js'
-import { db, ensureAdminFromCursor, isBootstrapOpen } from './db.js'
+import { db, isBootstrapOpen, loginOrBootstrapFromCursor } from './db.js'
 import { rateLimit } from './rateLimit.js'
 import { validatePassword } from './secret.js'
 import {
@@ -39,7 +39,7 @@ router.post(
   '/auth/bootstrap',
   rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 10,
+    max: 20,
     key: (req) => `bootstrap:${req.cursorViewer?.email || req.ip || 'unknown'}`,
   }),
   (req, res) => {
@@ -54,14 +54,14 @@ router.post(
     }
 
     try {
-      const row = ensureAdminFromCursor({ email: viewer.email, name: viewer.name })
+      const row = loginOrBootstrapFromCursor({ email: viewer.email, name: viewer.name })
       const kullanici = mapKullanici(row)
       setSessionCookie(res, signToken(kullanici))
       return res.json({ kullanici, sifresiz: true })
     } catch (err) {
-      return res.status(400).json({
-        hata: err instanceof Error ? err.message : 'Bootstrap başarısız.',
-      })
+      const msg = err instanceof Error ? err.message : 'Şifresiz giriş başarısız.'
+      const status = msg.includes('kayıtlı değil') ? 403 : 400
+      return res.status(status).json({ hata: msg })
     }
   },
 )

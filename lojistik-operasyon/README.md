@@ -2,12 +2,11 @@
 
 Nakliye, depo ve yol survey operasyon yönetimi.
 
-## İlk giriş (şifresiz bootstrap)
+## İlk giriş (şifresiz)
 
-`SEED_ADMIN_PASSWORD` **tanımlı değilse**:
+`SEED_ADMIN_PASSWORD` **tanımlı değilse** şifre ekranı yoktur:
 1. Cursor ile uygulamayı açın
-2. **Şifresiz ilk giriş** butonuna basın
-3. Cursor e-postanız admin olur
+2. Cursor hesabınız otomatik admin olur (ilk açan)
 
 Sonra Secrets’a ekleyin:
 - `JWT_SECRET` (≥32 karakter)
@@ -18,7 +17,8 @@ Secret eklenince şifresiz giriş kapanır; bundan sonra şifre zorunludur.
 
 ## Sonraki kullanıcılar
 
-Admin panelinden kişiye özel **e-posta + benzersiz şifre** ile ekleyin (paylaşılan saha şifresi yok).
+Admin panelinden kişiye özel **e-posta + benzersiz şifre** ile ekleyin.
+Şifresiz moddayken kayıtlı e-posta = Cursor e-postası olan kullanıcı da otomatik girer.
 
 ## Yerel
 
