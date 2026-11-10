@@ -101,7 +101,8 @@ export function KullanicilarPage() {
               value={sifre}
               onChange={(e) => setSifre(e.target.value)}
               required
-              minLength={4}
+              minLength={8}
+              placeholder="En az 8 karakter, harf + rakam"
             />
           </label>
           <label>
@@ -188,8 +189,8 @@ export function KullanicilarPage() {
                 type="password"
                 value={editSifre}
                 onChange={(e) => setEditSifre(e.target.value)}
-                minLength={4}
-                placeholder="Boş bırakırsanız değişmez"
+                minLength={8}
+                placeholder="Boş bırakırsanız değişmez (min. 8, harf+rakam)"
               />
             </label>
             {editHata && <p className="form-error">{editHata}</p>}

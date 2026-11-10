@@ -1,9 +1,10 @@
 import type { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { db } from './db.js'
+import { resolveJwtSecret } from './secret.js'
 import { mapKullanici, type PublicKullanici, type Role, type KullaniciRow } from './types.js'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'lojistik-dev-secret-degistir'
+const JWT_SECRET = resolveJwtSecret()
 
 export interface AuthPayload {
   sub: string

@@ -3,10 +3,12 @@ import bcrypt from 'bcryptjs'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { randomPassword } from './secret.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const dataDir = path.join(__dirname, 'data')
 const dbPath = path.join(dataDir, 'lojistik.sqlite')
+const credentialsFile = path.join(dataDir, 'ilk-giris.txt')
 
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
 
@@ -51,9 +53,32 @@ function hash(sifre: string) {
   return bcrypt.hashSync(sifre, 10)
 }
 
+function resolveSeedPasswords() {
+  const admin =
+    process.env.SEED_ADMIN_PASSWORD?.trim() || `Adm-${randomPassword(6)}`
+  const user = process.env.SEED_USER_PASSWORD?.trim() || `Usr-${randomPassword(6)}`
+  return { admin, user }
+}
+
+function writeLocalCredentials(adminPass: string, userPass: string) {
+  const lines = [
+    'İlk giriş bilgileri (yalnızca yerel dosya; git’e girmez)',
+    `admin / ${adminPass}`,
+    `ahmet / ${userPass}`,
+    `mehmet / ${userPass}`,
+    `ayse / ${userPass}`,
+    '',
+    'Bu dosyayı güvenli tutun veya ilk girişten sonra şifreleri değiştirin.',
+  ]
+  fs.writeFileSync(credentialsFile, lines.join('\n'), { mode: 0o600 })
+  console.warn('[kurulum] Örnek kullanıcı şifreleri server/data/ilk-giris.txt dosyasına yazıldı.')
+}
+
 function seed() {
   const now = new Date().toISOString()
   const bugun = now.slice(0, 10)
+  const { admin: adminPass, user: userPass } = resolveSeedPasswords()
+
   const insertUser = db.prepare(`
     INSERT INTO kullanicilar (id, kullanici_adi, sifre_hash, ad_soyad, rol, aktif, olusturma_zamani)
     VALUES (@id, @kullaniciAdi, @sifreHash, @adSoyad, @rol, 1, @olusturmaZamani)
@@ -72,7 +97,7 @@ function seed() {
     insertUser.run({
       id: 'u-admin',
       kullaniciAdi: 'admin',
-      sifreHash: hash('1234'),
+      sifreHash: hash(adminPass),
       adSoyad: 'Operasyon Yöneticisi',
       rol: 'admin',
       olusturmaZamani: now,
@@ -80,7 +105,7 @@ function seed() {
     insertUser.run({
       id: 'u-ahmet',
       kullaniciAdi: 'ahmet',
-      sifreHash: hash('1234'),
+      sifreHash: hash(userPass),
       adSoyad: 'Ahmet Yılmaz',
       rol: 'user',
       olusturmaZamani: now,
@@ -88,7 +113,7 @@ function seed() {
     insertUser.run({
       id: 'u-mehmet',
       kullaniciAdi: 'mehmet',
-      sifreHash: hash('1234'),
+      sifreHash: hash(userPass),
       adSoyad: 'Mehmet Kara',
       rol: 'user',
       olusturmaZamani: now,
@@ -96,7 +121,7 @@ function seed() {
     insertUser.run({
       id: 'u-ayse',
       kullaniciAdi: 'ayse',
-      sifreHash: hash('1234'),
+      sifreHash: hash(userPass),
       adSoyad: 'Ayşe Demir',
       rol: 'user',
       olusturmaZamani: now,
@@ -121,7 +146,7 @@ function seed() {
       {
         id: 'ie-1002',
         baslik: 'Depo A — giriş mal kabul',
-        aciklama: 'Tedarikçi irsaliyesi LOGO-4421. Raf B3–B5 yerleştirme.',
+        aciklama: 'Tedarikçi irsaliyesi. Raf B3–B5 yerleştirme.',
         tip: 'depo',
         durum: 'atandi',
         lokasyon: 'Merkez Depo A',
@@ -199,6 +224,7 @@ function seed() {
   })
 
   tx()
+  writeLocalCredentials(adminPass, userPass)
 }
 
 export function resetDemoDb() {

@@ -45,7 +45,6 @@ export function LoginPage() {
               autoComplete="username"
               value={kullaniciAdi}
               onChange={(e) => setKullaniciAdi(e.target.value)}
-              placeholder="admin veya ahmet"
               required
             />
           </label>
@@ -56,7 +55,6 @@ export function LoginPage() {
               autoComplete="current-password"
               value={sifre}
               onChange={(e) => setSifre(e.target.value)}
-              placeholder="1234"
               required
             />
           </label>
@@ -66,14 +64,9 @@ export function LoginPage() {
           </button>
         </form>
 
-        <div className="login-hints">
-          <p>
-            <strong>Admin:</strong> admin / 1234
-          </p>
-          <p>
-            <strong>User (saha):</strong> ahmet / 1234 · mehmet / 1234 · ayse / 1234
-          </p>
-        </div>
+        <p className="login-hints">
+          Hesap bilgilerinizi yöneticinizden alın. Şifreler arayüzde gösterilmez.
+        </p>
       </div>
     </div>
   )

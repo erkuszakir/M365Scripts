@@ -2,6 +2,8 @@ import { Router } from 'express'
 import bcrypt from 'bcryptjs'
 import { requireAdmin, requireAuth, signToken } from './auth.js'
 import { db, resetDemoDb } from './db.js'
+import { rateLimit } from './rateLimit.js'
+import { validatePassword } from './secret.js'
 import {
   mapIsEmri,
   mapKullanici,
@@ -14,24 +16,36 @@ import {
 
 export const router = Router()
 
-router.post('/auth/login', (req, res) => {
-  const kullaniciAdi = String(req.body?.kullaniciAdi ?? '').trim()
-  const sifre = String(req.body?.sifre ?? '')
-  if (!kullaniciAdi || !sifre) {
-    return res.status(400).json({ hata: 'Kullanıcı adı ve şifre gerekli.' })
-  }
+router.post(
+  '/auth/login',
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    key: (req) => {
+      const name = String(req.body?.kullaniciAdi ?? '').trim().toLowerCase()
+      const ip = req.ip || req.socket.remoteAddress || 'unknown'
+      return `login:${ip}:${name || '_'}`
+    },
+  }),
+  (req, res) => {
+    const kullaniciAdi = String(req.body?.kullaniciAdi ?? '').trim()
+    const sifre = String(req.body?.sifre ?? '')
+    if (!kullaniciAdi || !sifre) {
+      return res.status(400).json({ hata: 'Kullanıcı adı ve şifre gerekli.' })
+    }
 
-  const row = db
-    .prepare('SELECT * FROM kullanicilar WHERE kullanici_adi = ? COLLATE NOCASE AND aktif = 1')
-    .get(kullaniciAdi) as KullaniciRow | undefined
+    const row = db
+      .prepare('SELECT * FROM kullanicilar WHERE kullanici_adi = ? COLLATE NOCASE AND aktif = 1')
+      .get(kullaniciAdi) as KullaniciRow | undefined
 
-  if (!row || !bcrypt.compareSync(sifre, row.sifre_hash)) {
-    return res.status(401).json({ hata: 'Kullanıcı adı veya şifre hatalı.' })
-  }
+    if (!row || !bcrypt.compareSync(sifre, row.sifre_hash)) {
+      return res.status(401).json({ hata: 'Kullanıcı adı veya şifre hatalı.' })
+    }
 
-  const kullanici = mapKullanici(row)
-  return res.json({ token: signToken(kullanici), kullanici })
-})
+    const kullanici = mapKullanici(row)
+    return res.json({ token: signToken(kullanici), kullanici })
+  },
+)
 
 router.get('/auth/me', requireAuth, (req, res) => {
   res.json({ kullanici: req.user })
@@ -56,9 +70,8 @@ router.post('/kullanicilar', requireAuth, requireAdmin, (req, res) => {
   if (rol !== 'admin' && rol !== 'user') {
     return res.status(400).json({ hata: 'Geçersiz rol.' })
   }
-  if (sifre.length < 4) {
-    return res.status(400).json({ hata: 'Şifre en az 4 karakter olmalı.' })
-  }
+  const sifreHata = validatePassword(sifre)
+  if (sifreHata) return res.status(400).json({ hata: sifreHata })
 
   const exists = db
     .prepare('SELECT id FROM kullanicilar WHERE kullanici_adi = ? COLLATE NOCASE')
@@ -105,7 +118,8 @@ router.put('/kullanicilar/:id', requireAuth, requireAdmin, (req, res) => {
 
   let sifreHash = row.sifre_hash
   if (sifre) {
-    if (sifre.length < 4) return res.status(400).json({ hata: 'Şifre en az 4 karakter olmalı.' })
+    const sifreHata = validatePassword(sifre)
+    if (sifreHata) return res.status(400).json({ hata: sifreHata })
     sifreHash = bcrypt.hashSync(sifre, 10)
   }
 
