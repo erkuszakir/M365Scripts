@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { ApiError, api, getToken, setToken } from '../lib/api'
+import { ApiError, api, clearLegacyToken } from '../lib/api'
 import type { IsEmri, IsEmriDurum, Kullanici } from '../types'
 
 interface YeniIsEmriGirdi {
@@ -49,7 +49,6 @@ interface AppContextValue {
     >,
   ) => Promise<void>
   durumGuncelle: (id: string, durum: IsEmriDurum, not?: string) => Promise<void>
-  demoSifirla: () => Promise<void>
   kullaniciBul: (id: string | null) => Kullanici | undefined
   kullaniciEkle: (body: {
     kullaniciAdi: string
@@ -83,11 +82,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setYukleniyor(true)
     setHata(null)
     try {
-      const isRes = await api.isEmirleri()
-      setIsEmirleri(isRes.isEmirleri)
-
       const me = await api.me()
       setOturum(me.kullanici)
+
+      const isRes = await api.isEmirleri()
+      setIsEmirleri(isRes.isEmirleri)
 
       if (me.kullanici.rol === 'admin') {
         const users = await api.kullanicilar()
@@ -97,7 +96,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) {
-        setToken(null)
         setOturum(null)
         setKullanicilar([])
         setIsEmirleri([])
@@ -111,10 +109,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     async function boot() {
-      if (!getToken()) {
-        setHazir(true)
-        return
-      }
+      clearLegacyToken()
       try {
         await yenile()
       } finally {
@@ -124,33 +119,33 @@ export function AppProvider({ children }: { children: ReactNode }) {
     void boot()
   }, [yenile])
 
-  const girisYap = useCallback(async (kullaniciAdi: string, sifre: string) => {
-    try {
-      const res = await api.login(kullaniciAdi, sifre)
-      setToken(res.token)
-      setOturum(res.kullanici)
-      await yenile()
-      return null
-    } catch (err) {
-      return err instanceof Error ? err.message : 'Giriş başarısız.'
-    }
-  }, [yenile])
+  const girisYap = useCallback(
+    async (kullaniciAdi: string, sifre: string) => {
+      try {
+        const res = await api.login(kullaniciAdi, sifre)
+        setOturum(res.kullanici)
+        await yenile()
+        return null
+      } catch (err) {
+        return err instanceof Error ? err.message : 'Giriş başarısız.'
+      }
+    },
+    [yenile],
+  )
 
   const cikisYap = useCallback(() => {
-    setToken(null)
+    void api.logout().catch(() => undefined)
+    clearLegacyToken()
     setOturum(null)
     setKullanicilar([])
     setIsEmirleri([])
   }, [])
 
-  const isEmriEkle = useCallback(
-    async (girdi: YeniIsEmriGirdi) => {
-      const res = await api.isEmriEkle(girdi)
-      setIsEmirleri((prev) => [res.isEmri, ...prev])
-      return res.isEmri
-    },
-    [],
-  )
+  const isEmriEkle = useCallback(async (girdi: YeniIsEmriGirdi) => {
+    const res = await api.isEmriEkle(girdi)
+    setIsEmirleri((prev) => [res.isEmri, ...prev])
+    return res.isEmri
+  }, [])
 
   const isEmriGuncelle = useCallback(
     async (
@@ -176,20 +171,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [],
   )
 
-  const durumGuncelle = useCallback(
-    async (id: string, durum: IsEmriDurum, not?: string) => {
-      const body: { durum: IsEmriDurum; notlar?: string } = { durum }
-      if (not !== undefined) body.notlar = not
-      const res = await api.isEmriGuncelle(id, body)
-      setIsEmirleri((prev) => prev.map((ie) => (ie.id === id ? res.isEmri : ie)))
-    },
-    [],
-  )
-
-  const demoSifirla = useCallback(async () => {
-    await api.demoSifirla()
-    await yenile()
-  }, [yenile])
+  const durumGuncelle = useCallback(async (id: string, durum: IsEmriDurum, not?: string) => {
+    const body: { durum: IsEmriDurum; notlar?: string } = { durum }
+    if (not !== undefined) body.notlar = not
+    const res = await api.isEmriGuncelle(id, body)
+    setIsEmirleri((prev) => prev.map((ie) => (ie.id === id ? res.isEmri : ie)))
+  }, [])
 
   const kullaniciEkle = useCallback(
     async (body: {
@@ -200,7 +187,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }) => {
       try {
         const res = await api.kullaniciEkle(body)
-        setKullanicilar((prev) => [...prev, res.kullanici].sort((a, b) => a.adSoyad.localeCompare(b.adSoyad, 'tr')))
+        setKullanicilar((prev) =>
+          [...prev, res.kullanici].sort((a, b) => a.adSoyad.localeCompare(b.adSoyad, 'tr')),
+        )
         return null
       } catch (err) {
         return err instanceof Error ? err.message : 'Kullanıcı eklenemedi.'
@@ -253,7 +242,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       isEmriEkle,
       isEmriGuncelle,
       durumGuncelle,
-      demoSifirla,
       kullaniciBul,
       kullaniciEkle,
       kullaniciGuncelle,
@@ -272,7 +260,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       isEmriEkle,
       isEmriGuncelle,
       durumGuncelle,
-      demoSifirla,
       kullaniciBul,
       kullaniciEkle,
       kullaniciGuncelle,

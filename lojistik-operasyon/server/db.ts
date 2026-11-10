@@ -296,11 +296,3 @@ function seed() {
   if (!fromEnv) writeLocalCredentials(adminPass, userPass)
   else console.warn('[kurulum] Kullanıcılar SEED_* secret değerleriyle hazır.')
 }
-
-export function resetDemoDb() {
-  if (process.env.ALLOW_DEMO_RESET !== '1' && !isLocalDev()) {
-    throw new Error('Demo sıfırlama bu ortamda kapalı.')
-  }
-  db.exec('DELETE FROM is_emirleri; DELETE FROM kullanicilar;')
-  seed()
-}

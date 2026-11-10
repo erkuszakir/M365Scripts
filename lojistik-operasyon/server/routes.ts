@@ -1,7 +1,13 @@
 import { Router } from 'express'
 import bcrypt from 'bcryptjs'
-import { requireAdmin, requireAuth, signToken } from './auth.js'
-import { db, resetDemoDb } from './db.js'
+import {
+  clearSessionCookie,
+  requireAdmin,
+  requireAuth,
+  setSessionCookie,
+  signToken,
+} from './auth.js'
+import { db } from './db.js'
 import { rateLimit } from './rateLimit.js'
 import { validatePassword } from './secret.js'
 import {
@@ -43,9 +49,16 @@ router.post(
     }
 
     const kullanici = mapKullanici(row)
-    return res.json({ token: signToken(kullanici), kullanici })
+    const token = signToken(kullanici)
+    setSessionCookie(res, token)
+    return res.json({ kullanici })
   },
 )
+
+router.post('/auth/logout', (_req, res) => {
+  clearSessionCookie(res)
+  res.json({ ok: true })
+})
 
 router.get('/auth/me', requireAuth, (req, res) => {
   res.json({ kullanici: req.user })
@@ -284,15 +297,4 @@ router.patch('/is-emirleri/:id', requireAuth, (req, res) => {
 
   const updated = db.prepare('SELECT * FROM is_emirleri WHERE id = ?').get(row.id) as IsEmriRow
   res.json({ isEmri: mapIsEmri(updated) })
-})
-
-router.post('/demo/sifirla', requireAuth, requireAdmin, (_req, res) => {
-  try {
-    resetDemoDb()
-    res.json({ ok: true })
-  } catch (err) {
-    res.status(403).json({
-      hata: err instanceof Error ? err.message : 'Demo sıfırlama kapalı.',
-    })
-  }
 })

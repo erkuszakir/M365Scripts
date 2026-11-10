@@ -1,14 +1,13 @@
 import type { IsEmri, IsEmriDurum, Kullanici, Role } from '../types'
 
-const TOKEN_KEY = 'lojistik.token'
-
-export function getToken() {
-  return localStorage.getItem(TOKEN_KEY)
-}
-
-export function setToken(token: string | null) {
-  if (token) localStorage.setItem(TOKEN_KEY, token)
-  else localStorage.removeItem(TOKEN_KEY)
+/** Eski localStorage jetonlarını temizler (artık httpOnly cookie kullanılıyor). */
+export function clearLegacyToken() {
+  try {
+    localStorage.removeItem('lojistik.token')
+    sessionStorage.removeItem('lojistik.token')
+  } catch {
+    /* ignore */
+  }
 }
 
 export class ApiError extends Error {
@@ -24,10 +23,12 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   if (!headers.has('Content-Type') && init.body) {
     headers.set('Content-Type', 'application/json')
   }
-  const token = getToken()
-  if (token) headers.set('Authorization', `Bearer ${token}`)
 
-  const res = await fetch(`/api${path}`, { ...init, headers })
+  const res = await fetch(`/api${path}`, {
+    ...init,
+    headers,
+    credentials: 'same-origin',
+  })
   const data = (await res.json().catch(() => ({}))) as { hata?: string } & T
   if (!res.ok) {
     throw new ApiError(res.status, data.hata || 'İstek başarısız.')
@@ -37,10 +38,13 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
 export const api = {
   login(kullaniciAdi: string, sifre: string) {
-    return request<{ token: string; kullanici: Kullanici }>('/auth/login', {
+    return request<{ kullanici: Kullanici }>('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ kullaniciAdi, sifre }),
     })
+  },
+  logout() {
+    return request<{ ok: boolean }>('/auth/logout', { method: 'POST' })
   },
   me() {
     return request<{ kullanici: Kullanici }>('/auth/me')
@@ -106,8 +110,5 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify(body),
     })
-  },
-  demoSifirla() {
-    return request<{ ok: boolean }>('/demo/sifirla', { method: 'POST' })
   },
 }
