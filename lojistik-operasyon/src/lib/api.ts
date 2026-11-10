@@ -55,6 +55,7 @@ export const api = {
   kullaniciEkle(body: {
     kullaniciAdi: string
     adSoyad: string
+    email: string
     sifre: string
     rol: Role
   }) {
@@ -65,7 +66,7 @@ export const api = {
   },
   kullaniciGuncelle(
     id: string,
-    body: Partial<{ adSoyad: string; rol: Role; aktif: boolean; sifre: string }>,
+    body: Partial<{ adSoyad: string; email: string; rol: Role; aktif: boolean; sifre: string }>,
   ) {
     return request<{ kullanici: Kullanici }>(`/kullanicilar/${id}`, {
       method: 'PUT',

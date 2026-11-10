@@ -19,7 +19,8 @@ app.use(
   }),
 )
 app.use(express.json({ limit: '1mb' }))
-app.get('/api/health', (_req, res) => res.json({ ok: true }))
+
+// Tüm API (health dahil) Cursor kimlik kapısının arkasında
 app.use('/api', requireCursorViewer, router)
 
 app.listen(port, '127.0.0.1', () => {

@@ -53,12 +53,19 @@ interface AppContextValue {
   kullaniciEkle: (body: {
     kullaniciAdi: string
     adSoyad: string
+    email: string
     sifre: string
     rol: Kullanici['rol']
   }) => Promise<string | null>
   kullaniciGuncelle: (
     id: string,
-    body: Partial<{ adSoyad: string; rol: Kullanici['rol']; aktif: boolean; sifre: string }>,
+    body: Partial<{
+      adSoyad: string
+      email: string
+      rol: Kullanici['rol']
+      aktif: boolean
+      sifre: string
+    }>,
   ) => Promise<string | null>
   kullaniciSil: (id: string) => Promise<string | null>
 }
@@ -182,6 +189,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     async (body: {
       kullaniciAdi: string
       adSoyad: string
+      email: string
       sifre: string
       rol: Kullanici['rol']
     }) => {
@@ -201,7 +209,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const kullaniciGuncelle = useCallback(
     async (
       id: string,
-      body: Partial<{ adSoyad: string; rol: Kullanici['rol']; aktif: boolean; sifre: string }>,
+      body: Partial<{
+        adSoyad: string
+        email: string
+        rol: Kullanici['rol']
+        aktif: boolean
+        sifre: string
+      }>,
     ) => {
       try {
         const res = await api.kullaniciGuncelle(id, body)

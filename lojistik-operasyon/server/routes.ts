@@ -11,8 +11,10 @@ import { db } from './db.js'
 import { rateLimit } from './rateLimit.js'
 import { validatePassword } from './secret.js'
 import {
+  isValidEmail,
   mapIsEmri,
   mapKullanici,
+  normalizeEmail,
   type IsEmriDurum,
   type IsEmriRow,
   type IsEmriTipi,
@@ -21,6 +23,10 @@ import {
 } from './types.js'
 
 export const router = Router()
+
+router.get('/health', (_req, res) => {
+  res.json({ ok: true })
+})
 
 router.post(
   '/auth/login',
@@ -48,6 +54,17 @@ router.post(
       return res.status(401).json({ hata: 'Kullanıcı adı veya şifre hatalı.' })
     }
 
+    const viewer = req.cursorViewer
+    if (!viewer?.email) {
+      return res.status(403).json({ hata: 'Cursor kimliği eksik.' })
+    }
+    if (!row.email || normalizeEmail(row.email) !== viewer.email) {
+      return res.status(403).json({
+        hata:
+          'Bu Cursor hesabı bu kullanıcıya bağlı değil. Hesap e-postası Cursor e-postanızla aynı olmalı.',
+      })
+    }
+
     const kullanici = mapKullanici(row)
     const token = signToken(kullanici)
     setSessionCookie(res, token)
@@ -61,7 +78,7 @@ router.post('/auth/logout', (_req, res) => {
 })
 
 router.get('/auth/me', requireAuth, (req, res) => {
-  res.json({ kullanici: req.user })
+  res.json({ kullanici: req.user, cursorEmail: req.cursorViewer?.email ?? null })
 })
 
 router.get('/kullanicilar', requireAuth, requireAdmin, (_req, res) => {
@@ -74,29 +91,36 @@ router.get('/kullanicilar', requireAuth, requireAdmin, (_req, res) => {
 router.post('/kullanicilar', requireAuth, requireAdmin, (req, res) => {
   const kullaniciAdi = String(req.body?.kullaniciAdi ?? '').trim()
   const adSoyad = String(req.body?.adSoyad ?? '').trim()
+  const email = normalizeEmail(String(req.body?.email ?? ''))
   const sifre = String(req.body?.sifre ?? '')
   const rol = String(req.body?.rol ?? 'user') as Role
 
-  if (!kullaniciAdi || !adSoyad || !sifre) {
-    return res.status(400).json({ hata: 'Kullanıcı adı, ad soyad ve şifre zorunlu.' })
+  if (!kullaniciAdi || !adSoyad || !email || !sifre) {
+    return res.status(400).json({ hata: 'Kullanıcı adı, ad soyad, e-posta ve şifre zorunlu.' })
   }
+  if (!isValidEmail(email)) return res.status(400).json({ hata: 'Geçerli bir e-posta girin.' })
   if (rol !== 'admin' && rol !== 'user') {
     return res.status(400).json({ hata: 'Geçersiz rol.' })
   }
   const sifreHata = validatePassword(sifre)
   if (sifreHata) return res.status(400).json({ hata: sifreHata })
 
-  const exists = db
+  const existsName = db
     .prepare('SELECT id FROM kullanicilar WHERE kullanici_adi = ? COLLATE NOCASE')
     .get(kullaniciAdi)
-  if (exists) return res.status(409).json({ hata: 'Bu kullanıcı adı zaten var.' })
+  if (existsName) return res.status(409).json({ hata: 'Bu kullanıcı adı zaten var.' })
+
+  const existsEmail = db
+    .prepare('SELECT id FROM kullanicilar WHERE lower(email) = ?')
+    .get(email)
+  if (existsEmail) return res.status(409).json({ hata: 'Bu e-posta zaten kayıtlı.' })
 
   const id = `u-${Date.now()}`
   const now = new Date().toISOString()
   db.prepare(`
-    INSERT INTO kullanicilar (id, kullanici_adi, sifre_hash, ad_soyad, rol, aktif, olusturma_zamani)
-    VALUES (?, ?, ?, ?, ?, 1, ?)
-  `).run(id, kullaniciAdi, bcrypt.hashSync(sifre, 10), adSoyad, rol, now)
+    INSERT INTO kullanicilar (id, kullanici_adi, sifre_hash, ad_soyad, email, rol, aktif, olusturma_zamani)
+    VALUES (?, ?, ?, ?, ?, ?, 1, ?)
+  `).run(id, kullaniciAdi, bcrypt.hashSync(sifre, 10), adSoyad, email, rol, now)
 
   const row = db.prepare('SELECT * FROM kullanicilar WHERE id = ?').get(id) as KullaniciRow
   res.status(201).json({ kullanici: mapKullanici(row) })
@@ -108,12 +132,15 @@ router.put('/kullanicilar/:id', requireAuth, requireAdmin, (req, res) => {
   if (!row) return res.status(404).json({ hata: 'Kullanıcı bulunamadı.' })
 
   const adSoyad = req.body?.adSoyad !== undefined ? String(req.body.adSoyad).trim() : row.ad_soyad
+  const email =
+    req.body?.email !== undefined ? normalizeEmail(String(req.body.email)) : row.email
   const rol = (req.body?.rol !== undefined ? String(req.body.rol) : row.rol) as Role
   const aktif =
     req.body?.aktif !== undefined ? (req.body.aktif ? 1 : 0) : row.aktif
   const sifre = req.body?.sifre !== undefined ? String(req.body.sifre) : ''
 
   if (!adSoyad) return res.status(400).json({ hata: 'Ad soyad zorunlu.' })
+  if (!email || !isValidEmail(email)) return res.status(400).json({ hata: 'Geçerli e-posta zorunlu.' })
   if (rol !== 'admin' && rol !== 'user') {
     return res.status(400).json({ hata: 'Geçersiz rol.' })
   }
@@ -129,6 +156,11 @@ router.put('/kullanicilar/:id', requireAuth, requireAdmin, (req, res) => {
     }
   }
 
+  const emailOwner = db
+    .prepare('SELECT id FROM kullanicilar WHERE lower(email) = ? AND id != ?')
+    .get(email, id)
+  if (emailOwner) return res.status(409).json({ hata: 'Bu e-posta başka kullanıcıda.' })
+
   let sifreHash = row.sifre_hash
   if (sifre) {
     const sifreHata = validatePassword(sifre)
@@ -138,9 +170,9 @@ router.put('/kullanicilar/:id', requireAuth, requireAdmin, (req, res) => {
 
   db.prepare(`
     UPDATE kullanicilar
-    SET ad_soyad = ?, rol = ?, aktif = ?, sifre_hash = ?
+    SET ad_soyad = ?, email = ?, rol = ?, aktif = ?, sifre_hash = ?
     WHERE id = ?
-  `).run(adSoyad, rol, aktif, sifreHash, id)
+  `).run(adSoyad, email, rol, aktif, sifreHash, id)
 
   const updated = db.prepare('SELECT * FROM kullanicilar WHERE id = ?').get(id) as KullaniciRow
   res.json({ kullanici: mapKullanici(updated) })
@@ -272,7 +304,6 @@ router.patch('/is-emirleri/:id', requireAuth, (req, res) => {
       if (!atananId && durum === 'atandi' && !req.body?.durum) durum = 'bekliyor'
     }
   } else {
-    // saha kullanıcısı: sadece durum + not
     if (req.body?.durum !== undefined) durum = String(req.body.durum) as IsEmriDurum
     if (req.body?.notlar !== undefined) notlar = String(req.body.notlar)
     const allowed: IsEmriDurum[] = ['devam', 'tamamlandi', 'sorunlu']

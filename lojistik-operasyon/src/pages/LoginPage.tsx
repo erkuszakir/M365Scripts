@@ -67,12 +67,15 @@ export function LoginPage() {
 
         <div className="login-hints">
           <p>
-            <strong>Kullanıcı adları:</strong> admin (Admin) · ahmet / mehmet / ayse (User)
+            Önce Cursor ile uygulamayı açın. Hesap e-postanız, kullanıcı kaydındaki e-posta ile aynı
+            olmalı.
           </p>
           <p>
-            Şifre, Cursor Secrets içindeki <strong>SEED_ADMIN_PASSWORD</strong> (admin) ve{' '}
-            <strong>SEED_USER_PASSWORD</strong> (saha) değerleridir. En az 8 karakter, harf + rakam.
+            İlk admin: kullanıcı <strong>admin</strong>, şifre{' '}
+            <strong>SEED_ADMIN_PASSWORD</strong>, e-posta <strong>SEED_ADMIN_EMAIL</strong>{' '}
+            (Cursor e-postanız).
           </p>
+          <p>Diğer personeli Admin panelinden kendi e-posta + benzersiz şifre ile ekleyin.</p>
         </div>
       </div>
     </div>

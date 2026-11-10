@@ -2,7 +2,13 @@ import type { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { db } from './db.js'
 import { resolveJwtSecret } from './secret.js'
-import { mapKullanici, type PublicKullanici, type Role, type KullaniciRow } from './types.js'
+import {
+  mapKullanici,
+  normalizeEmail,
+  type PublicKullanici,
+  type Role,
+  type KullaniciRow,
+} from './types.js'
 
 const JWT_SECRET = resolveJwtSecret()
 export const SESSION_COOKIE = 'lojistik_oturum'
@@ -81,7 +87,14 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
       .prepare('SELECT * FROM kullanicilar WHERE id = ? AND aktif = 1')
       .get(payload.sub) as KullaniciRow | undefined
     if (!row) return res.status(401).json({ hata: 'Oturum geçersiz.' })
-    req.user = mapKullanici(row)
+    const kullanici = mapKullanici(row)
+    if (req.cursorViewer?.email && normalizeEmail(kullanici.email) !== req.cursorViewer.email) {
+      clearSessionCookie(res)
+      return res.status(403).json({
+        hata: 'Oturum Cursor hesabıyla eşleşmiyor. Tekrar giriş yapın.',
+      })
+    }
+    req.user = kullanici
     next()
   } catch {
     return res.status(401).json({ hata: 'Oturum geçersiz.' })

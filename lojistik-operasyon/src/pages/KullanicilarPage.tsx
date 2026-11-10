@@ -7,18 +7,20 @@ export function KullanicilarPage() {
   const [formAcik, setFormAcik] = useState(false)
   const [kullaniciAdi, setKullaniciAdi] = useState('')
   const [adSoyad, setAdSoyad] = useState('')
+  const [email, setEmail] = useState('')
   const [sifre, setSifre] = useState('')
   const [rol, setRol] = useState<Role>('user')
   const [hata, setHata] = useState<string | null>(null)
   const [duzenlenen, setDuzenlenen] = useState<Kullanici | null>(null)
   const [editAd, setEditAd] = useState('')
+  const [editEmail, setEditEmail] = useState('')
   const [editRol, setEditRol] = useState<Role>('user')
   const [editSifre, setEditSifre] = useState('')
   const [editHata, setEditHata] = useState<string | null>(null)
 
   async function onEkle(e: FormEvent) {
     e.preventDefault()
-    const err = await kullaniciEkle({ kullaniciAdi, adSoyad, sifre, rol })
+    const err = await kullaniciEkle({ kullaniciAdi, adSoyad, email, sifre, rol })
     if (err) {
       setHata(err)
       return
@@ -26,6 +28,7 @@ export function KullanicilarPage() {
     setHata(null)
     setKullaniciAdi('')
     setAdSoyad('')
+    setEmail('')
     setSifre('')
     setRol('user')
     setFormAcik(false)
@@ -34,6 +37,7 @@ export function KullanicilarPage() {
   function duzenleAc(k: Kullanici) {
     setDuzenlenen(k)
     setEditAd(k.adSoyad)
+    setEditEmail(k.email)
     setEditRol(k.rol)
     setEditSifre('')
     setEditHata(null)
@@ -44,6 +48,7 @@ export function KullanicilarPage() {
     if (!duzenlenen) return
     const err = await kullaniciGuncelle(duzenlenen.id, {
       adSoyad: editAd,
+      email: editEmail,
       rol: editRol,
       ...(editSifre ? { sifre: editSifre } : {}),
     })
@@ -59,7 +64,7 @@ export function KullanicilarPage() {
       <header className="page-header">
         <div>
           <h1>Kullanıcılar</h1>
-          <p className="muted">{kullanicilar.length} kişi · Admin / User</p>
+          <p className="muted">{kullanicilar.length} kişi · herkese ayrı e-posta ve şifre</p>
         </div>
         <button type="button" className="btn btn-primary" onClick={() => setFormAcik((v) => !v)}>
           {formAcik ? 'Kapat' : 'Yeni kullanıcı'}
@@ -70,15 +75,15 @@ export function KullanicilarPage() {
         <h2>Yetki nasıl verilir?</h2>
         <ul className="yetki-list">
           <li>
-            <strong>Yeni kullanıcı:</strong> Yeni kullanıcı → Rol seçin (
-            <em>Admin</em> = ofis/yönetim, <em>User</em> = saha) → Kaydet.
+            Her kullanıcıya <strong>kendi Cursor e-postası</strong> ve <strong>benzersiz şifre</strong>{' '}
+            verin; paylaşılan saha şifresi yok.
           </li>
           <li>
-            <strong>Mevcut kullanıcı:</strong> Düzenle → Rol’ü Admin veya User yapın → Kaydet.
+            Giriş: Cursor oturumu + uygulama kullanıcısı (e-posta eşleşmeli) + şifre.
           </li>
           <li>
-            <strong>Admin</strong> pano, iş emri ve kullanıcı yönetir; <strong>User</strong> yalnızca
-            kendine atanan işleri görür.
+            <strong>Admin</strong> pano/iş/kullanıcı yönetir; <strong>User</strong> yalnızca atanan
+            işleri görür.
           </li>
         </ul>
       </section>
@@ -95,7 +100,17 @@ export function KullanicilarPage() {
             <input value={adSoyad} onChange={(e) => setAdSoyad(e.target.value)} required />
           </label>
           <label>
-            Şifre
+            Cursor e-posta
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="kisi@sirket.com"
+            />
+          </label>
+          <label>
+            Şifre (kişiye özel)
             <input
               type="password"
               value={sifre}
@@ -130,7 +145,9 @@ export function KullanicilarPage() {
                 {!k.aktif && <span className="badge badge-sorunlu">Pasif</span>}
               </div>
               <strong>{k.adSoyad}</strong>
-              <span className="muted">@{k.kullaniciAdi}</span>
+              <span className="muted">
+                @{k.kullaniciAdi} · {k.email || 'e-posta yok'}
+              </span>
             </div>
             <div className="user-actions">
               <button type="button" className="btn btn-ghost btn-sm" onClick={() => duzenleAc(k)}>
@@ -177,6 +194,15 @@ export function KullanicilarPage() {
               <input value={editAd} onChange={(e) => setEditAd(e.target.value)} required />
             </label>
             <label>
+              Cursor e-posta
+              <input
+                type="email"
+                value={editEmail}
+                onChange={(e) => setEditEmail(e.target.value)}
+                required
+              />
+            </label>
+            <label>
               Rol (yetki)
               <select value={editRol} onChange={(e) => setEditRol(e.target.value as Role)}>
                 <option value="user">User — saha / atanmış işler</option>
@@ -190,7 +216,7 @@ export function KullanicilarPage() {
                 value={editSifre}
                 onChange={(e) => setEditSifre(e.target.value)}
                 minLength={8}
-                placeholder="Boş bırakırsanız değişmez (min. 8, harf+rakam)"
+                placeholder="Boş bırakırsanız değişmez"
               />
             </label>
             {editHata && <p className="form-error">{editHata}</p>}

@@ -1,31 +1,23 @@
 # Lojistik Operasyon
 
-30 kişilik lojistik firması için operasyon yönetim uygulaması.
-
-Kapsam: **Nakliye**, **Depolama**, **Yol survey**. Muhasebe Logo’da kalır.
+Nakliye, depo ve yol survey operasyon yönetimi.
 
 ## Giriş (yayın)
 
-| Kullanıcı | Rol | Şifre kaynağı |
-|-----------|-----|----------------|
-| `admin` | Admin | Cursor Secret `SEED_ADMIN_PASSWORD` |
-| `ahmet` / `mehmet` / `ayse` | User | Cursor Secret `SEED_USER_PASSWORD` |
+1. Cursor ile private uygulamayı açın (oturum zorunlu).
+2. Kullanıcı adı + şifre girin.
+3. Hesap **e-postası**, açık Cursor hesabının e-postası ile **aynı** olmalı.
 
-Şifreler en az 8 karakter olmalı ve harf + rakam içermelidir.
+| Secret | Açıklama |
+|--------|----------|
+| `JWT_SECRET` | ≥32 karakter oturum anahtarı (zorunlu) |
+| `SEED_ADMIN_EMAIL` | Admin’in Cursor e-postası (zorunlu) |
+| `SEED_ADMIN_PASSWORD` | Admin şifresi, min. 8, harf+rakam (zorunlu) |
+| `CORS_ORIGIN` | Opsiyonel izinli kökenler |
 
-Zorunlu secret’lar: `JWT_SECRET` (≥32 karakter), `SEED_ADMIN_PASSWORD`.  
-Opsiyonel: `SEED_USER_PASSWORD`, `CORS_ORIGIN`.
+**Not:** Paylaşılan `SEED_USER_PASSWORD` yok. Saha kullanıcıları Admin panelinden **kişiye özel e-posta + şifre** ile eklenir. Seed yalnızca `admin` oluşturur.
 
-Secret eklendikten / değiştirildikten sonra uygulama yeniden başlayınca şifreler senkronlanır.
-
-## Özellikler
-
-- JWT + SQLite, Cursor kimlik kapısı (yayında)
-- Admin / User rolleri, kullanıcı yönetimi
-- Yerel fontlar (üçüncü taraf font CDN yok)
-- Şifre politikası, giriş hız sınırı, kısıtlı CORS
-
-## Yerel çalıştırma
+## Çalıştırma (yerel)
 
 ```bash
 cd lojistik-operasyon
@@ -33,8 +25,4 @@ npm install
 npm run dev
 ```
 
-`ALLOW_LOCAL_DEV=1` ile API ayağa kalkar. Secret yoksa yerel rastgele şifreler `server/data/ilk-giris.txt` dosyasına yazılır.
-
-## Admin / User yetkisi
-
-Admin → **Kullanıcı** → Yeni kullanıcı veya Düzenle → Rol seç → Kaydet.
+Yerelde `ALLOW_LOCAL_DEV=1` kullanılır; admin `dev@example.com` ile seed edilir (`cursor/identity.dev.ts` ile uyumlu).
