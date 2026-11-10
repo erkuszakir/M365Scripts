@@ -1,7 +1,14 @@
 import type { IsEmri, IsEmriDurum, Kullanici, Role } from '../types'
 
-/** Eski localStorage jetonlarını temizler (artık httpOnly cookie kullanılıyor). */
+/** Bellekte tutulan oturum jetonu (cookie çalışmazsa Authorization yedek). */
+let memoryToken: string | null = null
+
+export function setSessionToken(token: string | null) {
+  memoryToken = token
+}
+
 export function clearLegacyToken() {
+  memoryToken = null
   try {
     localStorage.removeItem('lojistik.token')
     sessionStorage.removeItem('lojistik.token')
@@ -23,15 +30,32 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   if (!headers.has('Content-Type') && init.body) {
     headers.set('Content-Type', 'application/json')
   }
+  if (memoryToken && !headers.has('Authorization')) {
+    headers.set('Authorization', `Bearer ${memoryToken}`)
+  }
 
   const res = await fetch(`/api${path}`, {
     ...init,
     headers,
     credentials: 'same-origin',
   })
-  const data = (await res.json().catch(() => ({}))) as { hata?: string } & T
+
+  const text = await res.text()
+  let data = {} as { hata?: string; token?: string } & T
+  try {
+    data = text ? (JSON.parse(text) as { hata?: string; token?: string } & T) : ({} as typeof data)
+  } catch {
+    throw new ApiError(
+      res.status || 500,
+      res.ok ? 'Geçersiz yanıt.' : `API yanıt vermedi (${res.status || 'ağ'}).`,
+    )
+  }
+
   if (!res.ok) {
     throw new ApiError(res.status, data.hata || 'İstek başarısız.')
+  }
+  if (typeof data.token === 'string' && data.token) {
+    memoryToken = data.token
   }
   return data
 }
@@ -41,17 +65,18 @@ export const api = {
     return request<{ sifresizIlkGiris: boolean; cursorEmail: string | null }>('/auth/setup-status')
   },
   bootstrap() {
-    return request<{ kullanici: Kullanici; sifresiz: boolean }>('/auth/bootstrap', {
+    return request<{ kullanici: Kullanici; sifresiz: boolean; token?: string }>('/auth/bootstrap', {
       method: 'POST',
     })
   },
   login(kullaniciAdi: string, sifre: string) {
-    return request<{ kullanici: Kullanici }>('/auth/login', {
+    return request<{ kullanici: Kullanici; token?: string }>('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ kullaniciAdi, sifre }),
     })
   },
   logout() {
+    memoryToken = null
     return request<{ ok: boolean }>('/auth/logout', { method: 'POST' })
   },
   me() {

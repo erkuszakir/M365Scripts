@@ -50,6 +50,11 @@ export function initDb() {
       olusturma_zamani TEXT NOT NULL,
       guncelleme_zamani TEXT NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS app_meta (
+      anahtar TEXT PRIMARY KEY,
+      deger TEXT NOT NULL
+    );
   `)
 
   ensureEmailColumn()
@@ -126,11 +131,21 @@ export function syncAdminSeed() {
   upsertAdmin({ password, email, now: new Date().toISOString() })
 }
 
+/** Cursor e-postasıyla aktif kullanıcı bulur. */
+export function findUserByEmail(email: string): KullaniciRow | undefined {
+  const normalized = normalizeEmail(email)
+  if (!normalized) return undefined
+  return db
+    .prepare('SELECT * FROM kullanicilar WHERE lower(email) = ? AND aktif = 1')
+    .get(normalized) as KullaniciRow | undefined
+}
+
 /**
- * Şifresiz mod: Cursor e-postasıyla oturum açar.
- * - E-posta eşleşen aktif kullanıcı varsa onu döner (admin yeniden yazılmaz).
- * - Hiç kullanıcı yoksa ilk Cursor görüntüleyicisini admin yapar.
- * - Kullanıcılar var ama e-posta eşleşmiyorsa reddeder.
+ * Şifresiz mod: Cursor e-postasıyla oturum açar (BEGIN IMMEDIATE ile tek seferlik kilit).
+ * - E-posta eşleşen aktif kullanıcı → oturum
+ * - Hiç kullanıcı yok → ilk görüntüleyici admin olur
+ * - Tek admin var ve e-posta farklı → private kurulumda admin e-postasını bu Cursor’a bağlar
+ * - Aksi halde reddeder
  */
 export function loginOrBootstrapFromCursor(input: {
   email: string
@@ -142,36 +157,67 @@ export function loginOrBootstrapFromCursor(input: {
   const email = normalizeEmail(input.email)
   if (!isValidEmail(email)) throw new Error('Cursor e-postası geçersiz.')
 
-  const existing = db
-    .prepare('SELECT * FROM kullanicilar WHERE lower(email) = ? AND aktif = 1')
-    .get(email) as KullaniciRow | undefined
-  if (existing) return existing
+  // BEGIN IMMEDIATE: eşzamanlı ilk kurulum yarışını kilitler
+  db.exec('BEGIN IMMEDIATE')
+  try {
+    const existing = findUserByEmail(email)
+    if (existing) {
+      db.exec('COMMIT')
+      return existing
+    }
 
-  const userCount = db.prepare('SELECT COUNT(*) AS c FROM kullanicilar').get() as { c: number }
-  if (userCount.c > 0) {
+    const userCount = (
+      db.prepare('SELECT COUNT(*) AS c FROM kullanicilar').get() as { c: number }
+    ).c
+
+    const now = new Date().toISOString()
+    const placeholder = `Boot-${randomPassword(12)}1a`
+    const adSoyad = (input.name || '').trim() || 'Operasyon Yöneticisi'
+
+    if (userCount === 0) {
+      const adminId = upsertAdmin({ password: placeholder, email, now, adSoyad })
+      seedSampleJobsIfEmpty(adminId)
+      writeBootstrapNote(email)
+      const row = db.prepare('SELECT * FROM kullanicilar WHERE id = ?').get(adminId) as KullaniciRow
+      db.exec('COMMIT')
+      return row
+    }
+
+    // Private kurulum kurtarma: tek admin varsa Cursor sahibine bağla
+    const admins = db
+      .prepare("SELECT * FROM kullanicilar WHERE rol = 'admin' AND aktif = 1")
+      .all() as KullaniciRow[]
+    if (admins.length === 1 && userCount === 1) {
+      const adminId = upsertAdmin({ password: placeholder, email, now, adSoyad })
+      writeBootstrapNote(email)
+      const row = db.prepare('SELECT * FROM kullanicilar WHERE id = ?').get(adminId) as KullaniciRow
+      db.exec('COMMIT')
+      return row
+    }
+
     throw new Error(
       'Bu Cursor hesabı kayıtlı değil. Admin panelinden e-posta ile kullanıcı eklenmeli.',
     )
+  } catch (err) {
+    try {
+      db.exec('ROLLBACK')
+    } catch {
+      /* ignore */
+    }
+    throw err
   }
+}
 
-  const now = new Date().toISOString()
-  const placeholder = `Boot-${randomPassword(12)}1a`
-  const adSoyad = (input.name || '').trim() || 'Operasyon Yöneticisi'
-  const adminId = upsertAdmin({ password: placeholder, email, now, adSoyad })
-  seedSampleJobsIfEmpty(adminId)
-
-  if (isLocalDev()) {
-    fs.writeFileSync(
-      credentialsFile,
-      [
-        'Bootstrap (şifresiz) aktif — SEED_ADMIN_PASSWORD eklenince şifre zorunlu olur.',
-        `admin e-posta: ${email}`,
-      ].join('\n'),
-      { mode: 0o600 },
-    )
-  }
-
-  return db.prepare('SELECT * FROM kullanicilar WHERE id = ?').get(adminId) as KullaniciRow
+function writeBootstrapNote(email: string) {
+  if (!isLocalDev()) return
+  fs.writeFileSync(
+    credentialsFile,
+    [
+      'Bootstrap (şifresiz) aktif — SEED_ADMIN_PASSWORD eklenince şifre zorunlu olur.',
+      `admin e-posta: ${email}`,
+    ].join('\n'),
+    { mode: 0o600 },
+  )
 }
 
 function seedSampleJobsIfEmpty(adminId: string) {
@@ -238,10 +284,7 @@ function seedSampleJobsIfEmpty(adminId: string) {
     },
   ]
 
-  const tx = db.transaction(() => {
-    for (const ie of isler) insertIs.run(ie)
-  })
-  tx()
+  for (const ie of isler) insertIs.run(ie)
 }
 
 function seedWithSecrets() {
@@ -250,4 +293,18 @@ function seedWithSecrets() {
   const adminId = upsertAdmin({ password, email, now })
   seedSampleJobsIfEmpty(adminId)
   console.warn('[kurulum] Admin SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD ile hazır.')
+}
+
+/** JWT anahtarını SQLite’ta saklar / okur (hosted süreç yeniden başlasa bile aynı DB ile kalır). */
+export function getOrCreateMetaSecret(key: string, create: () => string): string {
+  const row = db.prepare('SELECT deger FROM app_meta WHERE anahtar = ?').get(key) as
+    | { deger: string }
+    | undefined
+  if (row?.deger && row.deger.length >= 32) return row.deger
+  const value = create()
+  db.prepare(
+    `INSERT INTO app_meta (anahtar, deger) VALUES (?, ?)
+     ON CONFLICT(anahtar) DO UPDATE SET deger = excluded.deger`,
+  ).run(key, value)
+  return value
 }

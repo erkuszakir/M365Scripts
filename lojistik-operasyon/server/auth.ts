@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import { db } from './db.js'
-import { resolveJwtSecret } from './secret.js'
+import { db, findUserByEmail, getOrCreateMetaSecret, isBootstrapOpen } from './db.js'
+import { newJwtSecretValue, resolveJwtSecretFallback } from './secret.js'
 import {
   mapKullanici,
   normalizeEmail,
@@ -10,7 +10,6 @@ import {
   type KullaniciRow,
 } from './types.js'
 
-const JWT_SECRET = resolveJwtSecret()
 export const SESSION_COOKIE = 'lojistik_oturum'
 
 export interface AuthPayload {
@@ -26,8 +25,28 @@ declare global {
   }
 }
 
+let cachedSecret: string | null = null
+
+function jwtSecret(): string {
+  if (cachedSecret) return cachedSecret
+  const fromEnv = process.env.JWT_SECRET?.trim()
+  if (fromEnv && fromEnv.length >= 32) {
+    cachedSecret = fromEnv
+    return cachedSecret
+  }
+  if (process.env.REQUIRE_JWT_SECRET === '1') {
+    throw new Error('JWT_SECRET zorunlu (en az 32 karakter).')
+  }
+  try {
+    cachedSecret = getOrCreateMetaSecret('jwt_secret', newJwtSecretValue)
+  } catch {
+    cachedSecret = resolveJwtSecretFallback()
+  }
+  return cachedSecret
+}
+
 export function signToken(user: PublicKullanici) {
-  return jwt.sign({ sub: user.id, rol: user.rol } satisfies AuthPayload, JWT_SECRET, {
+  return jwt.sign({ sub: user.id, rol: user.rol } satisfies AuthPayload, jwtSecret(), {
     expiresIn: '7d',
   })
 }
@@ -78,27 +97,51 @@ function extractToken(req: Request): string | null {
   return null
 }
 
-export function requireAuth(req: Request, res: Response, next: NextFunction) {
-  const token = extractToken(req)
-  if (!token) return res.status(401).json({ hata: 'Oturum gerekli.' })
+function userFromJwt(token: string): PublicKullanici | null {
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as AuthPayload
+    const payload = jwt.verify(token, jwtSecret()) as AuthPayload
     const row = db
       .prepare('SELECT * FROM kullanicilar WHERE id = ? AND aktif = 1')
       .get(payload.sub) as KullaniciRow | undefined
-    if (!row) return res.status(401).json({ hata: 'Oturum geçersiz.' })
-    const kullanici = mapKullanici(row)
-    if (req.cursorViewer?.email && normalizeEmail(kullanici.email) !== req.cursorViewer.email) {
-      clearSessionCookie(res)
-      return res.status(403).json({
-        hata: 'Oturum Cursor hesabıyla eşleşmiyor. Tekrar giriş yapın.',
-      })
-    }
-    req.user = kullanici
-    next()
+    return row ? mapKullanici(row) : null
   } catch {
-    return res.status(401).json({ hata: 'Oturum geçersiz.' })
+    return null
   }
+}
+
+/**
+ * Şifresiz modda cookie olmasa bile Cursor e-postası oturum sayılır.
+ * Bu, hosted ortamda Set-Cookie sorunlarında girişi ayakta tutar.
+ */
+function userFromCursorBootstrap(req: Request): PublicKullanici | null {
+  if (!isBootstrapOpen()) return null
+  const email = req.cursorViewer?.email
+  if (!email) return null
+  const row = findUserByEmail(email)
+  return row ? mapKullanici(row) : null
+}
+
+export function requireAuth(req: Request, res: Response, next: NextFunction) {
+  const token = extractToken(req)
+  let kullanici = token ? userFromJwt(token) : null
+
+  if (!kullanici) {
+    kullanici = userFromCursorBootstrap(req)
+  }
+
+  if (!kullanici) {
+    return res.status(401).json({ hata: 'Oturum gerekli.' })
+  }
+
+  if (req.cursorViewer?.email && normalizeEmail(kullanici.email) !== req.cursorViewer.email) {
+    clearSessionCookie(res)
+    return res.status(403).json({
+      hata: 'Oturum Cursor hesabıyla eşleşmiyor. Tekrar giriş yapın.',
+    })
+  }
+
+  req.user = kullanici
+  next()
 }
 
 export function requireAdmin(req: Request, res: Response, next: NextFunction) {

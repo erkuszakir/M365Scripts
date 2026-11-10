@@ -27,7 +27,7 @@ interface AppContextValue {
   kullanicilar: Kullanici[]
   isEmirleri: IsEmri[]
   oturum: Kullanici | null
-  yenile: () => Promise<void>
+  yenile: (opts?: { keepOturumOn401?: boolean }) => Promise<void>
   sifresizIlkGiris: boolean
   setupBiliniyor: boolean
   cursorEmail: string | null
@@ -92,7 +92,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [kullanicilar],
   )
 
-  const yenile = useCallback(async () => {
+  const yenile = useCallback(async (opts?: { keepOturumOn401?: boolean }) => {
     setYukleniyor(true)
     setHata(null)
     try {
@@ -110,9 +110,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) {
-        setOturum(null)
-        setKullanicilar([])
-        setIsEmirleri([])
+        if (!opts?.keepOturumOn401) {
+          setOturum(null)
+          setKullanicilar([])
+          setIsEmirleri([])
+        }
       } else {
         setHata(err instanceof Error ? err.message : 'Veri yüklenemedi.')
       }
@@ -125,7 +127,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     async function boot() {
       clearLegacyToken()
       // Secret yokken şifre formu göstermemek için varsayılan şifresiz.
-      // setup-status başarısız olsa bile şifre ekranına düşme.
       let passwordless = true
       try {
         const status = await api.setupStatus()
@@ -139,25 +140,28 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setSetupBiliniyor(false)
       }
 
-      let hasSession = false
+      let sessionUser: Kullanici | null = null
       try {
         const me = await api.me()
+        sessionUser = me.kullanici
         setOturum(me.kullanici)
-        hasSession = true
-        await yenile()
       } catch {
-        setOturum(null)
+        sessionUser = null
       }
 
-      if (!hasSession && passwordless) {
+      if (!sessionUser && passwordless) {
         try {
           const res = await api.bootstrap()
+          sessionUser = res.kullanici
           setOturum(res.kullanici)
           setSifresizIlkGiris(true)
-          await yenile()
         } catch {
-          /* LoginPage yeniden dener / hata gösterir */
+          /* LoginPage hata / tekrar dene */
         }
+      }
+
+      if (sessionUser) {
+        await yenile({ keepOturumOn401: true })
       }
 
       setHazir(true)
@@ -170,7 +174,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       try {
         const res = await api.login(kullaniciAdi, sifre)
         setOturum(res.kullanici)
-        await yenile()
+        await yenile({ keepOturumOn401: true })
         return null
       } catch (err) {
         return err instanceof Error ? err.message : 'Giriş başarısız.'
@@ -184,7 +188,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const res = await api.bootstrap()
       setOturum(res.kullanici)
       setSifresizIlkGiris(true)
-      await yenile()
+      await yenile({ keepOturumOn401: true })
       return null
     } catch (err) {
       return err instanceof Error ? err.message : 'Şifresiz giriş başarısız.'

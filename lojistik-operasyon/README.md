@@ -6,7 +6,9 @@ Nakliye, depo ve yol survey operasyon yönetimi.
 
 `SEED_ADMIN_PASSWORD` **tanımlı değilse** şifre ekranı yoktur:
 1. Cursor ile uygulamayı açın
-2. Cursor hesabınız otomatik admin olur (ilk açan)
+2. Cursor hesabınız otomatik admin olur
+
+Şifresiz modda oturum Cursor kimliğine bağlıdır (cookie şart değil).
 
 Sonra Secrets’a ekleyin:
 - `JWT_SECRET` (≥32 karakter)
@@ -15,15 +17,17 @@ Sonra Secrets’a ekleyin:
 
 Secret eklenince şifresiz giriş kapanır; bundan sonra şifre zorunludur.
 
-## Sonraki kullanıcılar
-
-Admin panelinden kişiye özel **e-posta + benzersiz şifre** ile ekleyin.
-Şifresiz moddayken kayıtlı e-posta = Cursor e-postası olan kullanıcı da otomatik girer.
-
 ## Yerel
 
 ```bash
 cd lojistik-operasyon
 npm install
 npm run dev
+```
+
+## Üretim
+
+```bash
+npm run build
+npm start
 ```

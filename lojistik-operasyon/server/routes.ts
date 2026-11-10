@@ -56,8 +56,9 @@ router.post(
     try {
       const row = loginOrBootstrapFromCursor({ email: viewer.email, name: viewer.name })
       const kullanici = mapKullanici(row)
-      setSessionCookie(res, signToken(kullanici))
-      return res.json({ kullanici, sifresiz: true })
+      const token = signToken(kullanici)
+      setSessionCookie(res, token)
+      return res.json({ kullanici, sifresiz: true, token })
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Şifresiz giriş başarısız.'
       const status = msg.includes('kayıtlı değil') ? 403 : 400
@@ -106,7 +107,7 @@ router.post(
     const kullanici = mapKullanici(row)
     const token = signToken(kullanici)
     setSessionCookie(res, token)
-    return res.json({ kullanici })
+    return res.json({ kullanici, token })
   },
 )
 

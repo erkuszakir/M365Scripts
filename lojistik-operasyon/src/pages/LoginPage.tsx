@@ -18,9 +18,11 @@ export function LoginPage() {
   const [bekliyor, setBekliyor] = useState(false)
   const autoTried = useRef(false)
 
-  // Şifresiz mod: form gösterme, Cursor ile otomatik giriş
+  // Şifresiz mod: form yok; otomatik Cursor girişi (setup bilinmese bile)
   useEffect(() => {
-    if (!hazir || !setupBiliniyor || oturum || !sifresizIlkGiris || autoTried.current) return
+    if (!hazir || oturum || autoTried.current) return
+    const sifresizMod = !setupBiliniyor || sifresizIlkGiris
+    if (!sifresizMod) return
     autoTried.current = true
     setBekliyor(true)
     void sifresizGiris().then((err) => {
@@ -82,7 +84,7 @@ export function LoginPage() {
                 className="btn btn-primary btn-block btn-lg"
                 onClick={() => void onRetryBootstrap()}
               >
-                Tekrar dene
+                Giriş yap
               </button>
             )}
             {hata && <p className="form-error">{hata}</p>}
