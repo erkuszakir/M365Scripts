@@ -4,9 +4,16 @@ export type Domain =
   | "Purview"
   | "Teams"
   | "SharePoint / OneDrive"
+  | "SharePoint"
+  | "OneDrive"
+  | "Entra ID"
+  | "Azure"
+  | "Intune"
   | "Yedekleme"
   | "Power Automate"
-  | "noren.com.tr Güvenlik";
+  | "Güvenlik"
+  | "noren.com.tr Güvenlik"
+  | "norenlojistik.com";
 
 export type Status =
   | "Sağlıklı"
