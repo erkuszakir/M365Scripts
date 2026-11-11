@@ -25,3 +25,7 @@ server/data
 *.njsproj
 *.sln
 *.sw?
+
+.next
+out
+next-env.d.ts
