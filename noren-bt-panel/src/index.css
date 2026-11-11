@@ -565,6 +565,253 @@ input {
   font-size: 0.82rem;
 }
 
+.top-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 1.25rem;
+  padding: 0.35rem;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.tab {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.tab.active {
+  background: var(--ink);
+  color: #fff;
+}
+
+.view-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.view-intro {
+  margin: 0;
+  color: var(--muted);
+  max-width: 62ch;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.service-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.service-card {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.service-head {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.85rem;
+  align-items: center;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 1rem 1.1rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.service-head h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.service-head p {
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.service-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+}
+
+.process-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 1rem 1rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.process-list li {
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  background: var(--bg1);
+  border: 1px solid #e2ebe7;
+}
+
+.process-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+}
+
+.process-list p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.process-hint {
+  margin-top: 0.35rem !important;
+  color: var(--muted);
+  font-size: 0.8rem !important;
+}
+
+.report-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.9fr) minmax(0, 1.4fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.report-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+  max-height: 70vh;
+  overflow: auto;
+}
+
+.report-item {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 12px;
+  padding: 0.85rem 0.95rem;
+  font: inherit;
+  cursor: pointer;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.report-item.active {
+  outline: 2px solid var(--accent, #0f766e);
+  background: #fff;
+}
+
+.report-item strong {
+  font-size: 0.95rem;
+}
+
+.muted-line {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.report-detail {
+  padding: 1.1rem 1.2rem;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.report-detail .eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.report-detail h2 {
+  margin: 0.25rem 0 0.4rem;
+}
+
+.report-detail h3 {
+  margin: 1rem 0 0.4rem;
+  font-size: 0.95rem;
+}
+
+.report-summary {
+  margin: 0.75rem 0;
+  line-height: 1.45;
+}
+
+.meta-bar.tight {
+  margin-top: 0.75rem;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.metric {
+  padding: 0.7rem 0.8rem;
+  border-radius: 10px;
+  background: var(--bg1);
+  border: 1px solid #e2ebe7;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.metric span {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.metric strong {
+  font-size: 1.15rem;
+}
+
+.metric.tone-warn strong {
+  color: #9a6700;
+}
+
+.metric.tone-danger strong {
+  color: #b42318;
+}
+
+.metric.tone-ok strong {
+  color: #1f7a4d;
+}
+
+@media (max-width: 960px) {
+  .report-layout,
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .top-tabs {
+    border-radius: 16px;
+  }
+}
+
 @keyframes rise {
   from {
     opacity: 0;

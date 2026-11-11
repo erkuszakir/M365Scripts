@@ -2,12 +2,12 @@ import type { MonitorRecord, PanelMeta } from "../types";
 
 /** Sample / planning snapshot — canlı tenant'a bağlanmaz, salt-okunur. */
 export const panelMeta: PanelMeta = {
-  panelGeneratedAt: "2026-11-06T17:15:00+03:00",
+  panelGeneratedAt: "2026-11-11T18:00:00+03:00",
   sampleDataNotice:
-    "Örnek planlama verisi. Canlı Microsoft 365 / Exchange / Purview üzerinde değişiklik yapılmaz; yalnızca salt-okunur kontrol ve sonraki adım önerisi sunulur.",
+    "norenlojistik.com için örnek planlama / rapor verisi. Canlı Microsoft 365 üzerinde değişiklik yapılmaz; Graph veya PowerShell bağlanana kadar salt-okunur iskelet kullanılır.",
   checkHorizonHours: 36,
-  weekLabel: "Bu hafta (3–6 Kas 2026)",
-  previousWeekLabel: "Önceki hafta (27 Eki – 2 Kas 2026)",
+  weekLabel: "Bu hafta (10–11 Kas 2026)",
+  previousWeekLabel: "Önceki hafta (3–9 Kas 2026)",
 };
 
 export const focusLabels: Record<string, string> = {
