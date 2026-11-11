@@ -34,7 +34,7 @@ export const reportDefinitions: ReportDefinition[] = [
     title: "Exchange mail akışı özeti",
     cadence: "gunluk",
     description: "Teslimat gecikmesi, connector ve message trace özeti.",
-    collector: "ornek · Get-MessageTrace / EAC",
+    collector: "Graph · /organization + serviceHealth (+ Reports sonra)",
   },
   {
     id: "rpt-ex-forward",
@@ -43,7 +43,7 @@ export const reportDefinitions: ReportDefinition[] = [
     title: "Yönlendirme ve dış iletim",
     cadence: "haftalik",
     description: "Inbox rule / forwarding envanteri.",
-    collector: "ornek · Exchange Online PowerShell",
+    collector: "sonraki adım · Exchange Online PowerShell",
   },
   {
     id: "rpt-spo-sharing",
