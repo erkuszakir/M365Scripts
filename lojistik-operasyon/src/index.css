@@ -155,6 +155,33 @@ p {
   gap: 12px;
 }
 
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.static-row {
+  cursor: default;
+}
+
+.stack-item {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.module-list .job-row {
+  min-height: 64px;
+}
+
 .page-header.column {
   flex-direction: column;
   align-items: stretch;
@@ -363,6 +390,16 @@ p {
 .badge-tip-survey {
   background: #f3e9ff;
   color: #5b2d8a;
+}
+
+.badge-tip-etut {
+  background: #e8f7f4;
+  color: #0f5c4f;
+}
+
+.badge-tip-gozetmenlik {
+  background: #fff0e4;
+  color: #8a3d00;
 }
 
 .badge-bekliyor {

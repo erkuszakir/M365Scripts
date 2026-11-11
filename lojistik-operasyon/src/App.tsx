@@ -2,13 +2,18 @@ import type { ReactNode } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { useApp } from './context/AppContext'
+import { CrmPage } from './views/CrmPage'
+import { DemirbasPage } from './views/DemirbasPage'
 import { IsEmriDetayPage } from './views/IsEmriDetayPage'
 import { IsEmirleriPage } from './views/IsEmirleriPage'
 import { KullanicilarPage } from './views/KullanicilarPage'
 import { LoginPage } from './views/LoginPage'
+import { ModullerPage } from './views/ModullerPage'
 import { PanoPage } from './views/PanoPage'
+import { ParaTalebiPage } from './views/ParaTalebiPage'
 import { SahaDetayPage } from './views/SahaDetayPage'
 import { SahaPage } from './views/SahaPage'
+import { SatinAlmaPage } from './views/SatinAlmaPage'
 import { YeniIsEmriPage } from './views/YeniIsEmriPage'
 import type { Role } from './types'
 
@@ -71,6 +76,25 @@ export default function App() {
           element={
             <Protected rol="admin">
               <KullanicilarPage />
+            </Protected>
+          }
+        />
+        <Route path="/moduller" element={<ModullerPage />} />
+        <Route
+          path="/moduller/demirbas"
+          element={
+            <Protected rol="admin">
+              <DemirbasPage />
+            </Protected>
+          }
+        />
+        <Route path="/moduller/satin-alma" element={<SatinAlmaPage />} />
+        <Route path="/moduller/para-talebi" element={<ParaTalebiPage />} />
+        <Route
+          path="/moduller/crm"
+          element={
+            <Protected rol="admin">
+              <CrmPage />
             </Protected>
           }
         />

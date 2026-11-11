@@ -37,6 +37,9 @@ export function Layout() {
             <NavLink to="/is-emirleri" className={navClass}>
               İşler
             </NavLink>
+            <NavLink to="/moduller" className={navClass}>
+              Modül
+            </NavLink>
             <NavLink to="/kullanicilar" className={navClass}>
               Kullanıcı
             </NavLink>
@@ -48,6 +51,9 @@ export function Layout() {
           <>
             <NavLink to="/saha" end className={navClass}>
               İşlerim
+            </NavLink>
+            <NavLink to="/moduller" className={navClass}>
+              Modül
             </NavLink>
             <NavLink to="/saha/gecmis" className={navClass}>
               Geçmiş

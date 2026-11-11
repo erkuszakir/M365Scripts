@@ -22,9 +22,14 @@ export function PanoPage() {
           <h1>Operasyon panosu</h1>
           <p className="muted">Bugün {bugunku.length} iş · {aktif.length} aktif</p>
         </div>
-        <Link to="/yeni" className="btn btn-primary">
-          Yeni iş emri
-        </Link>
+        <div className="header-actions">
+          <Link to="/moduller" className="btn btn-ghost">
+            Modüller
+          </Link>
+          <Link to="/yeni" className="btn btn-primary">
+            Yeni iş emri
+          </Link>
+        </div>
       </header>
 
       <section className="stat-grid" aria-label="Durum özeti">

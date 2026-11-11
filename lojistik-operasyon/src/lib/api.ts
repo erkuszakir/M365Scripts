@@ -1,4 +1,17 @@
-import type { IsEmri, IsEmriDurum, Kullanici, Role } from '../types'
+import type {
+  CrmDurum,
+  CrmMusteri,
+  Demirbas,
+  DemirbasDurum,
+  IsEmri,
+  IsEmriDurum,
+  Kullanici,
+  ParaTalebi,
+  ParaTalebiDurum,
+  Role,
+  SatinAlma,
+  SatinAlmaDurum,
+} from '../types'
 
 export function clearLegacyToken() {
   try {
@@ -130,6 +143,119 @@ export const api = {
     }>,
   ) {
     return request<{ isEmri: IsEmri }>(`/is-emirleri/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    })
+  },
+  demirbas() {
+    return request<{ kayitlar: Demirbas[] }>('/demirbas')
+  },
+  demirbasEkle(body: {
+    ad: string
+    kod: string
+    lokasyon: string
+    durum: DemirbasDurum
+    adet: number
+    notlar: string
+  }) {
+    return request<{ kayit: Demirbas }>('/demirbas', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    })
+  },
+  demirbasGuncelle(
+    id: string,
+    body: Partial<{
+      ad: string
+      kod: string
+      lokasyon: string
+      durum: DemirbasDurum
+      adet: number
+      notlar: string
+    }>,
+  ) {
+    return request<{ kayit: Demirbas }>(`/demirbas/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    })
+  },
+  satinAlma() {
+    return request<{ kayitlar: SatinAlma[] }>('/satin-alma')
+  },
+  satinAlmaEkle(body: {
+    baslik: string
+    aciklama: string
+    tutar: number
+    paraBirimi: string
+  }) {
+    return request<{ kayit: SatinAlma }>('/satin-alma', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    })
+  },
+  satinAlmaGuncelle(
+    id: string,
+    body: Partial<{
+      baslik: string
+      aciklama: string
+      tutar: number
+      paraBirimi: string
+      durum: SatinAlmaDurum
+    }>,
+  ) {
+    return request<{ kayit: SatinAlma }>(`/satin-alma/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    })
+  },
+  paraTalebi() {
+    return request<{ kayitlar: ParaTalebi[] }>('/para-talebi')
+  },
+  paraTalebiEkle(body: {
+    baslik: string
+    tutar: number
+    paraBirimi: string
+    gerekce: string
+  }) {
+    return request<{ kayit: ParaTalebi }>('/para-talebi', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    })
+  },
+  paraTalebiGuncelle(id: string, body: { durum: ParaTalebiDurum }) {
+    return request<{ kayit: ParaTalebi }>(`/para-talebi/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    })
+  },
+  crm() {
+    return request<{ kayitlar: CrmMusteri[] }>('/crm')
+  },
+  crmEkle(body: {
+    firma: string
+    yetkili: string
+    telefon: string
+    email: string
+    durum: CrmDurum
+    notlar: string
+  }) {
+    return request<{ kayit: CrmMusteri }>('/crm', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    })
+  },
+  crmGuncelle(
+    id: string,
+    body: Partial<{
+      firma: string
+      yetkili: string
+      telefon: string
+      email: string
+      durum: CrmDurum
+      notlar: string
+    }>,
+  ) {
+    return request<{ kayit: CrmMusteri }>(`/crm/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(body),
     })
