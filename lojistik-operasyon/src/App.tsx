@@ -22,7 +22,9 @@ function Protected({ rol, children }: { rol?: Role; children: ReactNode }) {
   if (!hazir) return <div className="page"><p className="muted">Yükleniyor…</p></div>
   if (!oturum) return <Navigate to="/giris" replace />
   if (rol && oturum.rol !== rol) {
-    return <Navigate to={oturum.rol === 'admin' ? '/' : '/saha'} replace />
+    const hedef =
+      oturum.rol === 'admin' ? '/' : oturum.rol === 'amir' ? '/moduller' : '/saha'
+    return <Navigate to={hedef} replace />
   }
   return children
 }
@@ -90,14 +92,7 @@ export default function App() {
         />
         <Route path="/moduller/satin-alma" element={<SatinAlmaPage />} />
         <Route path="/moduller/para-talebi" element={<ParaTalebiPage />} />
-        <Route
-          path="/moduller/crm"
-          element={
-            <Protected rol="admin">
-              <CrmPage />
-            </Protected>
-          }
-        />
+        <Route path="/moduller/crm" element={<CrmPage />} />
         <Route
           path="/saha"
           element={
@@ -133,5 +128,6 @@ function RootRedirect() {
   const { oturum, hazir } = useApp()
   if (!hazir) return <div className="page"><p className="muted">Yükleniyor…</p></div>
   if (!oturum) return <Navigate to="/giris" replace />
-  return <Navigate to={oturum.rol === 'admin' ? '/' : '/saha'} replace />
+  const hedef = oturum.rol === 'admin' ? '/' : oturum.rol === 'amir' ? '/moduller' : '/saha'
+  return <Navigate to={hedef} replace />
 }

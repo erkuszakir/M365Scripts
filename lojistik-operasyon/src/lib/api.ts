@@ -1,4 +1,6 @@
 import type {
+  CrmAktivite,
+  CrmAktiviteTipi,
   CrmDurum,
   CrmMusteri,
   Demirbas,
@@ -7,10 +9,8 @@ import type {
   IsEmriDurum,
   Kullanici,
   ParaTalebi,
-  ParaTalebiDurum,
   Role,
   SatinAlma,
-  SatinAlmaDurum,
 } from '../types'
 
 export function clearLegacyToken() {
@@ -180,7 +180,7 @@ export const api = {
     })
   },
   satinAlma() {
-    return request<{ kayitlar: SatinAlma[] }>('/satin-alma')
+    return request<{ kayitlar: SatinAlma[]; onayEsigi: number }>('/satin-alma')
   },
   satinAlmaEkle(body: {
     baslik: string
@@ -193,23 +193,14 @@ export const api = {
       body: JSON.stringify(body),
     })
   },
-  satinAlmaGuncelle(
-    id: string,
-    body: Partial<{
-      baslik: string
-      aciklama: string
-      tutar: number
-      paraBirimi: string
-      durum: SatinAlmaDurum
-    }>,
-  ) {
+  satinAlmaAksiyon(id: string, body: { aksiyon: 'onayla' | 'red' | 'tamamla'; onayNotu?: string }) {
     return request<{ kayit: SatinAlma }>(`/satin-alma/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(body),
     })
   },
   paraTalebi() {
-    return request<{ kayitlar: ParaTalebi[] }>('/para-talebi')
+    return request<{ kayitlar: ParaTalebi[]; onayEsigi: number }>('/para-talebi')
   },
   paraTalebiEkle(body: {
     baslik: string
@@ -222,7 +213,7 @@ export const api = {
       body: JSON.stringify(body),
     })
   },
-  paraTalebiGuncelle(id: string, body: { durum: ParaTalebiDurum }) {
+  paraTalebiAksiyon(id: string, body: { aksiyon: 'onayla' | 'red' | 'ode'; onayNotu?: string }) {
     return request<{ kayit: ParaTalebi }>(`/para-talebi/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(body),
@@ -231,6 +222,9 @@ export const api = {
   crm() {
     return request<{ kayitlar: CrmMusteri[] }>('/crm')
   },
+  crmDetay(id: string) {
+    return request<{ kayit: CrmMusteri; aktiviteler: CrmAktivite[] }>(`/crm/${id}`)
+  },
   crmEkle(body: {
     firma: string
     yetkili: string
@@ -238,6 +232,11 @@ export const api = {
     email: string
     durum: CrmDurum
     notlar: string
+    sektor: string
+    sehir: string
+    kaynak: string
+    tahminiCiro: number
+    sonGorusme: string
   }) {
     return request<{ kayit: CrmMusteri }>('/crm', {
       method: 'POST',
@@ -253,10 +252,24 @@ export const api = {
       email: string
       durum: CrmDurum
       notlar: string
+      sektor: string
+      sehir: string
+      kaynak: string
+      tahminiCiro: number
+      sonGorusme: string
     }>,
   ) {
     return request<{ kayit: CrmMusteri }>(`/crm/${id}`, {
       method: 'PATCH',
+      body: JSON.stringify(body),
+    })
+  },
+  crmAktiviteEkle(
+    musteriId: string,
+    body: { tip: CrmAktiviteTipi; baslik: string; detay: string },
+  ) {
+    return request<{ aktivite: CrmAktivite }>(`/crm/${musteriId}/aktivite`, {
+      method: 'POST',
       body: JSON.stringify(body),
     })
   },

@@ -1,11 +1,13 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
+import { ROL_ETIKET } from '../types'
 
 export function Layout() {
   const { oturum, cikisYap } = useApp()
   if (!oturum) return null
 
   const admin = oturum.rol === 'admin'
+  const amir = oturum.rol === 'amir'
 
   return (
     <div className="app-shell">
@@ -15,7 +17,7 @@ export function Layout() {
           <div>
             <p className="brand-name">Lojistik Operasyon</p>
             <p className="brand-sub">
-              {oturum.adSoyad} · {admin ? 'Admin' : 'User'}
+              {oturum.adSoyad} · {ROL_ETIKET[oturum.rol]}
             </p>
           </div>
         </div>
@@ -45,6 +47,21 @@ export function Layout() {
             </NavLink>
             <NavLink to="/yeni" className={navClass}>
               + Yeni
+            </NavLink>
+          </>
+        ) : amir ? (
+          <>
+            <NavLink to="/moduller" end className={navClass}>
+              Modül
+            </NavLink>
+            <NavLink to="/moduller/satin-alma" className={navClass}>
+              Satın alma
+            </NavLink>
+            <NavLink to="/moduller/para-talebi" className={navClass}>
+              Para
+            </NavLink>
+            <NavLink to="/moduller/crm" className={navClass}>
+              CRM
             </NavLink>
           </>
         ) : (

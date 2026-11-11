@@ -182,6 +182,29 @@ p {
   min-height: 64px;
 }
 
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.job-row-active {
+  outline: 2px solid var(--accent);
+  background: #fff8ef;
+}
+
+.crm-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px 2px 8px;
+}
+
+.crm-detail p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
 .page-header.column {
   flex-direction: column;
   align-items: stretch;

@@ -28,14 +28,22 @@ const MODULLER = [
 export function ModullerPage() {
   const { oturum } = useApp()
   const admin = oturum?.rol === 'admin'
-  const liste = MODULLER.filter((m) => !m.adminOnly || admin)
+  const yonetici = admin || oturum?.rol === 'amir'
+  const liste = MODULLER.filter((m) => {
+    if (m.to === '/moduller/crm') return yonetici
+    if (m.adminOnly) return admin
+    return true
+  })
 
   return (
     <div className="stack">
       <header className="page-header">
         <div>
           <h1>Modüller</h1>
-          <p className="muted">Demirbaş, satın alma, para talebi{admin ? ' ve CRM' : ''}.</p>
+          <p className="muted">
+            Satın alma / para talebi: ≤5.000 TL amir, üstü CEO onayı
+            {yonetici ? ' · CRM' : ''}.
+          </p>
         </div>
       </header>
 
