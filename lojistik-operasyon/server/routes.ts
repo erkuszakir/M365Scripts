@@ -7,7 +7,12 @@ import {
   setSessionCookie,
   signToken,
 } from './auth.js'
-import { db, isBootstrapOpen, loginOrBootstrapFromCursor } from './db.js'
+import {
+  db,
+  isBootstrapOpen,
+  loginOrBootstrapFromCursor,
+  resolveBootstrapOwnerEmail,
+} from './db.js'
 import { rateLimit } from './rateLimit.js'
 import { validatePassword } from './secret.js'
 import {
@@ -29,9 +34,11 @@ router.get('/health', (_req, res) => {
 })
 
 router.get('/auth/setup-status', (_req, res) => {
+  const ownerEmail = resolveBootstrapOwnerEmail()
   res.json({
     sifresizIlkGiris: isBootstrapOpen(),
     cursorEmail: _req.cursorViewer?.email ?? null,
+    sahipEmailTanimli: Boolean(ownerEmail),
   })
 })
 

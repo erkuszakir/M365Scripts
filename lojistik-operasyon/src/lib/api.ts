@@ -62,7 +62,11 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
 export const api = {
   setupStatus() {
-    return request<{ sifresizIlkGiris: boolean; cursorEmail: string | null }>('/auth/setup-status')
+    return request<{
+      sifresizIlkGiris: boolean
+      cursorEmail: string | null
+      sahipEmailTanimli?: boolean
+    }>('/auth/setup-status')
   },
   bootstrap() {
     return request<{ kullanici: Kullanici; sifresiz: boolean; token?: string }>('/auth/bootstrap', {

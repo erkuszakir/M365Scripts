@@ -17,9 +17,17 @@ export const db = new Database(dbPath)
 db.pragma('journal_mode = WAL')
 db.pragma('foreign_keys = ON')
 
-/** SEED_ADMIN_PASSWORD yoksa ilk giriş şifresiz bootstrap açıktır. */
+/** SEED_ADMIN_PASSWORD yoksa şifresiz giriş (Cursor e-posta) açıktır. */
 export function isBootstrapOpen() {
   return !process.env.SEED_ADMIN_PASSWORD?.trim()
+}
+
+/** İlk admin yalnızca bu e-posta ile oluşturulabilir (davetli yarışını kapatır). */
+export function resolveBootstrapOwnerEmail(): string | null {
+  const raw = process.env.SEED_ADMIN_EMAIL?.trim()
+  if (!raw) return null
+  const email = normalizeEmail(raw)
+  return isValidEmail(email) ? email : null
 }
 
 export function initDb() {
@@ -141,11 +149,10 @@ export function findUserByEmail(email: string): KullaniciRow | undefined {
 }
 
 /**
- * Şifresiz mod: Cursor e-postasıyla oturum açar (BEGIN IMMEDIATE ile tek seferlik kilit).
- * - E-posta eşleşen aktif kullanıcı → oturum
- * - Hiç kullanıcı yok → ilk görüntüleyici admin olur
- * - Tek admin var ve e-posta farklı → private kurulumda admin e-postasını bu Cursor’a bağlar
- * - Aksi halde reddeder
+ * Şifresiz mod: Cursor e-postasıyla oturum açar (BEGIN IMMEDIATE).
+ * - E-posta eşleşen aktif kullanıcı → oturum (yeniden bağlama yok)
+ * - Hiç kullanıcı yok → yalnızca SEED_ADMIN_EMAIL ile eşleşen Cursor admin olur
+ * - Aksi halde reddeder (davetli hesap admin’i çalamaz)
  */
 export function loginOrBootstrapFromCursor(input: {
   email: string
@@ -157,7 +164,6 @@ export function loginOrBootstrapFromCursor(input: {
   const email = normalizeEmail(input.email)
   if (!isValidEmail(email)) throw new Error('Cursor e-postası geçersiz.')
 
-  // BEGIN IMMEDIATE: eşzamanlı ilk kurulum yarışını kilitler
   db.exec('BEGIN IMMEDIATE')
   try {
     const existing = findUserByEmail(email)
@@ -170,34 +176,33 @@ export function loginOrBootstrapFromCursor(input: {
       db.prepare('SELECT COUNT(*) AS c FROM kullanicilar').get() as { c: number }
     ).c
 
+    if (userCount > 0) {
+      throw new Error(
+        'Bu Cursor hesabı kayıtlı değil. Admin panelinden e-posta ile kullanıcı eklenmeli.',
+      )
+    }
+
+    const ownerEmail = resolveBootstrapOwnerEmail()
+    if (!ownerEmail) {
+      throw new Error(
+        'İlk kurulum için SEED_ADMIN_EMAIL secret’ı gerekli (Cursor e-postanız).',
+      )
+    }
+    if (email !== ownerEmail) {
+      throw new Error(
+        'İlk admin yalnızca SEED_ADMIN_EMAIL ile tanımlı Cursor hesabı olabilir.',
+      )
+    }
+
     const now = new Date().toISOString()
     const placeholder = `Boot-${randomPassword(12)}1a`
     const adSoyad = (input.name || '').trim() || 'Operasyon Yöneticisi'
-
-    if (userCount === 0) {
-      const adminId = upsertAdmin({ password: placeholder, email, now, adSoyad })
-      seedSampleJobsIfEmpty(adminId)
-      writeBootstrapNote(email)
-      const row = db.prepare('SELECT * FROM kullanicilar WHERE id = ?').get(adminId) as KullaniciRow
-      db.exec('COMMIT')
-      return row
-    }
-
-    // Private kurulum kurtarma: tek admin varsa Cursor sahibine bağla
-    const admins = db
-      .prepare("SELECT * FROM kullanicilar WHERE rol = 'admin' AND aktif = 1")
-      .all() as KullaniciRow[]
-    if (admins.length === 1 && userCount === 1) {
-      const adminId = upsertAdmin({ password: placeholder, email, now, adSoyad })
-      writeBootstrapNote(email)
-      const row = db.prepare('SELECT * FROM kullanicilar WHERE id = ?').get(adminId) as KullaniciRow
-      db.exec('COMMIT')
-      return row
-    }
-
-    throw new Error(
-      'Bu Cursor hesabı kayıtlı değil. Admin panelinden e-posta ile kullanıcı eklenmeli.',
-    )
+    const adminId = upsertAdmin({ password: placeholder, email, now, adSoyad })
+    seedSampleJobsIfEmpty(adminId)
+    writeBootstrapNote(email)
+    const row = db.prepare('SELECT * FROM kullanicilar WHERE id = ?').get(adminId) as KullaniciRow
+    db.exec('COMMIT')
+    return row
   } catch (err) {
     try {
       db.exec('ROLLBACK')
