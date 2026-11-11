@@ -41,7 +41,7 @@ export function YeniIsEmriPage() {
       <header className="page-header">
         <div>
           <h1>Yeni iş emri</h1>
-          <p className="muted">Nakliye, depo veya survey görevi oluşturun.</p>
+          <p className="muted">Nakliye, depo, etüt, gözetmenlik veya survey.</p>
         </div>
       </header>
 

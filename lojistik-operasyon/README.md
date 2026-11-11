@@ -1,15 +1,18 @@
 # Lojistik Operasyon
 
-Cursor Apps üzerinde **Next.js App Router** (`app/api/...`) + Postgres.
+Cursor Apps üzerinde **Next.js App Router** + Postgres.
+
+## Modüller
+
+- **İş emirleri:** nakliye, depo, yol survey, yol etüdü, yük indirme/bindirme gözetmenliği
+- **Depo demirbaş**
+- **Satın alma**
+- **Para talebi**
+- **CRM** (müşteri / aday)
 
 ## Şifresiz giriş
 
-Secret gerekmez. Uygulamayı Cursor hesabınızla açın → ilk giriş sizi admin yapar.
-
-İsteğe bağlı:
-- `SEED_ADMIN_EMAIL` — yalnızca bu e-posta ilk admin olabilir
-- `SEED_ADMIN_PASSWORD` — tanımlıysa şifre formu açılır
-- `JWT_SECRET` — yoksa uygulama kendi üretir
+Secret gerekmez. İlk Cursor hesabı admin olur.
 
 ## Yerel
 
@@ -17,5 +20,3 @@ Secret gerekmez. Uygulamayı Cursor hesabınızla açın → ilk giriş sizi adm
 npm install
 npm run dev
 ```
-
-Build: `npm run build` · Prod: `npm start`

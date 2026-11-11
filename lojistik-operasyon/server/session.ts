@@ -245,6 +245,26 @@ async function seedSampleJobsIfEmpty(adminId: string) {
       tarih: bugun,
       arac: '34 SVY 05 · Pikap',
     },
+    {
+      id: 'ie-1004',
+      baslik: 'TEM Gebze–İzmit yol etüdü',
+      aciklama: 'Köprü altı yükseklik ve rampalar.',
+      tip: 'etut',
+      durum: 'bekliyor',
+      lokasyon: 'TEM / Kocaeli',
+      tarih: bugun,
+      arac: '34 ETU 11 · Pikap',
+    },
+    {
+      id: 'ie-1005',
+      baslik: 'Ambar 2 — yük bindirme gözetmenliği',
+      aciklama: 'Konteyner dolumu ve mühür kontrolü.',
+      tip: 'gozetmenlik',
+      durum: 'bekliyor',
+      lokasyon: 'Ambar 2',
+      tarih: bugun,
+      arac: '',
+    },
   ]
   for (const ie of isler) {
     await sql(

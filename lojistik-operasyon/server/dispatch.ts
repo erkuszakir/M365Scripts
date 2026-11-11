@@ -20,7 +20,8 @@ import {
   type KullaniciRow,
   type Role,
 } from './session'
-import { isValidEmail, normalizeEmail } from './types'
+import { handleModuleRoutes } from './moduleRoutes'
+import { IS_EMRI_TIPLERI, isValidEmail, normalizeEmail } from './types'
 
 function json(data: unknown, init: ResponseInit = {}) {
   const headers = new Headers(init.headers)
@@ -239,7 +240,7 @@ export async function dispatch(request: Request): Promise<Response> {
       if (!baslik || !lokasyon || !tarih) {
         return json({ hata: 'Başlık, lokasyon ve tarih zorunlu.' }, { status: 400 })
       }
-      if (!['nakliye', 'depo', 'survey'].includes(tip)) {
+      if (!IS_EMRI_TIPLERI.includes(tip)) {
         return json({ hata: 'Geçersiz iş tipi.' }, { status: 400 })
       }
       const now = new Date().toISOString()
@@ -320,6 +321,20 @@ export async function dispatch(request: Request): Promise<Response> {
         const updated = await sqlOne<IsEmriRow>('SELECT * FROM is_emirleri WHERE id = $1', [id])
         return json({ isEmri: mapIsEmri(updated!) })
       }
+    }
+
+    // Modüller: demirbaş, satın alma, para talebi, CRM
+    const moduleSession = await requireSession(request)
+    if (!(moduleSession instanceof Response)) {
+      const moduleRes = await handleModuleRoutes(path, method, request, moduleSession)
+      if (moduleRes) return moduleRes
+    } else if (
+      path.startsWith('/api/demirbas') ||
+      path.startsWith('/api/satin-alma') ||
+      path.startsWith('/api/para-talebi') ||
+      path.startsWith('/api/crm')
+    ) {
+      return moduleSession
     }
 
     return json({ hata: 'API bulunamadı.' }, { status: 404 })
