@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import { db, findUserByEmail, getOrCreateMetaSecret, isBootstrapOpen } from './db.js'
+import { db, getOrCreateMetaSecret } from './db.js'
 import { newJwtSecretValue, resolveJwtSecretFallback } from './secret.js'
 import {
   mapKullanici,
@@ -52,7 +52,7 @@ export function signToken(user: PublicKullanici) {
 }
 
 function cookieSecure() {
-  return Boolean(process.env.CURSOR_APP_ID) || process.env.NODE_ENV === 'production'
+  return Boolean(process.env.CURSOR_APP_ID) || process.env.NODE_ENV === 'production' || Boolean(process.env.PORT)
 }
 
 export function setSessionCookie(res: Response, token: string) {
@@ -97,51 +97,29 @@ function extractToken(req: Request): string | null {
   return null
 }
 
-function userFromJwt(token: string): PublicKullanici | null {
+export function requireAuth(req: Request, res: Response, next: NextFunction) {
+  const token = extractToken(req)
+  if (!token) return res.status(401).json({ hata: 'Oturum gerekli.' })
+
   try {
     const payload = jwt.verify(token, jwtSecret()) as AuthPayload
     const row = db
       .prepare('SELECT * FROM kullanicilar WHERE id = ? AND aktif = 1')
       .get(payload.sub) as KullaniciRow | undefined
-    return row ? mapKullanici(row) : null
+    if (!row) return res.status(401).json({ hata: 'Oturum geçersiz.' })
+
+    const kullanici = mapKullanici(row)
+    if (req.cursorViewer?.email && normalizeEmail(kullanici.email) !== req.cursorViewer.email) {
+      clearSessionCookie(res)
+      return res.status(403).json({
+        hata: 'Oturum Cursor hesabıyla eşleşmiyor. Tekrar giriş yapın.',
+      })
+    }
+    req.user = kullanici
+    next()
   } catch {
-    return null
+    return res.status(401).json({ hata: 'Oturum geçersiz.' })
   }
-}
-
-/**
- * Şifresiz modda cookie olmasa bile Cursor e-postası oturum sayılır.
- * Bu, hosted ortamda Set-Cookie sorunlarında girişi ayakta tutar.
- */
-function userFromCursorBootstrap(req: Request): PublicKullanici | null {
-  if (!isBootstrapOpen()) return null
-  const email = req.cursorViewer?.email
-  if (!email) return null
-  const row = findUserByEmail(email)
-  return row ? mapKullanici(row) : null
-}
-
-export function requireAuth(req: Request, res: Response, next: NextFunction) {
-  const token = extractToken(req)
-  let kullanici = token ? userFromJwt(token) : null
-
-  if (!kullanici) {
-    kullanici = userFromCursorBootstrap(req)
-  }
-
-  if (!kullanici) {
-    return res.status(401).json({ hata: 'Oturum gerekli.' })
-  }
-
-  if (req.cursorViewer?.email && normalizeEmail(kullanici.email) !== req.cursorViewer.email) {
-    clearSessionCookie(res)
-    return res.status(403).json({
-      hata: 'Oturum Cursor hesabıyla eşleşmiyor. Tekrar giriş yapın.',
-    })
-  }
-
-  req.user = kullanici
-  next()
 }
 
 export function requireAdmin(req: Request, res: Response, next: NextFunction) {

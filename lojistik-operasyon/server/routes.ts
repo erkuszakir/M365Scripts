@@ -63,12 +63,11 @@ router.post(
     try {
       const row = loginOrBootstrapFromCursor({ email: viewer.email, name: viewer.name })
       const kullanici = mapKullanici(row)
-      const token = signToken(kullanici)
-      setSessionCookie(res, token)
-      return res.json({ kullanici, sifresiz: true, token })
+      setSessionCookie(res, signToken(kullanici))
+      return res.json({ kullanici, sifresiz: true })
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Şifresiz giriş başarısız.'
-      const status = msg.includes('kayıtlı değil') ? 403 : 400
+      const status = msg.includes('kayıtlı değil') || msg.includes('SEED_ADMIN_EMAIL') ? 403 : 400
       return res.status(status).json({ hata: msg })
     }
   },
@@ -112,9 +111,8 @@ router.post(
     }
 
     const kullanici = mapKullanici(row)
-    const token = signToken(kullanici)
-    setSessionCookie(res, token)
-    return res.json({ kullanici, token })
+    setSessionCookie(res, signToken(kullanici))
+    return res.json({ kullanici })
   },
 )
 
