@@ -13,7 +13,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const distDir = path.join(__dirname, '..', 'dist')
 const app = express()
 const port = Number(process.env.PORT || 3001)
-const hosted = Boolean(process.env.CURSOR_APP_ID) || process.env.NODE_ENV === 'production'
 
 const corsOrigin = process.env.CORS_ORIGIN?.trim()
 app.use(
@@ -26,18 +25,19 @@ app.use(
 )
 app.use(express.json({ limit: '1mb' }))
 
-// Tüm API (health dahil) Cursor kimlik kapısının arkasında
+// API önce — statik dosya / SPA asla /api’yi yutmasın
 app.use('/api', requireCursorViewer, router)
 
-// Üretim: Vite build çıktısını aynı süreçten servis et
 if (fs.existsSync(distDir)) {
   app.use(express.static(distDir, { index: false, fallthrough: true }))
-  app.get(/^(?!\/api).*/, (_req, res) => {
+  app.get(/^(?!\/api(?:\/|$)).*/, (_req, res) => {
     res.sendFile(path.join(distDir, 'index.html'))
   })
+} else {
+  console.warn('[uyarı] dist/ yok — önce npm run build çalıştırın.')
 }
 
-const host = hosted ? '0.0.0.0' : '127.0.0.1'
-app.listen(port, host, () => {
-  console.log(`Lojistik API http://${host}:${port}`)
+// Hosting her zaman PORT verir; 0.0.0.0 dinle (127.0.0.1 404’e yol açabilir)
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Lojistik http://0.0.0.0:${port}`)
 })

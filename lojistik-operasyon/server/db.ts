@@ -1,7 +1,7 @@
-import Database from 'better-sqlite3'
 import bcrypt from 'bcryptjs'
 import fs from 'node:fs'
 import path from 'node:path'
+import { DatabaseSync } from 'node:sqlite'
 import { fileURLToPath } from 'node:url'
 import { isLocalDev, randomPassword, validatePassword } from './secret.js'
 import { isValidEmail, normalizeEmail, type KullaniciRow } from './types.js'
@@ -13,9 +13,10 @@ const credentialsFile = path.join(dataDir, 'ilk-giris.txt')
 
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
 
-export const db = new Database(dbPath)
-db.pragma('journal_mode = WAL')
-db.pragma('foreign_keys = ON')
+/** Yerleşik Node SQLite — native derleme yok, yayında çökme riski düşük. */
+export const db = new DatabaseSync(dbPath)
+db.exec('PRAGMA journal_mode = WAL')
+db.exec('PRAGMA foreign_keys = ON')
 
 /** SEED_ADMIN_PASSWORD yoksa şifresiz giriş (Cursor e-posta) açıktır. */
 export function isBootstrapOpen() {
