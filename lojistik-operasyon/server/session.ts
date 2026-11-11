@@ -268,7 +268,12 @@ async function seedSampleJobsIfEmpty(adminId: string) {
   }
 }
 
-/** Yalnızca SEED_ADMIN_EMAIL ile eşleşen Cursor hesabı şifresiz giriş yapar. */
+/**
+ * Şifresiz Cursor girişi.
+ * - Kayıtlı e-posta → oturum
+ * - Boş veritabanı → bu Cursor hesabı ilk admin olur (secret gerekmez)
+ * - Opsiyonel SEED_ADMIN_EMAIL varsa yalnızca o e-posta ilk admin olabilir
+ */
 export async function loginOrBootstrapFromCursor(input: {
   email: string
   name?: string
@@ -279,20 +284,17 @@ export async function loginOrBootstrapFromCursor(input: {
   const email = normalizeEmail(input.email)
   if (!isValidEmail(email)) throw new Error('Cursor e-postası geçersiz.')
 
-  const ownerEmail = resolveBootstrapOwnerEmail()
-  if (!ownerEmail) {
-    throw new Error('İlk kurulum için SEED_ADMIN_EMAIL secret’ı gerekli (Cursor e-postanız).')
-  }
-  if (email !== ownerEmail) {
-    throw new Error('Şifresiz giriş yalnızca SEED_ADMIN_EMAIL hesabı içindir.')
-  }
-
   const existing = await findUserByEmail(email)
   if (existing) return existing
 
+  const ownerEmail = resolveBootstrapOwnerEmail()
+  if (ownerEmail && email !== ownerEmail) {
+    throw new Error('Şifresiz giriş yalnızca tanımlı sahip hesabı içindir.')
+  }
+
   const count = await sqlOne<{ c: string | number }>('SELECT COUNT(*)::int AS c FROM kullanicilar')
   if (Number(count?.c || 0) > 0) {
-    throw new Error('Admin zaten tanımlı. SEED_ADMIN_EMAIL ile eşleşen hesap gerekli.')
+    throw new Error('Bu Cursor hesabı kayıtlı değil. Admin sizi kullanıcı olarak eklemeli.')
   }
 
   const now = new Date().toISOString()

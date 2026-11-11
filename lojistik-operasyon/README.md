@@ -4,15 +4,18 @@ Cursor Apps üzerinde **Next.js App Router** (`app/api/...`) + Postgres.
 
 ## Şifresiz giriş
 
-1. Secrets: **SEED_ADMIN_EMAIL** = Cursor e-postanız  
-2. Uygulamayı açın → otomatik giriş  
-3. (İsteğe bağlı) `JWT_SECRET` (≥32 karakter)
+Secret gerekmez. Uygulamayı Cursor hesabınızla açın → ilk giriş sizi admin yapar.
+
+İsteğe bağlı:
+- `SEED_ADMIN_EMAIL` — yalnızca bu e-posta ilk admin olabilir
+- `SEED_ADMIN_PASSWORD` — tanımlıysa şifre formu açılır
+- `JWT_SECRET` — yoksa uygulama kendi üretir
 
 ## Yerel
 
 ```bash
 npm install
-SEED_ADMIN_EMAIL=siz@ornek.com npm run dev
+npm run dev
 ```
 
 Build: `npm run build` · Prod: `npm start`
