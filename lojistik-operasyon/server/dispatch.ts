@@ -19,8 +19,8 @@ import {
   type IsEmriTipi,
   type KullaniciRow,
   type Role,
-} from './session.js'
-import { isValidEmail, normalizeEmail } from './types.js'
+} from './session'
+import { isValidEmail, normalizeEmail } from './types'
 
 function json(data: unknown, init: ResponseInit = {}) {
   const headers = new Headers(init.headers)

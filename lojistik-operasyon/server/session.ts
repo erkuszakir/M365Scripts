@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs'
 import crypto from 'node:crypto'
 import jwt from 'jsonwebtoken'
-import { getIdentity } from '../cursor/identity.js'
-import { sql, sqlOne } from './sql.js'
+import { getIdentity } from '../cursor/identity'
+import { sql, sqlOne } from './sql'
 import {
   isValidEmail,
   mapIsEmri,
@@ -14,7 +14,7 @@ import {
   type KullaniciRow,
   type PublicKullanici,
   type Role,
-} from './types.js'
+} from './types'
 
 export const SESSION_COOKIE = 'lojistik_oturum'
 
