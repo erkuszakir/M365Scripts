@@ -40,7 +40,8 @@ export function LoginPage() {
   }
 
   if (oturum) {
-    return <Navigate to={oturum.rol === 'admin' ? '/' : '/saha'} replace />
+    const hedef = oturum.rol === 'admin' ? '/' : oturum.rol === 'amir' ? '/moduller' : '/saha'
+    return <Navigate to={hedef} replace />
   }
 
   async function onSubmit(e: FormEvent) {

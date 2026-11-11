@@ -1,11 +1,22 @@
-export type Role = 'admin' | 'user'
+export type Role = 'admin' | 'amir' | 'user'
 export type IsEmriTipi = 'nakliye' | 'depo' | 'survey' | 'etut' | 'gozetmenlik'
 export type IsEmriDurum = 'bekliyor' | 'atandi' | 'devam' | 'tamamlandi' | 'sorunlu'
 
 export type DemirbasDurum = 'aktif' | 'arizali' | 'hurda' | 'zimmetli'
-export type SatinAlmaDurum = 'taslak' | 'onay_bekliyor' | 'onaylandi' | 'red' | 'tamamlandi'
-export type ParaTalebiDurum = 'bekliyor' | 'onaylandi' | 'odendi' | 'red'
+export type SatinAlmaDurum =
+  | 'amir_onay_bekliyor'
+  | 'ceo_onay_bekliyor'
+  | 'onaylandi'
+  | 'red'
+  | 'tamamlandi'
+export type ParaTalebiDurum =
+  | 'amir_onay_bekliyor'
+  | 'ceo_onay_bekliyor'
+  | 'onaylandi'
+  | 'odendi'
+  | 'red'
 export type CrmDurum = 'lead' | 'aktif' | 'pasif'
+export type CrmAktiviteTipi = 'arama' | 'toplanti' | 'teklif' | 'email' | 'not'
 
 export const IS_EMRI_TIPLERI: IsEmriTipi[] = [
   'nakliye',
@@ -14,6 +25,8 @@ export const IS_EMRI_TIPLERI: IsEmriTipi[] = [
   'etut',
   'gozetmenlik',
 ]
+
+export const ROLES: Role[] = ['admin', 'amir', 'user']
 
 export interface KullaniciRow {
   id: string
@@ -63,6 +76,8 @@ export interface SatinAlmaRow {
   para_birimi: string
   durum: SatinAlmaDurum
   talep_eden_id: string
+  onaylayan_id: string | null
+  onay_notu: string
   olusturma_zamani: string
   guncelleme_zamani: string
 }
@@ -75,6 +90,8 @@ export interface ParaTalebiRow {
   gerekce: string
   durum: ParaTalebiDurum
   talep_eden_id: string
+  onaylayan_id: string | null
+  onay_notu: string
   olusturma_zamani: string
   guncelleme_zamani: string
 }
@@ -87,9 +104,24 @@ export interface CrmMusteriRow {
   email: string
   durum: CrmDurum
   notlar: string
+  sektor: string
+  sehir: string
+  kaynak: string
+  tahmini_ciro: string | number
+  son_gorusme: string
   olusturan_id: string
   olusturma_zamani: string
   guncelleme_zamani: string
+}
+
+export interface CrmAktiviteRow {
+  id: string
+  musteri_id: string
+  tip: CrmAktiviteTipi
+  baslik: string
+  detay: string
+  olusturan_id: string
+  olusturma_zamani: string
 }
 
 export interface PublicKullanici {
@@ -138,6 +170,8 @@ export interface PublicSatinAlma {
   paraBirimi: string
   durum: SatinAlmaDurum
   talepEdenId: string
+  onaylayanId: string | null
+  onayNotu: string
   olusturmaZamani: string
   guncellemeZamani: string
 }
@@ -150,6 +184,8 @@ export interface PublicParaTalebi {
   gerekce: string
   durum: ParaTalebiDurum
   talepEdenId: string
+  onaylayanId: string | null
+  onayNotu: string
   olusturmaZamani: string
   guncellemeZamani: string
 }
@@ -162,9 +198,24 @@ export interface PublicCrmMusteri {
   email: string
   durum: CrmDurum
   notlar: string
+  sektor: string
+  sehir: string
+  kaynak: string
+  tahminiCiro: number
+  sonGorusme: string
   olusturanId: string
   olusturmaZamani: string
   guncellemeZamani: string
+}
+
+export interface PublicCrmAktivite {
+  id: string
+  musteriId: string
+  tip: CrmAktiviteTipi
+  baslik: string
+  detay: string
+  olusturanId: string
+  olusturmaZamani: string
 }
 
 export function mapKullanici(row: KullaniciRow): PublicKullanici {
@@ -220,6 +271,8 @@ export function mapSatinAlma(row: SatinAlmaRow): PublicSatinAlma {
     paraBirimi: row.para_birimi,
     durum: row.durum,
     talepEdenId: row.talep_eden_id,
+    onaylayanId: row.onaylayan_id ?? null,
+    onayNotu: row.onay_notu || '',
     olusturmaZamani: row.olusturma_zamani,
     guncellemeZamani: row.guncelleme_zamani,
   }
@@ -234,6 +287,8 @@ export function mapParaTalebi(row: ParaTalebiRow): PublicParaTalebi {
     gerekce: row.gerekce,
     durum: row.durum,
     talepEdenId: row.talep_eden_id,
+    onaylayanId: row.onaylayan_id ?? null,
+    onayNotu: row.onay_notu || '',
     olusturmaZamani: row.olusturma_zamani,
     guncellemeZamani: row.guncelleme_zamani,
   }
@@ -248,9 +303,26 @@ export function mapCrmMusteri(row: CrmMusteriRow): PublicCrmMusteri {
     email: row.email,
     durum: row.durum,
     notlar: row.notlar,
+    sektor: row.sektor || '',
+    sehir: row.sehir || '',
+    kaynak: row.kaynak || '',
+    tahminiCiro: Number(row.tahmini_ciro || 0),
+    sonGorusme: row.son_gorusme || '',
     olusturanId: row.olusturan_id,
     olusturmaZamani: row.olusturma_zamani,
     guncellemeZamani: row.guncelleme_zamani,
+  }
+}
+
+export function mapCrmAktivite(row: CrmAktiviteRow): PublicCrmAktivite {
+  return {
+    id: row.id,
+    musteriId: row.musteri_id,
+    tip: row.tip,
+    baslik: row.baslik,
+    detay: row.detay,
+    olusturanId: row.olusturan_id,
+    olusturmaZamani: row.olusturma_zamani,
   }
 }
 

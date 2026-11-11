@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useApp } from '../context/AppContext'
-import type { Kullanici, Role } from '../types'
+import { ROL_ETIKET, type Kullanici, type Role } from '../types'
 
 export function KullanicilarPage() {
   const { kullanicilar, kullaniciEkle, kullaniciGuncelle, kullaniciSil, oturum } = useApp()
@@ -123,8 +123,9 @@ export function KullanicilarPage() {
           <label>
             Rol (yetki)
             <select value={rol} onChange={(e) => setRol(e.target.value as Role)}>
-              <option value="user">User — saha / atanmış işler</option>
-              <option value="admin">Admin — pano, iş emri, kullanıcı yönetimi</option>
+              <option value="user">Kullanıcı — saha / talepler</option>
+              <option value="amir">İlk amir — ≤5.000 TL onay</option>
+              <option value="admin">CEO / Admin — üst onay + yönetim</option>
             </select>
           </label>
           {hata && <p className="form-error">{hata}</p>}
@@ -140,7 +141,7 @@ export function KullanicilarPage() {
             <div className="job-main">
               <div className="job-tags">
                 <span className={`badge ${k.rol === 'admin' ? 'badge-tip-nakliye' : 'badge-tip'}`}>
-                  {k.rol === 'admin' ? 'Admin' : 'User'}
+                  {ROL_ETIKET[k.rol]}
                 </span>
                 {!k.aktif && <span className="badge badge-sorunlu">Pasif</span>}
               </div>
@@ -205,8 +206,9 @@ export function KullanicilarPage() {
             <label>
               Rol (yetki)
               <select value={editRol} onChange={(e) => setEditRol(e.target.value as Role)}>
-                <option value="user">User — saha / atanmış işler</option>
-                <option value="admin">Admin — pano, iş emri, kullanıcı yönetimi</option>
+                <option value="user">Kullanıcı — saha / talepler</option>
+                <option value="amir">İlk amir — ≤5.000 TL onay</option>
+                <option value="admin">CEO / Admin — üst onay + yönetim</option>
               </select>
             </label>
             <label>

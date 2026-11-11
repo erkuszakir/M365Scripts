@@ -21,7 +21,7 @@ import {
   type Role,
 } from './session'
 import { handleModuleRoutes } from './moduleRoutes'
-import { IS_EMRI_TIPLERI, isValidEmail, normalizeEmail } from './types'
+import { IS_EMRI_TIPLERI, ROLES, isValidEmail, normalizeEmail } from './types'
 
 function json(data: unknown, init: ResponseInit = {}) {
   const headers = new Headers(init.headers)
@@ -139,7 +139,7 @@ export async function dispatch(request: Request): Promise<Response> {
         return json({ hata: 'Kullanıcı adı, ad soyad, e-posta ve şifre zorunlu.' }, { status: 400 })
       }
       if (!isValidEmail(email)) return json({ hata: 'Geçerli bir e-posta girin.' }, { status: 400 })
-      if (rol !== 'admin' && rol !== 'user') return json({ hata: 'Geçersiz rol.' }, { status: 400 })
+      if (!ROLES.includes(rol)) return json({ hata: 'Geçersiz rol.' }, { status: 400 })
       const sifreHata = validatePassword(sifre)
       if (sifreHata) return json({ hata: sifreHata }, { status: 400 })
       if (
@@ -185,7 +185,7 @@ export async function dispatch(request: Request): Promise<Response> {
         if (!email || !isValidEmail(email)) {
           return json({ hata: 'Geçerli e-posta zorunlu.' }, { status: 400 })
         }
-        if (rol !== 'admin' && rol !== 'user') return json({ hata: 'Geçersiz rol.' }, { status: 400 })
+        if (!ROLES.includes(rol)) return json({ hata: 'Geçersiz rol.' }, { status: 400 })
         let sifreHash = row.sifre_hash
         if (sifre) {
           const sifreHata = validatePassword(sifre)

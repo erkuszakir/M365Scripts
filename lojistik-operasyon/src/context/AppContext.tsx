@@ -108,6 +108,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       } else {
         setKullanicilar([me.kullanici])
       }
+      // amir onay ekranlarında kullanıcı listesi şart değil
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) {
         if (!opts?.keepOturumOn401) {
