@@ -1,8 +1,9 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { tenant } from "./config/tenant"
 import { reportDefinitions, sampleReportRuns } from "./catalog/reports"
 import { services } from "./catalog/services"
 import { panelMeta } from "./data/seed"
+import { api, type ConnectionState } from "./lib/api"
 import { MonitorView } from "./views/MonitorView"
 import { ReportsView } from "./views/ReportsView"
 import { ServicesView } from "./views/ServicesView"
@@ -11,8 +12,23 @@ type Tab = "genel" | "servisler" | "raporlar" | "kontroller"
 
 export default function App() {
   const [tab, setTab] = useState<Tab>("genel")
+  const [connection, setConnection] = useState<ConnectionState | null>(null)
   const processCount = services.reduce((n, s) => n + s.processes.length, 0)
   const runCount = sampleReportRuns.length
+  const live = Boolean(connection?.connected)
+
+  useEffect(() => {
+    void api
+      .connection()
+      .then(setConnection)
+      .catch(() =>
+        setConnection({
+          connected: false,
+          message: "API’ye ulaşılamadı — secret’lar veya sunucu yok.",
+          missing: ["AZURE_TENANT_ID", "AZURE_CLIENT_ID", "AZURE_CLIENT_SECRET"],
+        }),
+      )
+  }, [])
 
   return (
     <div className="app">
@@ -29,7 +45,7 @@ export default function App() {
           </div>
           <div className="mode-pill" title="Canlı sistemlerde değişiklik yok">
             <i aria-hidden />
-            Salt-okunur · {tenant.dataMode}
+            Salt-okunur · {live ? "canlı Graph" : "örnek / bekleyen bağlantı"}
           </div>
         </div>
 
@@ -55,7 +71,13 @@ export default function App() {
         </div>
       </header>
 
-      <div className="banner">{panelMeta.sampleDataNotice}</div>
+      <div className="banner">
+        {live
+          ? `Tenant bağlı: ${connection?.tenant?.displayName || tenant.primaryDomain} (salt-okunur Graph).`
+          : connection?.missing?.length
+            ? `Tenant henüz bağlı değil. Eksik: ${connection.missing.join(", ")}. Kurulum: docs/ENTRA_KURULUM.md`
+            : panelMeta.sampleDataNotice}
+      </div>
 
       <nav className="top-tabs" aria-label="Ana bölümler">
         {(
