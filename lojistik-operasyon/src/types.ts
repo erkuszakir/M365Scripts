@@ -13,6 +13,7 @@ export interface Kullanici {
   id: string
   kullaniciAdi: string
   adSoyad: string
+  email: string
   rol: Role
   aktif: boolean
 }

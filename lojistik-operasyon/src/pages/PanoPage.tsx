@@ -6,7 +6,7 @@ import type { IsEmriDurum } from '../types'
 const OZET_DURUMLAR: IsEmriDurum[] = ['bekliyor', 'atandi', 'devam', 'sorunlu', 'tamamlandi']
 
 export function PanoPage() {
-  const { isEmirleri, kullaniciBul, demoSifirla } = useApp()
+  const { isEmirleri, kullaniciBul } = useApp()
   const bugun = new Date().toISOString().slice(0, 10)
   const bugunku = isEmirleri.filter((ie) => ie.tarih === bugun)
   const aktif = bugunku.filter((ie) => ie.durum !== 'tamamlandi')
@@ -70,17 +70,6 @@ export function PanoPage() {
           })}
         </ul>
       </section>
-
-      <button
-        type="button"
-        className="btn btn-ghost btn-block"
-        onClick={async () => {
-          if (!confirm('Örnek veriler sıfırlansın mı?')) return
-          await demoSifirla()
-        }}
-      >
-        Demo verisini sıfırla
-      </button>
     </div>
   )
 }

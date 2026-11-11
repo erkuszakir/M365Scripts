@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { ApiError, api, getToken, setToken } from '../lib/api'
+import { ApiError, api, clearLegacyToken } from '../lib/api'
 import type { IsEmri, IsEmriDurum, Kullanici } from '../types'
 
 interface YeniIsEmriGirdi {
@@ -27,8 +27,12 @@ interface AppContextValue {
   kullanicilar: Kullanici[]
   isEmirleri: IsEmri[]
   oturum: Kullanici | null
-  yenile: () => Promise<void>
+  yenile: (opts?: { keepOturumOn401?: boolean }) => Promise<void>
+  sifresizIlkGiris: boolean
+  setupBiliniyor: boolean
+  cursorEmail: string | null
   girisYap: (kullaniciAdi: string, sifre: string) => Promise<string | null>
+  sifresizGiris: () => Promise<string | null>
   cikisYap: () => void
   isEmriEkle: (girdi: YeniIsEmriGirdi) => Promise<IsEmri>
   isEmriGuncelle: (
@@ -49,17 +53,23 @@ interface AppContextValue {
     >,
   ) => Promise<void>
   durumGuncelle: (id: string, durum: IsEmriDurum, not?: string) => Promise<void>
-  demoSifirla: () => Promise<void>
   kullaniciBul: (id: string | null) => Kullanici | undefined
   kullaniciEkle: (body: {
     kullaniciAdi: string
     adSoyad: string
+    email: string
     sifre: string
     rol: Kullanici['rol']
   }) => Promise<string | null>
   kullaniciGuncelle: (
     id: string,
-    body: Partial<{ adSoyad: string; rol: Kullanici['rol']; aktif: boolean; sifre: string }>,
+    body: Partial<{
+      adSoyad: string
+      email: string
+      rol: Kullanici['rol']
+      aktif: boolean
+      sifre: string
+    }>,
   ) => Promise<string | null>
   kullaniciSil: (id: string) => Promise<string | null>
 }
@@ -73,21 +83,24 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [kullanicilar, setKullanicilar] = useState<Kullanici[]>([])
   const [isEmirleri, setIsEmirleri] = useState<IsEmri[]>([])
   const [oturum, setOturum] = useState<Kullanici | null>(null)
+  const [sifresizIlkGiris, setSifresizIlkGiris] = useState(true)
+  const [setupBiliniyor, setSetupBiliniyor] = useState(false)
+  const [cursorEmail, setCursorEmail] = useState<string | null>(null)
 
   const kullaniciBul = useCallback(
     (id: string | null) => (id ? kullanicilar.find((k) => k.id === id) : undefined),
     [kullanicilar],
   )
 
-  const yenile = useCallback(async () => {
+  const yenile = useCallback(async (opts?: { keepOturumOn401?: boolean }) => {
     setYukleniyor(true)
     setHata(null)
     try {
-      const isRes = await api.isEmirleri()
-      setIsEmirleri(isRes.isEmirleri)
-
       const me = await api.me()
       setOturum(me.kullanici)
+
+      const isRes = await api.isEmirleri()
+      setIsEmirleri(isRes.isEmirleri)
 
       if (me.kullanici.rol === 'admin') {
         const users = await api.kullanicilar()
@@ -97,10 +110,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) {
-        setToken(null)
-        setOturum(null)
-        setKullanicilar([])
-        setIsEmirleri([])
+        if (!opts?.keepOturumOn401) {
+          setOturum(null)
+          setKullanicilar([])
+          setIsEmirleri([])
+        }
       } else {
         setHata(err instanceof Error ? err.message : 'Veri yüklenemedi.')
       }
@@ -111,46 +125,89 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     async function boot() {
-      if (!getToken()) {
-        setHazir(true)
-        return
-      }
+      clearLegacyToken()
+      // Secret yokken şifre formu göstermemek için varsayılan şifresiz.
+      let passwordless = true
       try {
-        await yenile()
-      } finally {
-        setHazir(true)
+        const status = await api.setupStatus()
+        passwordless = status.sifresizIlkGiris
+        setSifresizIlkGiris(passwordless)
+        setCursorEmail(status.cursorEmail)
+        setSetupBiliniyor(true)
+      } catch {
+        setSifresizIlkGiris(true)
+        setCursorEmail(null)
+        setSetupBiliniyor(false)
       }
+
+      let sessionUser: Kullanici | null = null
+      try {
+        const me = await api.me()
+        sessionUser = me.kullanici
+        setOturum(me.kullanici)
+      } catch {
+        sessionUser = null
+      }
+
+      if (!sessionUser && passwordless) {
+        try {
+          const res = await api.bootstrap()
+          sessionUser = res.kullanici
+          setOturum(res.kullanici)
+          setSifresizIlkGiris(true)
+        } catch {
+          /* LoginPage hata / tekrar dene */
+        }
+      }
+
+      if (sessionUser) {
+        await yenile({ keepOturumOn401: true })
+      }
+
+      setHazir(true)
     }
     void boot()
   }, [yenile])
 
-  const girisYap = useCallback(async (kullaniciAdi: string, sifre: string) => {
+  const girisYap = useCallback(
+    async (kullaniciAdi: string, sifre: string) => {
+      try {
+        const res = await api.login(kullaniciAdi, sifre)
+        setOturum(res.kullanici)
+        await yenile({ keepOturumOn401: true })
+        return null
+      } catch (err) {
+        return err instanceof Error ? err.message : 'Giriş başarısız.'
+      }
+    },
+    [yenile],
+  )
+
+  const sifresizGiris = useCallback(async () => {
     try {
-      const res = await api.login(kullaniciAdi, sifre)
-      setToken(res.token)
+      const res = await api.bootstrap()
       setOturum(res.kullanici)
-      await yenile()
+      setSifresizIlkGiris(true)
+      await yenile({ keepOturumOn401: true })
       return null
     } catch (err) {
-      return err instanceof Error ? err.message : 'Giriş başarısız.'
+      return err instanceof Error ? err.message : 'Şifresiz giriş başarısız.'
     }
   }, [yenile])
 
   const cikisYap = useCallback(() => {
-    setToken(null)
+    void api.logout().catch(() => undefined)
+    clearLegacyToken()
     setOturum(null)
     setKullanicilar([])
     setIsEmirleri([])
   }, [])
 
-  const isEmriEkle = useCallback(
-    async (girdi: YeniIsEmriGirdi) => {
-      const res = await api.isEmriEkle(girdi)
-      setIsEmirleri((prev) => [res.isEmri, ...prev])
-      return res.isEmri
-    },
-    [],
-  )
+  const isEmriEkle = useCallback(async (girdi: YeniIsEmriGirdi) => {
+    const res = await api.isEmriEkle(girdi)
+    setIsEmirleri((prev) => [res.isEmri, ...prev])
+    return res.isEmri
+  }, [])
 
   const isEmriGuncelle = useCallback(
     async (
@@ -176,31 +233,26 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [],
   )
 
-  const durumGuncelle = useCallback(
-    async (id: string, durum: IsEmriDurum, not?: string) => {
-      const body: { durum: IsEmriDurum; notlar?: string } = { durum }
-      if (not !== undefined) body.notlar = not
-      const res = await api.isEmriGuncelle(id, body)
-      setIsEmirleri((prev) => prev.map((ie) => (ie.id === id ? res.isEmri : ie)))
-    },
-    [],
-  )
-
-  const demoSifirla = useCallback(async () => {
-    await api.demoSifirla()
-    await yenile()
-  }, [yenile])
+  const durumGuncelle = useCallback(async (id: string, durum: IsEmriDurum, not?: string) => {
+    const body: { durum: IsEmriDurum; notlar?: string } = { durum }
+    if (not !== undefined) body.notlar = not
+    const res = await api.isEmriGuncelle(id, body)
+    setIsEmirleri((prev) => prev.map((ie) => (ie.id === id ? res.isEmri : ie)))
+  }, [])
 
   const kullaniciEkle = useCallback(
     async (body: {
       kullaniciAdi: string
       adSoyad: string
+      email: string
       sifre: string
       rol: Kullanici['rol']
     }) => {
       try {
         const res = await api.kullaniciEkle(body)
-        setKullanicilar((prev) => [...prev, res.kullanici].sort((a, b) => a.adSoyad.localeCompare(b.adSoyad, 'tr')))
+        setKullanicilar((prev) =>
+          [...prev, res.kullanici].sort((a, b) => a.adSoyad.localeCompare(b.adSoyad, 'tr')),
+        )
         return null
       } catch (err) {
         return err instanceof Error ? err.message : 'Kullanıcı eklenemedi.'
@@ -212,7 +264,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const kullaniciGuncelle = useCallback(
     async (
       id: string,
-      body: Partial<{ adSoyad: string; rol: Kullanici['rol']; aktif: boolean; sifre: string }>,
+      body: Partial<{
+        adSoyad: string
+        email: string
+        rol: Kullanici['rol']
+        aktif: boolean
+        sifre: string
+      }>,
     ) => {
       try {
         const res = await api.kullaniciGuncelle(id, body)
@@ -247,13 +305,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
       kullanicilar,
       isEmirleri,
       oturum,
+      sifresizIlkGiris,
+      setupBiliniyor,
+      cursorEmail,
       yenile,
       girisYap,
+      sifresizGiris,
       cikisYap,
       isEmriEkle,
       isEmriGuncelle,
       durumGuncelle,
-      demoSifirla,
       kullaniciBul,
       kullaniciEkle,
       kullaniciGuncelle,
@@ -266,13 +327,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
       kullanicilar,
       isEmirleri,
       oturum,
+      sifresizIlkGiris,
+      setupBiliniyor,
+      cursorEmail,
       yenile,
       girisYap,
+      sifresizGiris,
       cikisYap,
       isEmriEkle,
       isEmriGuncelle,
       durumGuncelle,
-      demoSifirla,
       kullaniciBul,
       kullaniciEkle,
       kullaniciGuncelle,

@@ -1,13 +1,35 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 
 export function LoginPage() {
-  const { oturum, hazir, girisYap } = useApp()
+  const {
+    oturum,
+    hazir,
+    girisYap,
+    sifresizGiris,
+    sifresizIlkGiris,
+    cursorEmail,
+    setupBiliniyor,
+  } = useApp()
   const [kullaniciAdi, setKullaniciAdi] = useState('')
   const [sifre, setSifre] = useState('')
   const [hata, setHata] = useState<string | null>(null)
   const [bekliyor, setBekliyor] = useState(false)
+  const autoTried = useRef(false)
+
+  // Şifresiz mod: form yok; otomatik Cursor girişi (setup bilinmese bile)
+  useEffect(() => {
+    if (!hazir || oturum || autoTried.current) return
+    const sifresizMod = !setupBiliniyor || sifresizIlkGiris
+    if (!sifresizMod) return
+    autoTried.current = true
+    setBekliyor(true)
+    void sifresizGiris().then((err) => {
+      setHata(err)
+      setBekliyor(false)
+    })
+  }, [hazir, setupBiliniyor, oturum, sifresizIlkGiris, sifresizGiris])
 
   if (!hazir) {
     return (
@@ -29,6 +51,16 @@ export function LoginPage() {
     setBekliyor(false)
   }
 
+  async function onRetryBootstrap() {
+    setBekliyor(true)
+    setHata(null)
+    const err = await sifresizGiris()
+    setHata(err)
+    setBekliyor(false)
+  }
+
+  const sifresizMod = !setupBiliniyor || sifresizIlkGiris
+
   return (
     <div className="login-screen">
       <div className="login-panel">
@@ -38,42 +70,56 @@ export function LoginPage() {
           <p>Nakliye, depo ve yol survey işlerini tek yerden yönetin.</p>
         </div>
 
-        <form className="login-form" onSubmit={onSubmit}>
-          <label>
-            Kullanıcı adı
-            <input
-              autoComplete="username"
-              value={kullaniciAdi}
-              onChange={(e) => setKullaniciAdi(e.target.value)}
-              placeholder="admin veya ahmet"
-              required
-            />
-          </label>
-          <label>
-            Şifre
-            <input
-              type="password"
-              autoComplete="current-password"
-              value={sifre}
-              onChange={(e) => setSifre(e.target.value)}
-              placeholder="1234"
-              required
-            />
-          </label>
-          {hata && <p className="form-error">{hata}</p>}
-          <button type="submit" className="btn btn-primary btn-block" disabled={bekliyor}>
-            {bekliyor ? 'Giriş yapılıyor…' : 'Giriş yap'}
-          </button>
-        </form>
-
-        <div className="login-hints">
-          <p>
-            <strong>Admin:</strong> admin / 1234
-          </p>
-          <p>
-            <strong>User (saha):</strong> ahmet / 1234 · mehmet / 1234 · ayse / 1234
-          </p>
-        </div>
+        {sifresizMod ? (
+          <div className="login-form">
+            <p className="muted" style={{ marginBottom: 8 }}>
+              {bekliyor
+                ? 'Cursor hesabınızla giriş yapılıyor…'
+                : 'Şifre yok — Cursor hesabınızla girilir.'}
+              {cursorEmail ? ` (${cursorEmail})` : ''}
+            </p>
+            {!bekliyor && (
+              <button
+                type="button"
+                className="btn btn-primary btn-block btn-lg"
+                onClick={() => void onRetryBootstrap()}
+              >
+                Giriş yap
+              </button>
+            )}
+            {hata && <p className="form-error">{hata}</p>}
+          </div>
+        ) : (
+          <form className="login-form" onSubmit={onSubmit}>
+            <label>
+              Kullanıcı adı
+              <input
+                autoComplete="username"
+                value={kullaniciAdi}
+                onChange={(e) => setKullaniciAdi(e.target.value)}
+                placeholder="admin"
+                required
+              />
+            </label>
+            <label>
+              Şifre
+              <input
+                type="password"
+                autoComplete="current-password"
+                value={sifre}
+                onChange={(e) => setSifre(e.target.value)}
+                required
+              />
+            </label>
+            {hata && <p className="form-error">{hata}</p>}
+            <button type="submit" className="btn btn-primary btn-block" disabled={bekliyor}>
+              {bekliyor ? 'Giriş yapılıyor…' : 'Giriş yap'}
+            </button>
+            <p className="login-hints">
+              Cursor e-postanız hesap e-postasıyla aynı olmalı. Admin şifresi: SEED_ADMIN_PASSWORD.
+            </p>
+          </form>
+        )}
       </div>
     </div>
   )

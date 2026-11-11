@@ -7,6 +7,7 @@ export interface KullaniciRow {
   kullanici_adi: string
   sifre_hash: string
   ad_soyad: string
+  email: string
   rol: Role
   aktif: number
   olusturma_zamani: string
@@ -32,6 +33,7 @@ export interface PublicKullanici {
   id: string
   kullaniciAdi: string
   adSoyad: string
+  email: string
   rol: Role
   aktif: boolean
 }
@@ -57,6 +59,7 @@ export function mapKullanici(row: KullaniciRow): PublicKullanici {
     id: row.id,
     kullaniciAdi: row.kullanici_adi,
     adSoyad: row.ad_soyad,
+    email: row.email,
     rol: row.rol,
     aktif: row.aktif === 1,
   }
@@ -78,4 +81,12 @@ export function mapIsEmri(row: IsEmriRow): PublicIsEmri {
     olusturmaZamani: row.olusturma_zamani,
     guncellemeZamani: row.guncelleme_zamani,
   }
+}
+
+export function normalizeEmail(email: string) {
+  return email.trim().toLowerCase()
+}
+
+export function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
