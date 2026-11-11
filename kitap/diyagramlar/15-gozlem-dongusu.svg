@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="300" viewBox="0 0 880 300" role="img" aria-labelledby="t">
+  <title id="t">Gözlem döngüsü</title>
+  <rect width="100%" height="100%" fill="#0f1419"/>
+  <defs><style>
+  .t{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5}
+  .s{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#9db0c5;font-size:12px}
+  .h{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5;font-size:16px;font-weight:700}
+  .box{fill:#1a2330;stroke:#3a4b5f;stroke-width:1.5}
+  .acc{fill:#1e3a5f;stroke:#5b9fd4;stroke-width:1.5}
+  .ok{fill:#163528;stroke:#3d9b6c;stroke-width:1.5}
+  .warn{fill:#3a2e14;stroke:#c9a227;stroke-width:1.5}
+  .line{stroke:#5b9fd4;stroke-width:1.5;fill:none}
+  </style></defs>
+  
+  <text class="h" x="24" y="36">Gözlem döngüsü</text>
+  <rect class="acc" x="40" y="90" width="170" height="80" rx="8"/><text class="t" x="70" y="135">Service Health</text>
+  <rect class="box" x="250" y="90" width="170" height="80" rx="8"/><text class="t" x="290" y="135">Kullanım</text>
+  <rect class="ok" x="460" y="90" width="170" height="80" rx="8"/><text class="t" x="490" y="135">Güvenlik</text>
+  <rect class="warn" x="670" y="90" width="170" height="80" rx="8"/><text class="t" x="715" y="135">Audit/KPI</text>
+  <path class="line" d="M210 130 H250 M420 130 H460 M630 130 H670"/>
+  <text class="s" x="40" y="230">Önce platform sağlığı, sonra yapılandırma. Message Center’ı haftalık okuyun.</text>
+
+</svg>

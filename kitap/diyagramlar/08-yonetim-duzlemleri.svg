@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="340" viewBox="0 0 880 340" role="img" aria-labelledby="t">
+  <title id="t">Yönetim düzlemleri</title>
+  <rect width="100%" height="100%" fill="#0f1419"/>
+  <defs>
+    <style>
+      .t{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5}
+      .s{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#9db0c5;font-size:12px}
+      .h{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5;font-size:16px;font-weight:700}
+      .box{fill:#1a2330;stroke:#3a4b5f;stroke-width:1.5}
+      .acc{fill:#1e3a5f;stroke:#5b9fd4;stroke-width:1.5}
+      .ok{fill:#163528;stroke:#3d9b6c;stroke-width:1.5}
+      .warn{fill:#3a2e14;stroke:#c9a227;stroke-width:1.5}
+      .line{stroke:#5b9fd4;stroke-width:1.5;fill:none}
+      .muted{stroke:#3a4b5f;stroke-width:1.2;fill:none}
+    </style>
+  </defs>
+  
+  <text class="h" x="24" y="36">Yönetim düzlemleri</text>
+  <rect class="box" x="40" y="80" width="180" height="140" rx="8"/><text class="t" x="90" y="130">Portal</text><text class="s" x="60" y="160">keşif · tekil iş</text><text class="s" x="60" y="180">acil müdahale</text>
+  <rect class="acc" x="250" y="80" width="180" height="140" rx="8"/><text class="t" x="285" y="130">PowerShell</text><text class="s" x="270" y="160">toplu işlem</text><text class="s" x="270" y="180">rapor · runbook</text>
+  <rect class="ok" x="460" y="80" width="180" height="140" rx="8"/><text class="t" x="510" y="130">Graph API</text><text class="s" x="480" y="160">çapraz platform</text><text class="s" x="480" y="180">app-only otomasyon</text>
+  <rect class="warn" x="670" y="80" width="180" height="140" rx="8"/><text class="t" x="720" y="130">IaC / CI</text><text class="s" x="690" y="160">tekrarlanabilir</text><text class="s" x="690" y="180">iskelet · drift</text>
+  <text class="s" x="40" y="280">Ölçek ve denetim ihtiyacı arttıkça sağa kayın. Sırları koda gömmeyin.</text>
+
+</svg>

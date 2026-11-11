@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="380" viewBox="0 0 880 380" role="img" aria-labelledby="t">
+  <title id="t">Admin portalları</title>
+  <rect width="100%" height="100%" fill="#0f1419"/>
+  <defs>
+    <style>
+      .t{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5}
+      .s{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#9db0c5;font-size:12px}
+      .h{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5;font-size:16px;font-weight:700}
+      .box{fill:#1a2330;stroke:#3a4b5f;stroke-width:1.5}
+      .acc{fill:#1e3a5f;stroke:#5b9fd4;stroke-width:1.5}
+      .ok{fill:#163528;stroke:#3d9b6c;stroke-width:1.5}
+      .warn{fill:#3a2e14;stroke:#c9a227;stroke-width:1.5}
+      .line{stroke:#5b9fd4;stroke-width:1.5;fill:none}
+      .muted{stroke:#3a4b5f;stroke-width:1.2;fill:none}
+    </style>
+  </defs>
+  
+  <text class="h" x="24" y="36">Admin portal haritası</text>
+  <rect class="acc" x="300" y="60" width="260" height="56" rx="8"/><text class="t" x="340" y="94">M365 Admin Center</text>
+  <rect class="box" x="40" y="160" width="190" height="70" rx="8"/><text class="t" x="70" y="190" font-size="13">Entra</text><text class="s" x="55" y="212">Kimlik · CA · App</text>
+  <rect class="box" x="250" y="160" width="190" height="70" rx="8"/><text class="t" x="290" y="190" font-size="13">Exchange</text><text class="s" x="275" y="212">Mailbox · Flow</text>
+  <rect class="box" x="460" y="160" width="190" height="70" rx="8"/><text class="t" x="510" y="190" font-size="13">Teams</text><text class="s" x="485" y="212">Policy · Calling</text>
+  <rect class="box" x="670" y="160" width="190" height="70" rx="8"/><text class="t" x="705" y="190" font-size="13">SharePoint</text><text class="s" x="695" y="212">Site · Sharing</text>
+  <rect class="ok" x="150" y="280" width="250" height="60" rx="8"/><text class="t" x="200" y="315">security.microsoft</text>
+  <rect class="warn" x="470" y="280" width="250" height="60" rx="8"/><text class="t" x="500" y="315">compliance / Purview</text>
+
+</svg>

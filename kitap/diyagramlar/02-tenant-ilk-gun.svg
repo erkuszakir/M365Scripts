@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="300" viewBox="0 0 860 300" role="img" aria-labelledby="t">
+  <title id="t">Tenant ilk gün</title>
+  <rect width="100%" height="100%" fill="#0f1419"/>
+  <defs>
+    <style>
+      .t{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5}
+      .s{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#9db0c5;font-size:12px}
+      .h{font-family:Segoe UI,Roboto,Arial,sans-serif;fill:#e8eef5;font-size:16px;font-weight:700}
+      .box{fill:#1a2330;stroke:#3a4b5f;stroke-width:1.5}
+      .acc{fill:#1e3a5f;stroke:#5b9fd4;stroke-width:1.5}
+      .ok{fill:#163528;stroke:#3d9b6c;stroke-width:1.5}
+      .warn{fill:#3a2e14;stroke:#c9a227;stroke-width:1.5}
+      .line{stroke:#5b9fd4;stroke-width:1.5;fill:none}
+      .muted{stroke:#3a4b5f;stroke-width:1.2;fill:none}
+    </style>
+  </defs>
+  
+  <text class="h" x="24" y="36">Tenant ilk gün sırası</text>
+  <g font-size="12">
+  <rect class="acc" x="20" y="80" width="120" height="70" rx="8"/><text class="t" x="40" y="120">1.Tenant</text>
+  <rect class="box" x="160" y="80" width="120" height="70" rx="8"/><text class="t" x="180" y="120">2.Domain</text>
+  <rect class="box" x="300" y="80" width="120" height="70" rx="8"/><text class="t" x="330" y="120">3.DNS</text>
+  <rect class="ok" x="440" y="80" width="120" height="70" rx="8"/><text class="t" x="455" y="120">4.Break-glass</text>
+  <rect class="box" x="580" y="80" width="120" height="70" rx="8"/><text class="t" x="605" y="120">5.Lisans</text>
+  <rect class="warn" x="720" y="80" width="120" height="70" rx="8"/><text class="t" x="740" y="120">6.Pilot</text>
+  </g>
+  <path class="line" d="M140 115 H160 M280 115 H300 M420 115 H440 M560 115 H580 M700 115 H720"/>
+  <text class="s" x="24" y="200">Pilot olmadan toplu migrasyon / toplu kullanıcı açmayın.</text>
+  <text class="s" x="24" y="230">Break-glass hesaplarını CA istisnasında tutup izleyin (alarm + nadir kullanım).</text>
+
+</svg>
